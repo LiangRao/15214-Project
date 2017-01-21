@@ -8,7 +8,10 @@ import java.io.IOException;
  * the URLs.
  */
 public class FindClosestMatch {
-    public static void main(String[] args) throws IOException {
+	 /**
+     *@param args for a input
+     */
+    public static void main(String[] args){
         //replace with your implementation:
         int numDocs = args.length;
         for (int i = 0; i < numDocs; i++) {
