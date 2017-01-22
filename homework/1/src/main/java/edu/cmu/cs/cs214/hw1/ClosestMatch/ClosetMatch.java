@@ -23,35 +23,42 @@ public class ClosetMatch{
  * @throws MalformedURLException 
  */
 public static void main(String[] args) throws MalformedURLException, IOException{
-//	 Document doc = new Document(url); 
+	 Document doc = new Document(); 
 	 List<String> inputUrls = new ArrayList<String>();
 	 Scanner sc=new Scanner(System.in);
-     System.out.println("Input a set of URLs separated by a space and end with ##:");
-     String url="";
-     do{    	 
-     url=sc.next();
+     System.out.println("Input a set of URLs separated by a space:");
+     while (sc.hasNextLine()){    	 
+      String url=sc.next();
       inputUrls.add(url);
-     }while(!"##".equals(url));
-     inputUrls.remove(inputUrls.size()-1);
+//      System.out.println(inputUrls);
+     }
      System.out.println(inputUrls);
      
      double cosineResult=0;
-     Set<Document> documentsSet = new HashSet<Document>();
-     documentsSet.add(new Document(inputUrls.get(0)));
-     documentsSet.add(new Document(inputUrls.get(1)));
+     Set<String> urlsPair = new HashSet<String>();
      for(int i=0;i<inputUrls.size();i++){
-    	 String url1 = inputUrls.get(i);
-    	 Document doc1 = new Document(url1);
+    	 Map<String,Double> doc1 = new HashMap<String,Double>();
+    	 String url1= inputUrls.get(i);
+    	 doc1 = doc.getUrlDoc(url1);
     	 for(int j=i+1;j<inputUrls.size();j++){
     		 String url2 = inputUrls.get(j);
-    		 Document doc2 = new Document(url2);
-    		 double temp = doc1.calCosine(doc2);
+    		 Map<String,Double> doc2 = new HashMap<String,Double>();
+    		 doc2=doc.getUrlDoc(url2);
+    		 double temp = doc.calCosine(doc1, doc2);
+    		 if (i==0){
+    			 cosineResult=temp;
+    			 urlsPair.add(url1);
+    			 urlsPair.add(url2);
+    		 }else{
     			 if(temp<cosineResult){
     				 cosineResult = temp;
-    				 documentsSet.clear();
-    				 documentsSet.add(doc1);
-        			 documentsSet.add(doc2);
+    				 urlsPair.clear();
+    				 urlsPair.add(url1);
+        			 urlsPair.add(url2);
     			 }
+    		 }
+    		 
+    		 
     	 }
      }
 }
