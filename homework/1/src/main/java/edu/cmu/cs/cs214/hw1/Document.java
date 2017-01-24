@@ -9,129 +9,89 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 
- * @author raoliang
+ * A class including the content of a web page and a instance method to calculate the similarity of two Document 
+ * @author Liang Rao
  *
  */
 public class Document {
-	String url;
-    Map<String, Double> docMap1 =new HashMap<String,Double>();
+	private String url;
+	private Map<String,Integer> docMap = new HashMap<String, Integer>();
+    private Double sqrSum;
+	
 	/**
 	 * Constructor
-	 * 
-	 * @param url1
-	 * @param url2
-	 * @throws IOException 
-	 * @throws MalformedURLException 
+	 * @param url  the URL of a web page which needs to 
+	 * @throws MalformedURLException  a URL Exception
+	 * @throws IOException  a IO Exception
 	 */
-	public Document(String url1) throws MalformedURLException, IOException {
+	public Document(String url) 
+			throws MalformedURLException, IOException {
 		this.url = url;
-		this.docMap1=getUrlDoc(url);
+		this.docMap=getUrlDoc(url);
+		double sum = 0.0;
+		Set entries = docMap.entrySet( );  
+		Iterator iterator = entries.iterator( );  
+		while(iterator.hasNext( )) {  
+		   Map.Entry entry = (Entry) iterator.next( );//entry是一个键值项   
+		   Integer value = (Integer) entry.getValue(); 
+		   sum += Math.pow(value, 2);
+		}  
+		this.sqrSum= Math.sqrt(sum);		
 	}
+		
 	/**
-	 * Get the content of Url
-	 * @throws MalformedURLException
-	 * @throws java.io.IOException
+	 * Get the content of a specific Document
+	 * @param url  the URL of Document 
+	 * @return a Map which Key is the word in Document content and Value is the frequency of the word
+	 * @throws MalformedURLException  q URL Exception
+	 * @throws IOException  q IO Exception
 	 */
-	public Map<String, Double> getUrlDoc(String url) throws MalformedURLException, IOException {
+	private Map<String, Integer> getUrlDoc(String url) 
+			throws MalformedURLException, IOException {
 		StringBuilder htmlTxt = new StringBuilder();
 		// String urlString = "https://en.wikipedia.org/wiki/Shiba_Inu";
 		Scanner sc = new Scanner(new URL(url).openStream());
 		while (sc.hasNext()) {
 			String word = sc.next();
-			htmlTxt.append(word);
-		}
-		HashMap<String, Double> map = new HashMap<String, Double>();
-		String reg = "[a-zA-Z]+";
-		Pattern p = Pattern.compile(reg);
-		Matcher m = p.matcher(htmlTxt);
-		while (m.find()) {
-			String w = m.group();
-			if (null == map.get(w)) {
-				map.put(w, (double) 1);
-			} else {
-				Double x = map.get(w);
-				map.put(w, x + 1);
+			if(docMap.containsKey(word)){
+				docMap.put(word,docMap.get(word)+1);
+			}else{
+				docMap.put(word, 1);
 			}
-		}
-		return map;
+		}	
+		return docMap;
 	}
 
 	/**
-	 * calculate the cosine similarity of 
-	 * @param doc2
-	 * @return
-	 * @throws MalformedURLException
-	 * @throws IOException
+	 * Calculate the cosine similarity of 
+	 * @param doc2  the Second Document 
+	 * @return the cosine similarity of the two Document
+	 * @throws MalformedURLException  a URL Exception
+	 * @throws IOException  a IO Exception
 	 */
-	public double calCosine( Document doc2) throws MalformedURLException, IOException {
-		String url2 =doc2.url;
-        Map<String, Double> docMap2 = doc2.getUrlDoc(url2);
-        
+	public double calCosine( Document doc2) 
+			throws MalformedURLException, IOException {
 		double result;
-		List<String> keyList1 = new ArrayList<String>();// the keyList of doc1
-		List<Double> valueList1 = new ArrayList<Double>();// the valueList of
-															// doc1
-		List<String> keyList2 = new ArrayList<String>();// the keyList of doc2
-		List<Double> valueList2 = new ArrayList<Double>();// the valueList of
-															// doc2
-		double denominator1 = 0;
-		double denominator2 = 0;
 		double numerator = 0;
-		Iterator it = docMap1.entrySet().iterator();
-		while (it.hasNext()) {
-			Entry entry = (Entry) it.next();
-			String key = entry.getKey().toString();// 返回与此项对应的键
-			Double value = (Double) (entry.getValue()); // 返回与此项对应的值
-			keyList1.add(key);
-			valueList1.add(value);
-			denominator1 += Math.pow(value, 2);
-
+	    for(String key:docMap.keySet())	{
+	    	if(doc2.docMap.containsKey(key)){
+	    		numerator+=docMap.get(key)*(doc2.docMap.get(key));
+	    	}
 		}
-		Iterator it2 = docMap2.entrySet().iterator();
-		while (it2.hasNext()) {
-			Entry entry = (Entry) it2.next();
-			String key = entry.getKey().toString();// 返回与此项对应的键
-			Double value = (Double) (entry.getValue()); // 返回与此项对应的值
-			keyList2.add(key);
-			valueList2.add(value);
-			denominator2 += Math.pow(value, 2);
-		}
-		int size1 = keyList1.size();
-		int size2 = keyList2.size();
-
-		for (int i = 0; i < size1; i++) {
-			String key1 = keyList1.get(i);
-			for (int j = 0; j < size2; j++) {
-				String key2 = keyList2.get(j);
-				if (key1.equalsIgnoreCase(key2)) {
-					double num1 = docMap1.get(key1) * docMap2.get(key2);
-					numerator += num1;
-				}
-			}
-		}
-		result = numerator / (Math.sqrt(denominator1) * Math.sqrt(denominator2));
+		result = numerator / (sqrSum * doc2.sqrSum);
 		return result;
 	}
-
+	
+	/**
+	 * @return return the url of Document
+	 */
 public String toString(){
 	return url;
 }
-//	public static void main(String[] args) {
-//		Map<String, Double> doc1 = new HashMap<String, Double>();
-//		doc1.put("year", 1.0);
-//		doc1.put("dog", 2.0);
-//
-//		Map<String, Double> doc2 = new HashMap<String, Double>();
-//		doc2.put("year", 1.0);
-//		doc2.put("dog", 2.0);
-//		Document doc = new Document();
-//		System.out.println(doc.calCosine(doc2));
-//
-//	}
 }
