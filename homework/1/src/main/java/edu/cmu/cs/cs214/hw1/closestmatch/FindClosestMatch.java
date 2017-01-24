@@ -18,6 +18,7 @@ public class FindClosestMatch {
         double cosineVal = 0.0;
         int tagI=0;
         int tagJ=1;
+        
         //Compare the all the documents one by one
         //perform numDocs(numDocs-1)/2 calls to the calCosine method 
         for (int i = 0; i < numDocs; i++) {
