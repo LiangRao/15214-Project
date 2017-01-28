@@ -34,8 +34,8 @@ public class IntQueueTest {
 	@Before
 	public void setUp() {
 		// comment/uncomment these lines to test each class
-		mQueue = new LinkedIntQueue();
-		// mQueue = new ArrayIntQueue();
+		//mQueue = new LinkedIntQueue();
+		mQueue = new ArrayIntQueue();
 	}
 
 	@Test
