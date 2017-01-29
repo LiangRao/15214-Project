@@ -12,6 +12,10 @@ package edu.cmu.cs.cs214.hw2.expression;
  * misleading.
  */
 public class VariableExpression implements Expression {
+	
+	private String name;
+	private double val ;
+	
     /**
      * Constructs a variable with the specified name, whose initial value is zero.
      *
@@ -20,18 +24,19 @@ public class VariableExpression implements Expression {
      */
     public VariableExpression(String name) {
         // TODO: Complete this method.
+    	this.name = name;
     }
 
     @Override
     public double eval() {
-        // TODO: Complete this method.
-        return 0.0;
+        // TODO: Complete this method    	
+        return val;
     }
 
     @Override
     public String toString() { 
         // TODO: Complete this method.
-        return null;
+        return name;
     }
 
     /**
@@ -41,14 +46,15 @@ public class VariableExpression implements Expression {
      */
     public void store(double value) {
         // TODO: Complete this method.
+    	val = value;
     }
 
     /**
      * @return the name of this variable
      */
     public String name() { 
-        // TODO: Complete this method.
-        return null;
+        
+        return name;
     }
 }
 

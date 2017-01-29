@@ -13,6 +13,6 @@ public class AbsoluteValue implements UnaryOperator{
 	
 	@Override	
 	public String toString(){
-		return "| |(Absolute)";		
+		return "| |";		
 	}
 }

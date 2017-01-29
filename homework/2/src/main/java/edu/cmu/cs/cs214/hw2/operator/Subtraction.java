@@ -8,6 +8,6 @@ public class Subtraction implements BinaryOperator{
 	
 	@Override	
 	public String toString(){
-		return "-(sub)";		
+		return "-";		
 	}
 }
