@@ -30,8 +30,23 @@ public class AvlTreeSetTest {
         assertEquals(0, mTestTree.size());
     }
 
-    // TODO: Add more test case methods below!
-    
-
-
+    /** Tests isEmpty() method can return correct number*/
+    @Test 
+    public void testIsEmpty(){
+    assertTrue(mTestTree.isEmpty());
+    }
+   
+    /** Tests size() method can return correct number*/
+  @Test
+  public void testSize(){
+	   mTestTree.insert(1);
+	   mTestTree.insert(2);
+	   //mTestTree.insert(1);
+	   //int i = mTestTree.size();
+	  //assertTrue(mTestTree.contains(1));
+//	   mTestTree.mRoot;
+//	   int m = mTestTree.size();
+//	   assertEquals(1, mTestTree.size());
+  }
+   
 }

@@ -28,7 +28,17 @@ public class DerivativeExpression implements Expression{
 		indepedentVar.store(indepedentVar.eval()+DELTA_X);
 		double val2 =fn.eval();
 		double result =(val2-val1)/DELTA_X;		
+		indepedentVar.store(indepedentVar.eval()-DELTA_X);
 		return result;
 	}
+	
+	@Override
+	public String toString(){
+		String result = "("+fn.toString()+")'"+"("+indepedentVar.name()+"="+indepedentVar.eval()+")"
+	                     +"="+eval();		
+		return result;
+		
+	}
+
 
 }

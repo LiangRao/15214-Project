@@ -2,7 +2,7 @@ package edu.cmu.cs.cs214.hw2.zerofinder;
 
 import edu.cmu.cs.cs214.hw2.expression.DerivativeExpression;
 import edu.cmu.cs.cs214.hw2.expression.Expression;
-import edu.cmu.cs.cs214.hw2.expression.UnaryExpresssion;
+import edu.cmu.cs.cs214.hw2.expression.UnaryExpression;
 import edu.cmu.cs.cs214.hw2.expression.VariableExpression;
 import edu.cmu.cs.cs214.hw2.operator.AbsoluteValue;
 
@@ -25,7 +25,7 @@ public class ZeroFinder {
 	public static double zero(Expression fn, VariableExpression x,
 	double approxZero, double tolerance) { 
 		x.store(approxZero);
-		Expression absoluteValue =new UnaryExpresssion(fn, new AbsoluteValue());
+		Expression absoluteValue =new UnaryExpression(fn, new AbsoluteValue());
 		double val = absoluteValue.eval();
 		while (absoluteValue.eval()>=tolerance){
 			val = absoluteValue.eval();

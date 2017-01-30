@@ -1,13 +1,10 @@
 package edu.cmu.cs.cs214.hw2.termcalc;
 
 
-
-import com.sun.javafx.fxml.expression.UnaryExpression;
-
 import edu.cmu.cs.cs214.hw2.expression.BinaryExpression;
 import edu.cmu.cs.cs214.hw2.expression.Expression;
 import edu.cmu.cs.cs214.hw2.expression.NumExpression;
-import edu.cmu.cs.cs214.hw2.expression.UnaryExpresssion;
+import edu.cmu.cs.cs214.hw2.expression.UnaryExpression;
 import edu.cmu.cs.cs214.hw2.operator.AbsoluteValue;
 import edu.cmu.cs.cs214.hw2.operator.Addition;
 import edu.cmu.cs.cs214.hw2.operator.BinaryOperator;
@@ -59,14 +56,14 @@ public class ExpressionMakerImpl implements ExpressionMaker{
 	@Override
 	public Expression negationExpression(Expression operand) {
 		UnaryOperator neg = new Negation();
-		Expression negResult = new UnaryExpresssion(operand, neg);
+		Expression negResult = new UnaryExpression(operand, neg);
 		return negResult;
 	}
 
 	@Override
 	public Expression absoluteValueExpression(Expression value) {
 		UnaryOperator absolute = new AbsoluteValue();
-		Expression absoluteResult = new UnaryExpresssion(value, absolute);
+		Expression absoluteResult = new UnaryExpression(value, absolute);
 		return absoluteResult;
 	}
 

@@ -33,7 +33,7 @@ public class AvlTreeSet {
      * @param value The integer to insert.
      */
     public void insert(int value) {
-        mRoot = mRoot.insert(value);
+       mRoot = mRoot.insert(value);
     }
 
     /**
@@ -146,7 +146,7 @@ public class AvlTreeSet {
             mLeft = left;
             mRight = right;
             mHeight = Math.max(left.getHeight(), right.getHeight()) + 1;
-            mSize = left.size() + right.size();
+            mSize = left.size() + right.size() + 1;
         }
 
         public int size() {
@@ -174,7 +174,8 @@ public class AvlTreeSet {
         }
 
         public Node insert(int value) {
-            if (isEmpty()) {
+           if (isEmpty()) {
+        	    System.out.println("empty");
                 return new Node(value, this, this);
             }
 
