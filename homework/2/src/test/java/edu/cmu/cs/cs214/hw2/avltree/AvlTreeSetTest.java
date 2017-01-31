@@ -36,28 +36,108 @@ public class AvlTreeSetTest {
     assertTrue(mTestTree.isEmpty());
     }
    
-    /** Tests size() method can return correct number*/
+    /** Tests size(),insert(int value) and Contains(int value) method can return correct number*/
   @Test
-  public void test(){
+  public void testInsertContainsSize(){
 	   mTestTree.insert(1);
 	   mTestTree.insert(0);
 	   mTestTree.insert(2);
-	 //  mTestTree.insert(1);
-	 //  mTestTree.insert(0);
-     assertEquals(3, mTestTree.size());
-	  assertTrue(mTestTree.contains(1));
-	 assertTrue(mTestTree.contains(1));
-	  assertTrue(mTestTree.contains(0));
-	  assertTrue(mTestTree.contains(2));
-
-	  assertFalse(mTestTree.contains(3));
-
-
-	  
-//	   mTestTree.mRoot;
-//	   int m = mTestTree.size();
-//	   assertEquals(1, mTestTree.size());
+	   mTestTree.insert(3);
+	   mTestTree.insert(3);
+       assertEquals(4, mTestTree.size());
+	   assertTrue(mTestTree.contains(1));
+	   assertTrue(mTestTree.contains(3));
+	   assertTrue(mTestTree.contains(0));
+	   assertTrue(mTestTree.contains(2));
+	   assertFalse(mTestTree.contains(600)); 
   }
   
+  /** Tests part of remove(int value) method can return a exception*/ 
+  @Test(expected = IllegalStateException.class)
+  public void testRemove(){
+	  mTestTree.remove(1);
+  }
+  
+  /** Tests part of remove(int value) method can return correct number*/ 
+  @Test
+  public void testRemove2(){
+	  mTestTree.insert(30);
+	  mTestTree.insert(10);
+	  mTestTree.remove(30);
+	  assertFalse(mTestTree.contains(30));
+	  
+	  mTestTree.insert(40);
+	  mTestTree.remove(40);
+	  assertFalse(mTestTree.contains(40));
+	  
+	  mTestTree.insert(20);
+	  mTestTree.insert(40);
+	  mTestTree.remove(20);
+	  mTestTree.remove(40);
+	  assertFalse(mTestTree.contains(20));
+	  assertFalse(mTestTree.contains(40));
+
+	  mTestTree.insert(20);
+	  mTestTree.insert(35);
+	  mTestTree.insert(40);
+	  mTestTree.remove(40);
+	  assertFalse(mTestTree.contains(40));
+
+	  mTestTree.remove(10);
+	  assertFalse(mTestTree.contains(10));
+ 
+  }
+  
+  /** Tests part of Balance() method can return correct number*/
+  @Test
+  public void testBalance(){
+	   mTestTree.insert(20);
+	   mTestTree.insert(15);
+	   mTestTree.insert(30);
+	   mTestTree.insert(10);
+	   mTestTree.insert(5);
+	   
+	   assertEquals(2, mTestTree.getHeight());
+	   mTestTree.insert(35);
+	   mTestTree.insert(40);
+	   assertEquals(2, mTestTree.getHeight());
+	   
+	   mTestTree.insert(45);
+	   mTestTree.insert(42);
+	   
+	   assertEquals(3, mTestTree.getHeight());
+	   
+	   mTestTree.insert(4);
+	   mTestTree.insert(3);
+	   assertEquals(3, mTestTree.getHeight());
+	   
+  }
+  
+  @Test
+  public void testMaxMinHeight(){
+	  assertEquals(-1, mTestTree.getHeight());
+	  mTestTree.insert(10);
+	  mTestTree.insert(3);
+	  mTestTree.insert(4);
+	  mTestTree.insert(5);
+	  assertEquals(10, mTestTree.getMax());
+	  assertEquals(3, mTestTree.getMin());
+	  assertEquals(2, mTestTree.getHeight());
+	  
+	  mTestTree.insert(6);
+	  assertEquals(2, mTestTree.getHeight());
+
+
+
+  }
+  @Test(expected = IllegalStateException.class)
+  public void testMin(){
+	  mTestTree.getMin();
+  }
+  
+  @Test(expected = IllegalStateException.class)
+  public void testMax(){
+	  mTestTree.getMax();
+  }
    
 }
