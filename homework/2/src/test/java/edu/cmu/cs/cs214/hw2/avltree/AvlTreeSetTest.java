@@ -38,26 +38,26 @@ public class AvlTreeSetTest {
    
     /** Tests size() method can return correct number*/
   @Test
-  public void testSize(){
-	   mTestTree.insert(1);
-	   mTestTree.insert(2);
+  public void test(){
 	   mTestTree.insert(1);
 	   mTestTree.insert(0);
-	   int i = mTestTree.size();
+	   mTestTree.insert(2);
+	 //  mTestTree.insert(1);
+	 //  mTestTree.insert(0);
+     assertEquals(3, mTestTree.size());
 	  assertTrue(mTestTree.contains(1));
-	  assertEquals(3, mTestTree.size());
+	 assertTrue(mTestTree.contains(1));
+	  assertTrue(mTestTree.contains(0));
+	  assertTrue(mTestTree.contains(2));
+
+	  assertFalse(mTestTree.contains(3));
+
+
 	  
-	  System.out.println(mTestTree.getMax());
 //	   mTestTree.mRoot;
 //	   int m = mTestTree.size();
 //	   assertEquals(1, mTestTree.size());
   }
   
-  @Test
-  public void testGetMax(){
-	  int i = mTestTree.size();
-	  System.out.println(i);
-	  assertEquals(2, mTestTree.getMax());
-  }
    
 }
