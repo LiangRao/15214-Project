@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="edu.cmu.cs.cs214.hw2.avltree.AvlTreeSetTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2017-02-01T03:24:31" hostname="tekiMacBook-Pro.local" time="0.008">
+  <properties/>
+  <testcase name="testMax" classname="edu.cmu.cs.cs214.hw2.avltree.AvlTreeSetTest" time="0.005"/>
+  <testcase name="testMin" classname="edu.cmu.cs.cs214.hw2.avltree.AvlTreeSetTest" time="0.0"/>
+  <testcase name="testBalance" classname="edu.cmu.cs.cs214.hw2.avltree.AvlTreeSetTest" time="0.0"/>
+  <testcase name="testInsertContainsSize" classname="edu.cmu.cs.cs214.hw2.avltree.AvlTreeSetTest" time="0.0"/>
+  <testcase name="testMaxMinHeight" classname="edu.cmu.cs.cs214.hw2.avltree.AvlTreeSetTest" time="0.0"/>
+  <testcase name="testEmptyTreeSize" classname="edu.cmu.cs.cs214.hw2.avltree.AvlTreeSetTest" time="0.0"/>
+  <testcase name="testRemove2" classname="edu.cmu.cs.cs214.hw2.avltree.AvlTreeSetTest" time="0.001"/>
+  <testcase name="testIsEmpty" classname="edu.cmu.cs.cs214.hw2.avltree.AvlTreeSetTest" time="0.0"/>
+  <testcase name="testRemove" classname="edu.cmu.cs.cs214.hw2.avltree.AvlTreeSetTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

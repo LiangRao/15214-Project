@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="edu.cmu.cs.cs214.hw2.termcalc.ExpressionMakerImplTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2017-02-01T03:24:31" hostname="tekiMacBook-Pro.local" time="0.004">
+  <properties/>
+  <testcase name="testSumExpression" classname="edu.cmu.cs.cs214.hw2.termcalc.ExpressionMakerImplTest" time="0.0"/>
+  <testcase name="testAbsoluteValueExpression" classname="edu.cmu.cs.cs214.hw2.termcalc.ExpressionMakerImplTest" time="0.0"/>
+  <testcase name="testnumberExpression" classname="edu.cmu.cs.cs214.hw2.termcalc.ExpressionMakerImplTest" time="0.0"/>
+  <testcase name="testProductExpression" classname="edu.cmu.cs.cs214.hw2.termcalc.ExpressionMakerImplTest" time="0.0"/>
+  <testcase name="testDivisionExpression" classname="edu.cmu.cs.cs214.hw2.termcalc.ExpressionMakerImplTest" time="0.0"/>
+  <testcase name="testNegationExpression" classname="edu.cmu.cs.cs214.hw2.termcalc.ExpressionMakerImplTest" time="0.001"/>
+  <testcase name="testExponentiationExpression" classname="edu.cmu.cs.cs214.hw2.termcalc.ExpressionMakerImplTest" time="0.0"/>
+  <testcase name="testDifferenceExpression" classname="edu.cmu.cs.cs214.hw2.termcalc.ExpressionMakerImplTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
