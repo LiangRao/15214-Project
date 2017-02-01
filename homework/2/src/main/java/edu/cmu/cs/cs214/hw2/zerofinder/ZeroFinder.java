@@ -10,7 +10,6 @@ import edu.cmu.cs.cs214.hw2.operator.AbsoluteValue;
  * Finds zeros of arbitrary functions using Newton's method.
  */
 public class ZeroFinder {
-    // TODO: Write the zero method
 	
 	/**
 	* Returns a zero of the specified function using Newton's method with

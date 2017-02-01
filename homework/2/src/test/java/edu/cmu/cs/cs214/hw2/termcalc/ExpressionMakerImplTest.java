@@ -1,6 +1,7 @@
 package edu.cmu.cs.cs214.hw2.termcalc;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+
 
 import org.junit.After;
 import org.junit.Before;
@@ -14,25 +15,44 @@ import edu.cmu.cs.cs214.hw2.operator.AbsoluteValue;
 import edu.cmu.cs.cs214.hw2.operator.Multiplication;
 import edu.cmu.cs.cs214.hw2.operator.Subtraction;
 
+/**
+ * Test for ExpressionMakerImpl
+ * @author raoliang
+ *
+ */
 public class ExpressionMakerImplTest {
 	private ExpressionMakerImpl expressionMakerImpl;
 
+	/**
+	 * Called before each test case method
+	 * @throws Exception throw a exception if the method failed
+	 */
 	@Before
 	public void setUp() throws Exception {
 		expressionMakerImpl = new ExpressionMakerImpl();
 	}
 
+	/**
+     * Called after each test case method.
+     * @throws Exception  throw Exception when the method fail
+     */
 	@After
 	public void tearDown() throws Exception {
 	}
 
+	/**
+	 * Test the sumExpression() method
+	 */
 	@Test
 	public void testSumExpression() {
 		Expression addend1 = new NumExpression(1.24);
 	    Expression addend2 = new BinaryExpression(new NumExpression(123.4), new NumExpression(324.2), new Multiplication());		
 		assertEquals(40007.52, expressionMakerImpl.sumExpression(addend1, addend2).eval(),0);
 	}
-	
+
+	/**
+	 * Test the differenceExpression() method
+	 */
 	@Test
 	public void testDifferenceExpression() {
 		Expression op1 = new NumExpression(400.134);
@@ -40,6 +60,9 @@ public class ExpressionMakerImplTest {
 		assertEquals(-39606.146, expressionMakerImpl.differenceExpression(op1, op2).eval(),0);
 	}
 	
+	/**
+	 * Test the productExpression() method
+	 */
 	@Test
 	public void testProductExpression(){
 		Expression factor1 = new BinaryExpression(new NumExpression(200.12), new NumExpression(5.1), new Subtraction());
@@ -48,6 +71,9 @@ public class ExpressionMakerImplTest {
 		assertEquals(5382.552, expressionMakerImpl.productExpression(factor1, factor2).eval(), 0);
 	}
 	
+	/**
+	 * Test the divisionExpression() method
+	 */
 	@Test
 	public void testDivisionExpression(){
 		Expression divisor = new NumExpression(3);
@@ -55,6 +81,9 @@ public class ExpressionMakerImplTest {
 	    assertEquals(143.767,expressionMakerImpl.divisionExpression(dividend, divisor).eval(), 0.001);		
 	}
 	
+	/**
+	 * Test the exponentiationExpression() method
+	 */
 	@Test
 	public void testExponentiationExpression(){
 		Expression base = new NumExpression(14.1);
@@ -62,18 +91,27 @@ public class ExpressionMakerImplTest {
 		assertEquals(2803.221, expressionMakerImpl.exponentiationExpression(base, exponent).eval(),0);
 	}
 	
+	/**
+	 * Test the negationExpression() method
+	 */
 	@Test
 	public void testNegationExpression(){
 		Expression operand = new NumExpression(543.43);
 		assertEquals(-543.43, expressionMakerImpl.negationExpression(operand).eval(), 0);
 	}
 	
+	/**
+	 * Test the absoluteExpression() method
+	 */
 	@Test
 	public void testAbsoluteValueExpression(){
 		Expression value = new NumExpression(-4.3321);
 		assertEquals(4.3321, expressionMakerImpl.absoluteValueExpression(value).eval(), 0);
 	}
 
+	/**
+	 * Test the numberExpression() method
+	 */
 	@Test
 	public void testnumberExpression(){
 		assertEquals(4.22133, expressionMakerImpl.numberExpression(4.22133).eval(), 0);

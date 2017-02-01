@@ -23,19 +23,16 @@ public class VariableExpression implements Expression {
      * other variables in the same expression.
      */
     public VariableExpression(String name) {
-        // TODO: Complete this method.
     	this.name = name;
     }
 
     @Override
     public double eval() {
-        // TODO: Complete this method    	
         return val;
     }
 
     @Override
     public String toString() { 
-        // TODO: Complete this method.
         return name;
     }
 
@@ -45,7 +42,6 @@ public class VariableExpression implements Expression {
      * @param value the new value of this variable
      */
     public void store(double value) {
-        // TODO: Complete this method.
     	val = value;
     }
 

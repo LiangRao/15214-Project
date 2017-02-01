@@ -15,6 +15,11 @@ import edu.cmu.cs.cs214.hw2.operator.Negation;
 import edu.cmu.cs.cs214.hw2.operator.Subtraction;
 import edu.cmu.cs.cs214.hw2.operator.UnaryOperator;
 
+/**
+ * implement the ExpressionMaker interface
+ * @author raoliang
+ *
+ */
 public class ExpressionMakerImpl implements ExpressionMaker{
 
 	@Override

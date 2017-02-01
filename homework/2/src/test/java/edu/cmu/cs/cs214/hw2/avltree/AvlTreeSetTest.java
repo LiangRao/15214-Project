@@ -1,22 +1,35 @@
 package edu.cmu.cs.cs214.hw2.avltree;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Test for the AvlTree
+ * @author raoliang
+ *
+ */
 public class AvlTreeSetTest {
     private AvlTreeSet mTestTree;
-
-    /** Called before each test case method. */
+    
+    /**
+     * Called before each test case method
+     * @throws Exception 
+     */
     @Before
     public void setUp() throws Exception {
         // Start each test case method with a brand new AvlTreeSet object.
         mTestTree = new AvlTreeSet();
     }
-
-    /** Called after each test case method. */
+    
+    /**
+     * Called after each test case method.
+     * @throws Exception  throw Exception when the method fail
+     */
     @After
     public void tearDown() throws Exception {
         // Don't need to do anything here.

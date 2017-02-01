@@ -14,6 +14,11 @@ public class TerminalCalculator {
         parser = new ExpressionParser(maker);
     }
 
+    /**
+     * parser a expression
+     * @param expression the input expression from command line
+     * @return a expression
+     */
     public Expression run(String expression) {
         return parser.eval(expression);
     }

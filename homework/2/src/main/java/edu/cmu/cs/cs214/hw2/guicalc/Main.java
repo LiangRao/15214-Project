@@ -22,12 +22,10 @@ public class Main {
 	 * @param args : do not take in any arguments from the command line
 	 */
     public static void main(String[] args) {
-        // TODO: Replace null with your own unary operators. Use a Linked HashSet so operators are displayed in order.
         Set<UnaryOperator> unaryOperators = new HashSet<UnaryOperator>();
         unaryOperators.add(new Negation());
         unaryOperators.add(new AbsoluteValue());
 
-        // TODO: Replace null with your own binary operators. Use a Linked HashSet so operators are displayed in order
         Set<BinaryOperator> binaryOperators = new HashSet<BinaryOperator>();
         binaryOperators.add(new Addition());
         binaryOperators.add(new Division());
