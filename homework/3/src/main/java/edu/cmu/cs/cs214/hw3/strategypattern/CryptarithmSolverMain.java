@@ -11,6 +11,7 @@ public class CryptarithmSolverMain {
 	public static void main(String[] args) {
 		SubsetGenerator subset = new SubsetGenerator();
 		CryptarithmExpression expression = new CryptarithmExpression(args);
+		String[] strings = expression.getCrypExpr();
 		CryptarithmSolver solver = new CryptarithmSolver(expression);
 		int n = expression.getLetters().size();
 		List<Integer[]> subsetList = subset.subset(n);

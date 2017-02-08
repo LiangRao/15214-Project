@@ -33,18 +33,17 @@ public class AnagramSolver implements ProblemSolver<String> {
 				temp.append(array[i]);
 			}
 			String cmp = temp.toString();
-
 			String encoding = "UTF-8";
 			File file = new File(filePath);
-			if (file.isFile() && file.exists()) { // 判断文件是否存在
-				InputStreamReader read = new InputStreamReader(new FileInputStream(file), encoding);// 考虑到编码格式
+			if (file.isFile() && file.exists()) { // determine that the file
+													// exist or not
+				InputStreamReader read = new InputStreamReader(new FileInputStream(file), encoding);
 				BufferedReader bufferedReader = new BufferedReader(read);
 				String lineTxt = null;
 				while ((lineTxt = bufferedReader.readLine()) != null) {
 					if (lineTxt.equals(cmp)) {
 						if (!result.contains(lineTxt)) {
 							result.add(lineTxt);
-							// System.out.println(lineTxt);
 						}
 
 					}

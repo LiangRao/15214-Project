@@ -52,26 +52,4 @@ public class CryptarithmSolver implements ProblemSolver<Integer> {
 		}
 
 	}
-
-	// private void variableEval(VariableExpression var, Map<String, Integer>
-	// map) {
-	// String name = var.name();
-	// String[] letters = name.split("");
-	// double value = 0.0;
-	// for (int i = 0, len = letters.length; i < len; i++) {
-	// value += map.get(letters[i]) * Math.pow(10, letters.length - i);
-	// }
-	// var.store(value);
-	//
-	// }
 }
-
-// map.put("S", 9);
-// map.put("E", 5);
-// map.put("N", 6);
-// map.put("D", 7);
-// map.put("M", 1);
-// map.put("O", 0);
-// map.put("R", 8);
-// map.put("Y", 2);
-// System.out.println("error" + map);

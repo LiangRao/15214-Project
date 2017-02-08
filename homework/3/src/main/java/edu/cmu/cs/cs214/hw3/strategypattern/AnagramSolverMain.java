@@ -1,6 +1,8 @@
 package edu.cmu.cs.cs214.hw3.strategypattern;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class AnagramSolverMain {
 
@@ -15,8 +17,10 @@ public class AnagramSolverMain {
 			if (ana.getResult().size() == 0) {
 				System.out.println(args[i] + ": no solution!");
 			} else {
-				List<String> resultList = ana.getResult();
-				System.out.println(args[i] + ": ");
+				List<String> result = new ArrayList<String>();
+				Set<String> resultSet = ana.getResult();
+				result.addAll(resultSet);
+				System.out.println(args[i] + ": " + result);
 			}
 
 		}

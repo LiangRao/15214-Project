@@ -50,7 +50,6 @@ public class CryptarithmExpression {
 	 * @param crypExpr
 	 */
 	public CryptarithmExpression(String[] crypExpr) {
-		Set<String> lettersSet = new HashSet<String>();
 		Set<String> firstLetter = new HashSet<String>();
 		int equaCount = 0;
 		// check if the cryptarithms is valid
@@ -60,7 +59,11 @@ public class CryptarithmExpression {
 			String[] lettersTemp = temp.split("");
 			firstLetter.add(lettersTemp[0]);
 			for (int j = 0, len2 = lettersTemp.length; j < len2; j++) {
-				lettersSet.add(lettersTemp[j]);
+				String key = lettersTemp[j];
+				if (!letters.containsKey(key)) {
+					lettersList.add(key);
+					letters.put(key, new VariableExpression(key));
+				}
 			}
 			for (int j = 0, len3 = chs.length; j < len3; j++) {
 				if (!Character.isAlphabetic(chs[j])) {
@@ -70,7 +73,7 @@ public class CryptarithmExpression {
 
 		}
 		// check if the total number of letters is more than 10
-		if (lettersSet.size() > 10) {
+		if (lettersList.size() > 10) {
 			throw new IllegalStateException("The total letters in cryptarithms are more than 10.");
 		}
 		// check if the cryptarithms is valid
@@ -86,14 +89,14 @@ public class CryptarithmExpression {
 		if (equaCount != 1) {
 			throw new IllegalStateException("The input cryptarithms is invalid!");
 		}
-		List<String> tempList = new ArrayList<String>();
-		tempList.addAll(lettersSet);
-		for (int i = 0; i < tempList.size(); i++) {
-			String tempString = tempList.get(i);
-			lettersList.add(tempString);
-			letters.put(tempString, new VariableExpression(tempString));
-		}
-		// the assignment of crypExpr variable
+		// List<String> tempList = new ArrayList<String>();
+		// tempList.addAll(lettersSet);
+		// for (int i = 0; i < tempList.size(); i++) {
+		// String tempString = tempList.get(i);
+		// lettersList.add(tempString);
+		// letters.put(tempString, new VariableExpression(tempString));
+		// }
+		// // the assignment of crypExpr variable
 		this.firstLetters = firstLetter.toArray(new String[0]);
 		this.crypExpr = crypExpr;
 
