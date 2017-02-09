@@ -15,9 +15,7 @@ a. It is very useful for code reuse. All the algorithm can share the totally sam
 b. This pattern is flexibility. Lets the subclass decide how to implement in an algorithm
   Disadvantages:
 a. Cause the abstract class designs to implement the most general method, and other methods are abstract methods leaving to subclass to implement. The result of subclass implementation can have influence on super class, which make it difficult for template pattern  to maintain.
-b. The subclass inherits the superclass, so subclass can override the method  and reach the protected fields in superclass, which is bad for information hiding.
-
-
+b. The subclass inherits the superclass, so subclass can override the method  and reach the protected fields in superclass, which is bad for information hiding.That is why most industrial programmers will avoid this kind of pattern.
 3.Iterator Pattern:
   Advantages:
 a. It allows to reach the elements of any instance without exposing its details and representation, which support to iterator different traversal strategies.
