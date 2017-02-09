@@ -12,18 +12,40 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Test for the HeapGenerator of iterator pattern
+ * 
+ * @author raoliang
+ *
+ */
 public class HeapGeneratorTest {
 	private HeapGenerator<Integer> heapGenerator;
 
+	/**
+	 * Called before each test case method
+	 * 
+	 * @throws Exception
+	 *             the exception when method is fail
+	 */
 	@Before
 	public void setUp() throws Exception {
 		heapGenerator = new HeapGenerator<Integer>();
 	}
 
+	/**
+	 * Called after each test case method.
+	 * 
+	 * @throws Exception
+	 *             throw Exception when the method fail
+	 */
 	@After
 	public void tearDown() throws Exception {
 	}
 
+	/**
+	 * Testing the Heap's algorithm permutation generator can generate the
+	 * correct permutations
+	 */
 	@Test
 	public void test() {
 		Integer[] test = {};

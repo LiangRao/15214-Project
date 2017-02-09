@@ -5,6 +5,14 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * The class is to generate all permutations with Heap's algorithm
+ * 
+ * @author raoliang
+ *
+ * @param <T>
+ *            The type of data needed to be permutated
+ */
 public class HeapGenerator<T> implements PermutationGenerator<T> {
 	private List<T[]> resultList = new ArrayList<T[]>();
 
@@ -36,6 +44,13 @@ public class HeapGenerator<T> implements PermutationGenerator<T> {
 		return new HeapIterator();
 	}
 
+	/**
+	 * Overide the method in Iterator<T> interface, in order to traverse all
+	 * permutations
+	 * 
+	 * @author raoliang
+	 *
+	 */
 	private class HeapIterator implements Iterator<T[]> {
 		private int count = 0;
 

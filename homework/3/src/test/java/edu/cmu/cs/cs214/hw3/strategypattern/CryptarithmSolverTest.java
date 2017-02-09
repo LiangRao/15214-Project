@@ -9,9 +9,21 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Test for the CryptarithmSolver class
+ * 
+ * @author raoliang
+ *
+ */
 public class CryptarithmSolverTest {
-	CryptarithmSolver crypSolver;
+	private CryptarithmSolver crypSolver;
 
+	/**
+	 * Called before each test case method
+	 * 
+	 * @throws Exception
+	 *             the exception when method is fail
+	 */
 	@Before
 	public void setUp() throws Exception {
 		String[] crypExpr = { "SEND", "+", "MORE", "=", "MONEY" };
@@ -19,10 +31,20 @@ public class CryptarithmSolverTest {
 		crypSolver = new CryptarithmSolver(crypExpression);
 	}
 
+	/**
+	 * Called after each test case method.
+	 * 
+	 * @throws Exception
+	 *             throw Exception when the method fail
+	 */
 	@After
 	public void tearDown() throws Exception {
 	}
 
+	/**
+	 * Testing the method in CryptarithmSolver can solve the Cryptarithm problem
+	 * successful
+	 */
 	@Test
 	public void test() {
 		Integer[] array = { 9, 5, 6, 7, 1, 0, 8, 2 };

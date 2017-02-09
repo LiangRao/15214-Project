@@ -10,10 +10,22 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Test for HeapGenerator in strategy pattern
+ * 
+ * @author raoliang
+ *
+ */
 public class HeapGeneratorTest {
 	private HeapGenerator<String> heapGenerator;
-	AnagramSolver solver;
+	private AnagramSolver solver;
 
+	/**
+	 * Called before each test case method
+	 * 
+	 * @throws Exception
+	 *             the exception when method is fail
+	 */
 	@Before
 	public void setUp() throws Exception {
 		String filePath = "src/main/resources/words.txt";
@@ -21,10 +33,19 @@ public class HeapGeneratorTest {
 		heapGenerator = new HeapGenerator<>(solver);
 	}
 
+	/**
+	 * Called after each test case method.
+	 * 
+	 * @throws Exception
+	 *             throw Exception when the method fail
+	 */
 	@After
 	public void tearDown() throws Exception {
 	}
 
+	/**
+	 * Testing the permutation generator can generate correct permutations
+	 */
 	@Test
 	public void test() {
 		String[] strings = { "w", "o", "l", "d", "r" };

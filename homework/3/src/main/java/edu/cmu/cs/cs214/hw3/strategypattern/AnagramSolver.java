@@ -7,10 +7,22 @@ import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * A class to solver Anagrams problem
+ * 
+ * @author raoliang
+ *
+ */
 public class AnagramSolver implements ProblemSolver<String> {
 	private String filePath;
 	private Set<String> result;
 
+	/**
+	 * Constructor of class
+	 * 
+	 * @param filePath
+	 *            the url of dictionary
+	 */
 	public AnagramSolver(String filePath) {
 		this.filePath = filePath;
 		result = new HashSet<String>();

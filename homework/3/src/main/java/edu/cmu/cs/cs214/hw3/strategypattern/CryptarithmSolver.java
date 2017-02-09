@@ -9,16 +9,33 @@ import java.util.Set;
 import edu.cmu.cs.cs214.hw2.expression.Expression;
 import edu.cmu.cs.cs214.hw2.expression.VariableExpression;
 
+/**
+ * A class to solve Cryptarithm problem
+ * 
+ * @author raoliang
+ *
+ */
 public class CryptarithmSolver implements ProblemSolver<Integer> {
 	private CryptarithmExpression crypExpr;
 	private Expression leftExp;
 	private Expression rightExp;
 	private Set<Map<String, Integer>> resultSet = new HashSet<>();
 
+	/**
+	 * Return the result of Cryptarithm problem
+	 * 
+	 * @return the result of Cryptarithm problem
+	 */
 	public Set<Map<String, Integer>> getResultSet() {
 		return resultSet;
 	}
 
+	/**
+	 * A constructor
+	 * 
+	 * @param crypExpr
+	 *            the expression of Cryptarithm
+	 */
 	public CryptarithmSolver(CryptarithmExpression crypExpr) {
 		this.crypExpr = crypExpr;
 		this.leftExp = crypExpr.leftExpression();

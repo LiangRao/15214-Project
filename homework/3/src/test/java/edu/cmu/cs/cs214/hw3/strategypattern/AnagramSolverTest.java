@@ -9,19 +9,40 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Test for the AnagramSolver class
+ * 
+ * @author raoliang
+ *
+ */
 public class AnagramSolverTest {
 	private AnagramSolver anagramSolver;
 
+	/**
+	 * Called before each test case method
+	 * 
+	 * @throws Exception
+	 *             the exception when method is fail
+	 */
 	@Before
 	public void setUp() throws Exception {
 		String filePath = "src/main/resources/words.txt";
 		anagramSolver = new AnagramSolver(filePath);
 	}
 
+	/**
+	 * Called after each test case method.
+	 * 
+	 * @throws Exception
+	 *             throw Exception when the method fail
+	 */
 	@After
 	public void tearDown() throws Exception {
 	}
 
+	/**
+	 * Test the AnagramSolver can solve the current problem
+	 */
 	@Test
 	public void test() {
 		String[] array = { "a", "l", "e", "p", "p" };

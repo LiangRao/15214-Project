@@ -1,0 +1,26 @@
+1.Strategy Pattern:  
+    Advantages: 
+a. This pattern is very useful for change. It is the encapsulation of method into a class and with this pattern, we can change the algorithm complying to the same interface being used without having to change the client’s code. It is very extensible.
+b. Because of the encapsulated data structure, the algorithm implementation can be changed without attacking to context class.
+c. With the Strategy interface, client can uses only interface methods and the fields is not accessible from client code, which is good for information hiding.
+   Disadvantages:
+a. It is not very applicable for code reuse. If two algorithms complying with the same interface have two totally same method implementation, they have to duplicate the code from one another. 
+b. Because context and Strategy class communicate with each other through interface, the interface must declare all context required behaviors. However, some behaviors may not need to implement by a specific Strategy base class.
+C.The client must be aware of all strategies and select the right one for the right situations, which seems to be inconvenient for client.
+
+
+2.Template Pattern:
+   Advantages:
+a. It is very useful for code reuse. All the algorithm can share the totally same method code in the super class(abstract class).
+b. This pattern is flexibility. Lets the subclass decide how to implement in an algorithm
+  Disadvantages:
+a. Cause the abstract class designs to implement the most general method, and other methods are abstract methods leaving to subclass to implement. The result of subclass implementation can have influence on super class, which make it difficult for template pattern  to maintain.
+b. The subclass inherits the superclass, so subclass can override the method  and reach the protected fields in superclass, which is bad for information hiding.
+
+
+3.Iterator Pattern:
+  Advantages:
+a. It allows to reach the elements of any instance without exposing its details and representation, which support to iterator different traversal strategies.
+b. It make it possible to modify the collection implements without changing anything outside the collection. 
+Disadvantages:
+a. Iterator pattern can only be used for some specific collection classes, and it is inevitable to make the code complicated.

@@ -17,20 +17,45 @@ import edu.cmu.cs.cs214.hw2.operator.BinaryOperator;
 import edu.cmu.cs.cs214.hw2.operator.Multiplication;
 import edu.cmu.cs.cs214.hw2.operator.Subtraction;
 
+/**
+ * A class to represent a Cryptarithm Expression
+ * 
+ * @author raoliang
+ *
+ */
 public class CryptarithmExpression {
 	private String[] crypExpr;
 	private String[] firstLetters;
 	private Map<String, VariableExpression> letters = new HashMap<String, VariableExpression>();
 	private List<String> lettersList = new ArrayList<String>();
 
+	/**
+	 * Return a List containing all letters in the Cryptarithm Expression
+	 * without repeat
+	 * 
+	 * @return List contains all letters in the Cryptarithm Expression without
+	 *         repeat
+	 */
 	public List<String> getLettersList() {
 		return lettersList;
 	}
 
+	/**
+	 * Return a map whose keys are the letters in Cryptarithm Expression and
+	 * values are the VariableExpression of these letters
+	 * 
+	 * @return a map whose keys are the letters in Cryptarithm Expression and
+	 *         values are the VariableExpression of these letters
+	 */
 	public Map<String, VariableExpression> getLetters() {
 		return letters;
 	}
 
+	/**
+	 * Return all the first letters of a Cryptarithm Expression's operands
+	 * 
+	 * @return the first letters of a Cryptarithm Expression's operands
+	 */
 	public String[] getFirstLetters() {
 		return firstLetters;
 	}
@@ -48,6 +73,7 @@ public class CryptarithmExpression {
 	 * Constructor set a String[] for Cryptarithm Expression
 	 * 
 	 * @param crypExpr
+	 *            the string array of Cryptarithm Expression
 	 */
 	public CryptarithmExpression(String[] crypExpr) {
 		Set<String> firstLetter = new HashSet<String>();
@@ -89,14 +115,6 @@ public class CryptarithmExpression {
 		if (equaCount != 1) {
 			throw new IllegalStateException("The input cryptarithms is invalid!");
 		}
-		// List<String> tempList = new ArrayList<String>();
-		// tempList.addAll(lettersSet);
-		// for (int i = 0; i < tempList.size(); i++) {
-		// String tempString = tempList.get(i);
-		// lettersList.add(tempString);
-		// letters.put(tempString, new VariableExpression(tempString));
-		// }
-		// // the assignment of crypExpr variable
 		this.firstLetters = firstLetter.toArray(new String[0]);
 		this.crypExpr = crypExpr;
 
@@ -117,10 +135,10 @@ public class CryptarithmExpression {
 			}
 		}
 		BinaryOperator binaryOperator;
-		Expression var = VarExprEval(leftExpr.get(0));
+		Expression var = varExprEval(leftExpr.get(0));
 		Expression exp = var;
 		for (int i = 1, len = leftExpr.size(); i < len; i += 2) {
-			Expression varTemp = VarExprEval(leftExpr.get(i + 1));
+			Expression varTemp = varExprEval(leftExpr.get(i + 1));
 			Expression num2 = varTemp;
 			String tempString = leftExpr.get(i);
 			if (tempString.equals("+")) {
@@ -138,7 +156,7 @@ public class CryptarithmExpression {
 	}
 
 	/**
-	 * Expression for right part
+	 * Return expression for right part
 	 * 
 	 * @return Expression for left part
 	 */
@@ -152,10 +170,10 @@ public class CryptarithmExpression {
 			}
 		}
 		BinaryOperator binaryOperator;
-		Expression var = VarExprEval(rightExpr.get(0));
+		Expression var = varExprEval(rightExpr.get(0));
 		Expression exp = var;
 		for (int i = 1, len = rightExpr.size(); i < len; i += 2) {
-			Expression varTemp = VarExprEval(rightExpr.get(i + 1));
+			Expression varTemp = varExprEval(rightExpr.get(i + 1));
 			Expression num2 = varTemp;
 			String tempString = rightExpr.get(i);
 			if (tempString.equals("+")) {
@@ -170,7 +188,17 @@ public class CryptarithmExpression {
 		return exp;
 	}
 
-	private Expression VarExprEval(String var) {
+	/**
+	 * Return the Expression representation of the Cryptarithm Expression's
+	 * operands
+	 * 
+	 * @param var
+	 *            the string representation of a specific Cryptarithm
+	 *            Expression's
+	 * @return the Expression representation of the Cryptarithm Expression's
+	 *         operands
+	 */
+	private Expression varExprEval(String var) {
 		String[] temp = var.split("");
 		int len = temp.length;
 		VariableExpression var1 = letters.get(temp[0]);
@@ -188,8 +216,10 @@ public class CryptarithmExpression {
 	/**
 	 * return true if the two Cryptarithm Expression is equal, or return false;
 	 * 
+	 * @param expre
+	 *            the other Cryptarithm Expression
 	 * @return return true if the two Cryptarithm Expression is equal, or return
-	 *         false;
+	 *         false
 	 */
 	public boolean equal(CryptarithmExpression expre) {
 		Arrays.sort(expre.getCrypExpr());

@@ -6,8 +6,19 @@ import java.util.Map;
 
 import edu.cmu.cs.cs214.hw3.subset.SubsetGenerator;
 
+/**
+ * The main class to solve Cryptarithm problem
+ * 
+ * @author raoliang
+ *
+ */
 public class CryptarithmSolverMain {
-
+	/**
+	 * The main class to solve Cryptarithm problem
+	 * 
+	 * @param args
+	 *            the Cryptarithm Expression needs to be solved
+	 */
 	public static void main(String[] args) {
 		SubsetGenerator subset = new SubsetGenerator();
 		CryptarithmExpression expression = new CryptarithmExpression(args);

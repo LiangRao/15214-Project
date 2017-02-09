@@ -3,6 +3,12 @@ package edu.cmu.cs.cs214.hw3.subset;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A class can generate all subsets of a specific array
+ * 
+ * @author raoliang
+ *
+ */
 public class SubsetGenerator {
 	/**
 	 * return all subset of digits array
@@ -79,6 +85,17 @@ public class SubsetGenerator {
 		return resultList;
 	}
 
+	/**
+	 * Get a specific subset of a array with a mask
+	 * 
+	 * @param temp
+	 *            the mask for a array
+	 * @param array
+	 *            the array needs to generate subset
+	 * @param m
+	 *            the size of the subset
+	 * @return
+	 */
 	private Integer[] getSubset(Integer[] temp, Integer[] array, int m) {
 		Integer[] result = new Integer[m];
 		int pos = 0;
