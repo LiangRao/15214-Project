@@ -10,7 +10,6 @@ public class Square {
 	private Tile tile;
 	private Timer timer;
 	private SpecialTile specialTile;
-	private SpecialTile lastSpecialTile;
 
 	public Square(int x, int y) {
 		this.x = x;
@@ -18,7 +17,6 @@ public class Square {
 		timer = new GeneralTimer();
 		tile = null;
 		specialTile = null;
-		lastSpecialTile = null;
 	}
 
 	public int getX() {
@@ -61,14 +59,6 @@ public class Square {
 		this.specialTile = specialTile;
 	}
 
-	public SpecialTile getLastSpecialTile() {
-		return lastSpecialTile;
-	}
-
-	public void setLastSpecialTile(SpecialTile lastSpecialTile) {
-		this.lastSpecialTile = lastSpecialTile;
-	}
-
 	public boolean isOccuppied() {
 		return tile != null;
 	}
@@ -94,13 +84,11 @@ public class Square {
 
 	}
 
-	public void removeLastSpecialTile() {
-		if (lastSpecialTile != null) {
-			lastSpecialTile = null;
-		}
+	public boolean hasTile() {
+		return tile != null;
 	}
 
-	public void restoreLastSpecialTile() {
+	public void restoreLastSpecialTile(SpecialTile lastSpecialTile) {
 		this.specialTile = lastSpecialTile;
 	}
 
@@ -108,5 +96,4 @@ public class Square {
 		timer.changeWordValue(word, tile);
 
 	}
-
 }

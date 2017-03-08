@@ -1,5 +1,6 @@
 package edu.cmu.cs.cs214.hw4.core;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.cmu.cs.cs214.hw4.core.specialTile.SpecialTile;
@@ -10,14 +11,20 @@ public class Player {
 	private List<Tile> tileList;
 	private List<SpecialTile> specialTiles;
 	private Boolean nextTurnFlag;
-	private List<Tile> LastRandomTile;
-	private List<Word> LastWords;
+	private List<Tile> lastRandomTile;
+	private List<Word> lastWords;
 	private int lastScore;
+	private Move lastMove;
 
 	public Player(String name) {
 		this.name = name;
 		nextTurnFlag = true;
 		score = 0;
+		tileList = new ArrayList<>();
+		specialTiles = new ArrayList<>();
+		lastRandomTile = new ArrayList<>();
+		lastWords = new ArrayList<>();
+		lastScore = 0;
 	}
 
 	public Boolean getNextTurnFlag() {
@@ -45,27 +52,31 @@ public class Player {
 	}
 
 	public List<Tile> getLastRandomTile() {
-		return LastRandomTile;
+		return lastRandomTile;
+	}
+
+	public void setLastRandomTile(List<Tile> lastRandomTile) {
+		this.lastRandomTile = lastRandomTile;
 	}
 
 	public List<Word> getLastWords() {
-		return LastWords;
+		return lastWords;
 	}
 
 	public int getLastScore() {
 		return lastScore;
 	}
 
+	public void setLastScore(int lastScore) {
+		this.lastScore = lastScore;
+	}
+
 	public void addTile(List<Tile> tiles) {
 		tileList.addAll(tiles);
 	}
 
-	public void addLastRandomTile(List<Tile> tiles) {
-		tileList.addAll(tiles);
-	}
-
-	public void clearLastRandomTile() {
-		LastRandomTile.clear();
+	public void removeTile(List<Tile> tiles) {
+		tiles.removeAll(tiles);
 	}
 
 	public void addScore(int scoreTmp) {
@@ -76,7 +87,32 @@ public class Player {
 		score -= scoreTmp;
 	}
 
-	public static void main(String[] args) {
-		System.out.println(1);
+	public void setLastWords(List<Word> lastWords) {
+		this.lastWords = lastWords;
 	}
+
+	public Move getLastMove() {
+		return lastMove;
+	}
+
+	public void setLastMove(Move lastMove) {
+		this.lastMove = lastMove;
+	}
+
+	public static void main(String[] args) {
+		List<Integer> list = new ArrayList<>();
+		List<Integer> list1 = new ArrayList<>();
+		List<Integer> list2 = new ArrayList<>();
+
+		list1.add(1);
+		list1.add(2);
+		list2.add(1);
+		list2.add(2);
+		list2.add(3);
+		list = list1;
+		System.out.println(list.toString());
+		list = list2;
+		System.out.println(list.toString());
+	}
+
 }

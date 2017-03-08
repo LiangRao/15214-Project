@@ -1,10 +1,12 @@
 package edu.cmu.cs.cs214.hw4.core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import edu.cmu.cs.cs214.hw4.core.specialTile.SpecialTile;
 import edu.cmu.cs.cs214.hw4.core.timer.DoubleLetterTimer;
 import edu.cmu.cs.cs214.hw4.core.timer.DoubleWordTimer;
 import edu.cmu.cs.cs214.hw4.core.timer.TrippleLetterTimer;
@@ -116,6 +118,13 @@ public class Board {
 
 	}
 
+	/**
+	 * Check the move is valid or not
+	 * 
+	 * @param move
+	 * @param firstFlag
+	 * @return
+	 */
 	public boolean isValid(Move move, boolean firstFlag) {
 		// check the first move
 		if (firstFlag) {
@@ -151,8 +160,9 @@ public class Board {
 				return false;
 			} else {
 				while (it.hasNext()) {
-					int x = it.next().getKey().getX();
-					int y = it.next().getKey().getY();
+					Map.Entry<Square, Tile> entryTmp = it.next();
+					int x = entryTmp.getKey().getX();
+					int y = entryTmp.getKey().getY();
 					Square square1 = getSquare(x - 1, y);
 					Square square2 = getSquare(x + 1, y);
 					Square square3 = getSquare(x, y - 1);
@@ -186,15 +196,14 @@ public class Board {
 			}
 		}
 
-		if (
-
-		moveOnSameLine(move) == "col") {
+		if (moveOnSameLine(move) == "col") {
 			if (makeKeyWord(move, "col") == null) {
 				return false;
 			} else {
 				while (it.hasNext()) {
-					int x = it.next().getKey().getX();
-					int y = it.next().getKey().getY();
+					Map.Entry<Square, Tile> entryTmp = it.next();
+					int x = entryTmp.getKey().getX();
+					int y = entryTmp.getKey().getY();
 					Square square1 = getSquare(x - 1, y);
 					Square square2 = getSquare(x + 1, y);
 					Square square3 = getSquare(x, y - 1);
@@ -277,7 +286,13 @@ public class Board {
 		return colTemp;
 	}
 
-	// construct the first word
+	/**
+	 * Construct the first key word
+	 * 
+	 * @param move
+	 * @param rowColIndentify
+	 * @return
+	 */
 	public Word makeKeyWord(Move move, String rowColIndentify) {
 		Iterator<Map.Entry<Square, Tile>> it = move.getTileMap().entrySet().iterator();
 		if (rowColIndentify == "row") {
@@ -373,6 +388,13 @@ public class Board {
 
 	}
 
+	/**
+	 * Check adjacent word
+	 * 
+	 * @param move
+	 * @param rowColIndentify
+	 * @return
+	 */
 	public List<Word> makeAdjacentWord(Move move, String rowColIndentify) {
 		Iterator<Map.Entry<Square, Tile>> it = move.getTileMap().entrySet().iterator();
 		List<Word> words = new ArrayList<Word>();
@@ -424,10 +446,6 @@ public class Board {
 		return words;
 	}
 
-	public void calculateValue() {
-
-	}
-
 	public List<Tile> getTile(int startX, int startY, int endX, int endY, Move move, String direction) {
 		Map<Square, Tile> moveMap = move.getTileMap();
 		List<Tile> tileList = new ArrayList<>();
@@ -454,5 +472,220 @@ public class Board {
 
 		}
 		return tileList;
+	}
+
+	/**
+	 * Add special tile to board
+	 * 
+	 * @param move
+	 */
+	public void addSpecialTile(Move move) {
+		if (!move.hasSpecialTile()) {
+			return;
+		}
+		SpecialTile specialTile = move.getSpecialTile();
+		move.getSpecialTileSquare().setSpecialTile(specialTile);
+	}
+
+	public void calMoveScore(Move move, Player player, Boolean boomFlag, Boolean negativeFlag) {
+		int score = 0;
+		String rowColIndentify = moveOnSameLine(move);
+		List<Word> wordsList = new ArrayList<Word>();
+		if (boomFlag) {
+			Word word = makeBoomKeyWord(move, rowColIndentify);
+			List<Word> words = makeAdjacentWord(move, rowColIndentify);
+			wordsList.add(word);
+			wordsList.addAll(words);
+			for (Word tmp : wordsList) {
+				tmp.calBoomVal(this);
+				score += tmp.getValue();
+			}
+		} else {
+			Word word = makeKeyWord(move, rowColIndentify);
+			List<Word> words = makeAdjacentWord(move, rowColIndentify);
+			wordsList.add(word);
+			wordsList.addAll(words);
+			for (Word tmp : words) {
+				tmp.calValue(this);
+				score += tmp.getValue();
+			}
+			if (negativeFlag) {
+				score = -score;
+			}
+			player.setLastWords(wordsList);
+			player.setLastScore(score);
+			player.addScore(score);
+		}
+
+	}
+
+	public Word makeBoomKeyWord(Move move, String rowColIndentify) {
+		Map<Square, Tile> moveMap = move.getTileMap();
+		List<Square> boomTileList = move.getBoomSquareList();
+		Iterator<Map.Entry<Square, Tile>> it = moveMap.entrySet().iterator();
+		List<Tile> tiles = new ArrayList<Tile>();
+		Map<Square, Tile> squareMap = new HashMap<>();
+		Iterator<Map.Entry<Square, Tile>> it2 = moveMap.entrySet().iterator();
+
+		while (it2.hasNext()) {
+			Map.Entry<Square, Tile> entry = it2.next();
+			squareMap.put(entry.getKey(), entry.getValue());
+		}
+
+		if (rowColIndentify == "row") {
+			Map.Entry<Square, Tile> entry = it.next();
+			int startX = entry.getKey().getX();
+			int startY = entry.getKey().getY();
+			int endX = startX;
+			int endY = startY;
+			int startXsave = startX;
+			while (it.hasNext()) {
+				Map.Entry<Square, Tile> entryTmp = it.next();
+				Square tmp = entryTmp.getKey();
+				int tmpX = tmp.getX();
+				if (tmpX < startX) {
+					startX = tmpX;
+				}
+				if (tmpX > endX) {
+					endX = tmpX;
+				}
+			}
+			Square startSquare = getSquare(startX, startY);
+			Tile startTile = moveMap.get(startSquare);
+			tiles.add(startTile);
+
+			while (startX > 0 && ((getSquare(startX - 1, startY).isOccuppied() == true)
+					|| (move.containBoomSquare(getSquare(startX - 1, startY)) == true))) {
+				Square squareTmp = getSquare(startX - 1, startY);
+				if (squareTmp.isOccuppied() == true) {
+					tiles.add(squareTmp.getTile());
+				}
+				startX--;
+			}
+
+			if (endX != startXsave) {
+				Square endSquare = getSquare(endX, endY);
+				Tile endTile = moveMap.get(endSquare);
+				tiles.add(endTile);
+			}
+
+			while (endX < 14 && ((getSquare(endX + 1, endY).isOccuppied() == true)
+					|| (move.containBoomSquare(getSquare(endX + 1, endY)) == true))) {
+				Square squareTmp = getSquare(endX - 1, endY);
+				if (squareTmp.isOccuppied() == true) {
+					tiles.add(squareTmp.getTile());
+				}
+				endX++;
+			}
+			Word word = new Word(tiles, squareMap);
+			return word;
+
+		}
+
+		if (rowColIndentify == "col") {
+			Map.Entry<Square, Tile> entry = it.next();
+			int startX = entry.getKey().getX();
+			int startY = entry.getKey().getY();
+			int endX = startX;
+			int endY = startY;
+			int startYsave = startY;
+			while (it.hasNext()) {
+				Map.Entry<Square, Tile> entryTmp = it.next();
+				Square tmp = entryTmp.getKey();
+				int tmpY = tmp.getY();
+				if (tmpY > startY) {
+					startY = tmpY;
+				}
+				if (tmpY < endY) {
+					endY = tmpY;
+				}
+			}
+
+			Square startSquare = getSquare(startX, startY);
+			Tile startTile = moveMap.get(startSquare);
+			tiles.add(startTile);
+
+			while (startY < 14 && ((getSquare(startX, startY + 1).isOccuppied() == true)
+					|| (move.containBoomSquare(getSquare(startX, startY + 1)) == true))) {
+				Square squareTmp = getSquare(startX, startY + 1);
+				if (squareTmp.isOccuppied() == true) {
+					tiles.add(squareTmp.getTile());
+				}
+				startY++;
+			}
+
+			if (endY != startYsave) {
+				Square endSquare = getSquare(endX, endY);
+				Tile endTile = moveMap.get(endSquare);
+				tiles.add(endTile);
+			}
+
+			while (endX > 0 && ((getSquare(endX, endY - 1).isOccuppied() == true)
+					|| (move.containBoomSquare(getSquare(endX, endY - 1)) == true))) {
+				Square squareTmp = getSquare(endX, endY - 1);
+				if (squareTmp.isOccuppied() == true) {
+					tiles.add(squareTmp.getTile());
+				}
+				endX--;
+			}
+			Word word = new Word(tiles, squareMap);
+			return word;
+		}
+		return null;
+
+	}
+
+	/**
+	 * Active special tile
+	 * 
+	 * @param move
+	 */
+	public void activeSpecialTile(Move move, ScrabbleSystem scrabbleSystem) {
+		Map<Square, Tile> moveMap = move.getTileMap();
+		Map<Square, SpecialTile> removedSpecial = new HashMap<>();
+		Iterator<Map.Entry<Square, Tile>> it = moveMap.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<Square, Tile> entryTmp = it.next();
+			Square square = entryTmp.getKey();
+			if (square.hasSpecialTile()) {
+				SpecialTile specialTile = square.getSpecialTile();
+				removedSpecial.put(square, specialTile);
+				square.getSpecialTile().makeSpecialEffect(scrabbleSystem, square);
+				square.removeSpecialTile();
+
+			}
+			move.setRemovedSpecialTile(removedSpecial);
+		}
+	}
+
+	public void addTileToBoard(Move move) {
+		Iterator<Map.Entry<Square, Tile>> it = move.getTileMap().entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<Square, Tile> entry = it.next();
+			Square square = entry.getKey();
+			square.setTile(entry.getValue());
+		}
+	}
+
+	public static void main(String[] args) {
+		Map<String, Integer> map = new HashMap<>();
+		map.put("1", 1);
+		map.put("2", 2);
+		map.put("3", 3);
+		map.put("4", 4);
+		map.put("5", 5);
+		Iterator<Map.Entry<String, Integer>> it = map.entrySet().iterator();
+		Map.Entry<String, Integer> entry = it.next();
+		String startX = entry.getKey();
+		while (it.hasNext()) {
+			Map.Entry<String, Integer> entry2 = it.next();
+			System.out.println(entry2.getKey());
+		}
+
+		while (it.hasNext()) {
+			Map.Entry<String, Integer> entry2 = it.next();
+			System.out.println(entry2.getKey());
+		}
+
 	}
 }

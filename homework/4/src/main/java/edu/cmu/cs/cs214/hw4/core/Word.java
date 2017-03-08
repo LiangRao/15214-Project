@@ -1,6 +1,8 @@
 package edu.cmu.cs.cs214.hw4.core;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class Word {
 	private int startX;
@@ -9,6 +11,7 @@ public class Word {
 	private int endY;
 	private String direction;
 	private List<Tile> tileList;
+	private Map<Square, Tile> squareMap;
 	private int value;
 	private int timer;
 
@@ -19,6 +22,11 @@ public class Word {
 		this.endY = endY;
 		this.direction = direction;
 		this.tileList = tileList;
+	}
+
+	public Word(List<Tile> tileList, Map<Square, Tile> squareMap) {
+		this.tileList = tileList;
+		this.squareMap = squareMap;
 	}
 
 	public int getStartX() {
@@ -83,4 +91,22 @@ public class Word {
 		setValue(getValue() * timer);
 	}
 
+	public void calBoomVal(Board board) {
+		for (Tile tile : tileList) {
+			addValue(tile.getValue());
+		}
+
+		Iterator<Map.Entry<Square, Tile>> it = squareMap.entrySet().iterator();
+
+		while (it.hasNext()) {
+			Map.Entry<Square, Tile> entry = it.next();
+			Square square = entry.getKey();
+			if (square.hasTimer()) {
+				Tile tile = entry.getValue();
+				square.changeWordValue(this, tile);
+			}
+		}
+		setValue(getValue() * timer);
+
+	}
 }
