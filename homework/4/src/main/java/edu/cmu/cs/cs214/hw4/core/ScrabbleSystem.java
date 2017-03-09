@@ -134,6 +134,10 @@ public class ScrabbleSystem {
 		boomFlag = false;
 	}
 
+	public void setBoomFlag(boolean boomFlag) {
+		this.boomFlag = boomFlag;
+	}
+
 	public void resetNegFlag() {
 		negativeFlag = false;
 	}
@@ -320,16 +324,6 @@ public class ScrabbleSystem {
 
 		}
 
-	}
-
-	public boolean storeHasSpecialTile(String specialTileName) {
-		for (SpecialTile specialTile : specialStore) {
-			String name = specialTile.getName();
-			if (name.equals(specialTileName)) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	public void pass(Move move) {

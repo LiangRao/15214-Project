@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.After;
@@ -227,22 +228,54 @@ public class ScrabbleSystemTest {
 		Square square16 = scrabbleSystem.getBoard().getSquare(13, 7);
 		Square square17 = scrabbleSystem.getBoard().getSquare(14, 7);
 
-		Tile tile13 = currentPlayer4.getTileList().get(0);
-		Tile tile14 = currentPlayer4.getTileList().get(1);
-		Tile tile15 = currentPlayer4.getTileList().get(2);
-		Tile tile16 = currentPlayer4.getTileList().get(3);
-		Tile tile17 = currentPlayer4.getTileList().get(4);
+		Tile tile13 = currentPlayer5.getTileList().get(0);
+		Tile tile14 = currentPlayer5.getTileList().get(1);
+		Tile tile15 = currentPlayer5.getTileList().get(2);
+		Tile tile16 = currentPlayer5.getTileList().get(3);
+		Tile tile17 = currentPlayer5.getTileList().get(4);
 
 		move5.addTile(square13, tile13);
 		move5.addTile(square14, tile14);
 		move5.addTile(square15, tile15);
-		System.out.println(currentPlayer1.getName());
-		System.out.println(currentPlayer5.getName());
-		System.out.println();
+		move5.addTile(square16, tile16);
+		move5.addTile(square17, tile17);
+		// System.out.println(currentPlayer1.getName());
+		// System.out.println(currentPlayer5.getName());
+		// System.out.println(scoreSum1);
+		// System.out.println(currentPlayer5.getScore());
 		scrabbleSystem.playMove(move5);
+		assertFalse(square13.isOccuppied());
+		assertFalse(square14.isOccuppied());
+		assertFalse(square15.isOccuppied());
+		assertFalse(square2.isOccuppied());
+		assertFalse(square3.isOccuppied());
+		assertTrue(square1.isOccuppied());
+		// assertEquals(2, move5.getTileMap().size());
 
 		int scoreSum5 = scoreSum1 - 3 * (tile13.getValue() + tile14.getValue() + tile1.getValue());
-		assertEquals(scoreSum5, currentPlayer5.getScore());
+		assertEquals(scoreSum1, currentPlayer5.getScore());
+
+		/**
+		 * The sixth turn
+		 */
+		// The player exchanges some tiles
+		Player currentPlayer6 = scrabbleSystem.getCurrentPlayer();
+		List<Tile> tiles = new ArrayList<>();
+		Tile tile18 = currentPlayer6.getTileList().get(0);
+		Tile tile19 = currentPlayer6.getTileList().get(1);
+		Tile tile20 = currentPlayer6.getTileList().get(2);
+		tiles.add(tile18);
+		tiles.add(tile19);
+		tiles.add(tile20);
+		scrabbleSystem.exchangeTile(tiles);
+		assertEquals(7, currentPlayer6.getTileList().size());
+
+		/**
+		 * Get winner
+		 */
+
+		List<Player> playersWinner = scrabbleSystem.getWinner();
+		assertEquals(currentPlayer3.getName(), playersWinner.get(0).getName());
 	}
 
 }

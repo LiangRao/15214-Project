@@ -24,17 +24,6 @@ public class TurnControl {
 		return players.get(orderNum);
 	}
 
-	// public Player getLastPlayer() {
-	// int n = 0;
-	// if (orderNum == 0) {
-	// n = playerNum - 1;
-	// } else {
-	// n = (orderNum - 1) % playerNum;
-	// }
-	//
-	// return players.get(n);
-	// }
-
 	public void updateTurn() {
 		orderNum++;
 		orderNum %= playerNum;
@@ -52,7 +41,7 @@ public class TurnControl {
 
 	public void reverseTurn() {
 		List<Player> playersTmp = new ArrayList<Player>();
-		for (int i = playerNum - 1; i > 0; i--) {
+		for (int i = playerNum - 1; i >= 0; i--) {
 			playersTmp.add(players.get(i));
 		}
 		players = playersTmp;

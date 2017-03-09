@@ -28,9 +28,9 @@ public class Boom implements SpecialTile {
 	}
 
 	@Override
-	public void makeSpecialEffect(ScrabbleSystem scrabbleSystem, Square square) {
+	public void makeSpecialEffect(ScrabbleSystem scrabbleSystem, Move move, Square square) {
 		Board board = scrabbleSystem.getBoard();
-		Move move = scrabbleSystem.getMove();
+		// Move move = scrabbleSystem.getMove();
 		int x = square.getX();
 		int y = square.getY();
 		int xTmp;
@@ -43,10 +43,12 @@ public class Boom implements SpecialTile {
 			}
 			for (int j = 0; j < 5; j++) {
 				if ((y + j - 2) > 0 && (y + j - 2) < 14) {
-					yTmp = y + i - 2;
+					yTmp = y + j - 2;
 				} else {
 					continue;
 				}
+				// System.out.println(xTmp);
+				// System.out.println(yTmp);
 				Square squareTmp = board.getSquare(xTmp, yTmp);
 				if (squareTmp.hasTile()) {
 					move.addBoomSquareList(squareTmp);
@@ -59,7 +61,7 @@ public class Boom implements SpecialTile {
 
 			}
 		}
-
+		scrabbleSystem.setBoomFlag(true);
 	}
 
 }

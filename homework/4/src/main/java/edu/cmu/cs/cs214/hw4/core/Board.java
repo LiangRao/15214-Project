@@ -496,10 +496,13 @@ public class Board {
 			List<Word> words = makeAdjacentWord(move, rowColIndentify);
 			wordsList.add(word);
 			wordsList.addAll(words);
-			for (Word tmp : wordsList) {
-				tmp.calBoomVal(this);
-				score += tmp.getValue();
+			if (wordsList.size() != 0 && wordsList.get(0) != null) {
+				for (Word tmp : wordsList) {
+					tmp.calBoomVal(this);
+					score += tmp.getValue();
+				}
 			}
+
 		} else {
 			Word word = makeKeyWord(move, rowColIndentify);
 			List<Word> words = makeAdjacentWord(move, rowColIndentify);
@@ -643,6 +646,7 @@ public class Board {
 	public void activeSpecialTile(Move move, ScrabbleSystem scrabbleSystem) {
 		Map<Square, Tile> moveMap = move.getTileMap();
 		Map<Square, SpecialTile> removedSpecial = new HashMap<>();
+		List<Square> removeSpecialSquare = new ArrayList<>();
 		Iterator<Map.Entry<Square, Tile>> it = moveMap.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<Square, Tile> entryTmp = it.next();
@@ -650,12 +654,19 @@ public class Board {
 			if (square.hasSpecialTile()) {
 				SpecialTile specialTile = square.getSpecialTile();
 				removedSpecial.put(square, specialTile);
-				square.getSpecialTile().makeSpecialEffect(scrabbleSystem, square);
-				square.removeSpecialTile();
-
+				removeSpecialSquare.add(square);
 			}
-			move.setRemovedSpecialTile(removedSpecial);
+
 		}
+		if (removeSpecialSquare.size() != 0) {
+			for (int i = 0; i < removeSpecialSquare.size(); i++) {
+				Square squareTmp = removeSpecialSquare.get(i);
+				squareTmp.getSpecialTile().makeSpecialEffect(scrabbleSystem, move, squareTmp);
+				squareTmp.removeSpecialTile();
+			}
+		}
+
+		move.setRemovedSpecialTile(removedSpecial);
 	}
 
 	public void addTileToBoard(Move move) {
@@ -667,25 +678,4 @@ public class Board {
 		}
 	}
 
-	public static void main(String[] args) {
-		Map<String, Integer> map = new HashMap<>();
-		map.put("1", 1);
-		map.put("2", 2);
-		map.put("3", 3);
-		map.put("4", 4);
-		map.put("5", 5);
-		Iterator<Map.Entry<String, Integer>> it = map.entrySet().iterator();
-		Map.Entry<String, Integer> entry = it.next();
-		String startX = entry.getKey();
-		while (it.hasNext()) {
-			Map.Entry<String, Integer> entry2 = it.next();
-			System.out.println(entry2.getKey());
-		}
-
-		while (it.hasNext()) {
-			Map.Entry<String, Integer> entry2 = it.next();
-			System.out.println(entry2.getKey());
-		}
-
-	}
 }
