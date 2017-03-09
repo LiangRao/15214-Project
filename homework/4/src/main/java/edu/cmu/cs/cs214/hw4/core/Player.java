@@ -5,6 +5,12 @@ import java.util.List;
 
 import edu.cmu.cs.cs214.hw4.core.specialTile.SpecialTile;
 
+/**
+ * A class to represent a player
+ * 
+ * @author raoliang
+ *
+ */
 public class Player {
 	private final String name;
 	private int score;

@@ -42,10 +42,10 @@ public class Move {
 	}
 
 	/**
-	 * Add boom squares to the move
+	 * Add the square which experience the boom in this move
 	 * 
 	 * @param square
-	 *            the boom squares related to the move
+	 *            the blasted squares related to the move
 	 */
 	public void addBoomSquareList(Square square) {
 		boomSquareList.add(square);
@@ -126,16 +126,21 @@ public class Move {
 	}
 
 	/**
-	 * Justify if the move contains a square which
+	 * Justify the move contain a blasted square or not
 	 * 
 	 * @param square
 	 *            the square needs to check
-	 * @return
+	 * @return return true if the move contains the square, or return false
 	 */
 	public boolean containBoomSquare(Square square) {
 		return boomSquareList.contains(square);
 	}
 
+	/**
+	 * Justify if the move contain a special tile or not
+	 * 
+	 * @return return true if the move contains a special tile, or return false
+	 */
 	public boolean hasSpecialTile() {
 		return specialTile != null;
 	}
