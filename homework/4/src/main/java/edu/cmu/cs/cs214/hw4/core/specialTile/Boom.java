@@ -7,8 +7,8 @@ import edu.cmu.cs.cs214.hw4.core.ScrabbleSystem;
 import edu.cmu.cs.cs214.hw4.core.Square;
 
 public class Boom implements SpecialTile {
-	private static final String NAME = "Boom";
-	private static final int PRICE = 20;
+	private final String NAME = "Boom";
+	private final int PRICE = 20;
 	private Player Owner;
 
 	public Player getOwner() {
@@ -19,11 +19,11 @@ public class Boom implements SpecialTile {
 		Owner = owner;
 	}
 
-	public static String getName() {
+	public String getName() {
 		return NAME;
 	}
 
-	public static int getPrice() {
+	public int getPrice() {
 		return PRICE;
 	}
 

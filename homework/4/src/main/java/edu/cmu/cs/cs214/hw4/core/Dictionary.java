@@ -14,6 +14,7 @@ public class Dictionary {
 	public Dictionary(String path) {
 		wordsSet = new HashSet<>();
 		this.path = path;
+		initial();
 	}
 
 	public void initial() {

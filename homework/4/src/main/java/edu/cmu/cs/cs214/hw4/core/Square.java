@@ -1,7 +1,6 @@
 package edu.cmu.cs.cs214.hw4.core;
 
 import edu.cmu.cs.cs214.hw4.core.specialTile.SpecialTile;
-import edu.cmu.cs.cs214.hw4.core.timer.GeneralTimer;
 import edu.cmu.cs.cs214.hw4.core.timer.Timer;
 
 public class Square {
@@ -14,7 +13,7 @@ public class Square {
 	public Square(int x, int y) {
 		this.x = x;
 		this.y = y;
-		timer = new GeneralTimer();
+		timer = null;
 		tile = null;
 		specialTile = null;
 	}

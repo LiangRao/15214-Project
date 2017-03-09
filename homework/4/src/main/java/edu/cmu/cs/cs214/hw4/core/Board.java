@@ -505,8 +505,8 @@ public class Board {
 			List<Word> words = makeAdjacentWord(move, rowColIndentify);
 			wordsList.add(word);
 			wordsList.addAll(words);
-			for (Word tmp : words) {
-				tmp.calValue(this);
+			for (Word tmp : wordsList) {
+				tmp.calValue(this, move);
 				score += tmp.getValue();
 			}
 			if (negativeFlag) {

@@ -38,9 +38,9 @@ public class LetterBag {
 		return tiles;
 	}
 
-	public void addTile(List<Tile> tiles) {
-		tiles.addAll(tiles);
-		number += tiles.size();
+	public void addTile(List<Tile> tile) {
+		tiles.addAll(tile);
+		number += tile.size();
 	}
 
 	public boolean isEmpty() {
@@ -58,7 +58,7 @@ public class LetterBag {
 			tilesTmp.add(tiles.get(randomIndex.get(i)));
 		}
 		for (int i = 0; i < size; i++) {
-			tiles.remove(tiles.get(randomIndex.get(i)));
+			tiles.remove(tilesTmp.get(i));
 			number--;
 		}
 

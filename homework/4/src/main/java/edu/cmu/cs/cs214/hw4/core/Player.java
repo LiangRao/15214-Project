@@ -15,6 +15,7 @@ public class Player {
 	private List<Word> lastWords;
 	private int lastScore;
 	private Move lastMove;
+	private int passTime;
 
 	public Player(String name) {
 		this.name = name;
@@ -25,6 +26,11 @@ public class Player {
 		lastRandomTile = new ArrayList<>();
 		lastWords = new ArrayList<>();
 		lastScore = 0;
+		passTime = 0;
+	}
+
+	public int getPassTime() {
+		return passTime;
 	}
 
 	public Boolean getNextTurnFlag() {
@@ -49,6 +55,14 @@ public class Player {
 
 	public List<SpecialTile> getSpecialTiles() {
 		return specialTiles;
+	}
+
+	public void addSpecialTiles(SpecialTile specialTile) {
+		specialTiles.add(specialTile);
+	}
+
+	public void removeSpecialTile(SpecialTile specialTile) {
+		specialTiles.remove(specialTile);
 	}
 
 	public List<Tile> getLastRandomTile() {
@@ -76,7 +90,7 @@ public class Player {
 	}
 
 	public void removeTile(List<Tile> tiles) {
-		tiles.removeAll(tiles);
+		tileList.removeAll(tiles);
 	}
 
 	public void addScore(int scoreTmp) {
@@ -99,20 +113,12 @@ public class Player {
 		this.lastMove = lastMove;
 	}
 
-	public static void main(String[] args) {
-		List<Integer> list = new ArrayList<>();
-		List<Integer> list1 = new ArrayList<>();
-		List<Integer> list2 = new ArrayList<>();
+	public void addPassTime() {
+		passTime += 1;
+	}
 
-		list1.add(1);
-		list1.add(2);
-		list2.add(1);
-		list2.add(2);
-		list2.add(3);
-		list = list1;
-		System.out.println(list.toString());
-		list = list2;
-		System.out.println(list.toString());
+	public void clearPassTime() {
+		passTime = 0;
 	}
 
 }

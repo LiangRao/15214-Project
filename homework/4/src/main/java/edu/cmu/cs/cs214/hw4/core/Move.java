@@ -1,5 +1,6 @@
 package edu.cmu.cs.cs214.hw4.core;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,8 @@ public class Move {
 
 	public Move() {
 		tileMap = new HashMap<Square, Tile>();
+		removedSpecialTile = new HashMap<>();
+		boomSquareList = new ArrayList<>();
 		specialTile = null;
 		specialTileSquare = null;
 	}
@@ -74,4 +77,11 @@ public class Move {
 		this.removedSpecialTile = removedSpeicialTile;
 	}
 
+	public void clearMove() {
+		tileMap = new HashMap<Square, Tile>();
+		removedSpecialTile = new HashMap<>();
+		boomSquareList = new ArrayList<>();
+		specialTile = null;
+		specialTileSquare = null;
+	}
 }

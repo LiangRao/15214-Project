@@ -24,16 +24,16 @@ public class TurnControl {
 		return players.get(orderNum);
 	}
 
-	public Player getLastPlayer() {
-		int n = 0;
-		if (orderNum == 0) {
-			n = playerNum - 1;
-		} else {
-			n = (orderNum - 1) % playerNum;
-		}
-
-		return players.get(n);
-	}
+	// public Player getLastPlayer() {
+	// int n = 0;
+	// if (orderNum == 0) {
+	// n = playerNum - 1;
+	// } else {
+	// n = (orderNum - 1) % playerNum;
+	// }
+	//
+	// return players.get(n);
+	// }
 
 	public void updateTurn() {
 		orderNum++;

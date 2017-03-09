@@ -22,6 +22,8 @@ public class Word {
 		this.endY = endY;
 		this.direction = direction;
 		this.tileList = tileList;
+		this.timer = 1;
+		this.value = 0;
 	}
 
 	public Word(List<Tile> tileList, Map<Square, Tile> squareMap) {
@@ -65,24 +67,24 @@ public class Word {
 		value += val;
 	}
 
-	public void calValue(Board board) {
+	public void calValue(Board board, Move move) {
 		for (Tile tile : tileList) {
 			addValue(tile.getValue());
 		}
 		if (direction == "row") {
 			for (int i = startX; i < endX + 1; i++) {
 				Square squareTmp = board.getSquare(i, startY);
-				if (!squareTmp.isOccuppied()) {
+				if (squareTmp.hasTimer() && move.containSquare(squareTmp)) {
 					Tile tile = tileList.get(i - startX);
 					squareTmp.changeWordValue(this, tile);
 				}
 			}
 		}
 		if (direction == "col") {
-			for (int i = startY; i > endY; i--) {
+			for (int i = startY; i > endY - 1; i--) {
 				Square squareTmp = board.getSquare(startX, i);
-				if (!squareTmp.isOccuppied()) {
-					Tile tile = tileList.get(i - startY);
+				if (squareTmp.hasTimer() && move.containSquare(squareTmp)) {
+					Tile tile = tileList.get(startY - i);
 					squareTmp.changeWordValue(this, tile);
 				}
 

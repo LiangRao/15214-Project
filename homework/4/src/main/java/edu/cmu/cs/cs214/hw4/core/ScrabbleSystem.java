@@ -5,6 +5,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import edu.cmu.cs.cs214.hw4.core.specialTile.Boom;
+import edu.cmu.cs.cs214.hw4.core.specialTile.NegativePoint;
+import edu.cmu.cs.cs214.hw4.core.specialTile.RetrieveOrder;
+import edu.cmu.cs.cs214.hw4.core.specialTile.ReverseOrder;
 import edu.cmu.cs.cs214.hw4.core.specialTile.SpecialTile;
 
 public class ScrabbleSystem {
@@ -17,11 +21,13 @@ public class ScrabbleSystem {
 	private TurnControl turnControl;
 	private Dictionary dictionary;
 	private Board board;
-	private Move move;
+	private Move gameMove;
 	private boolean firstFlag;
-	private boolean isGameOver;
+	private boolean gameOverFlag;
+	private boolean isChallengeFlag;
 	private boolean negativeFlag;
 	private boolean boomFlag;
+	private List<SpecialTile> specialStore;
 
 	/**
 	 * Constructor for Scrabble System
@@ -29,12 +35,14 @@ public class ScrabbleSystem {
 	public ScrabbleSystem() {
 		this.players = new ArrayList<>();
 		this.playerNum = 0;
-		this.isGameOver = false;
+		this.gameOverFlag = false;
+		this.isChallengeFlag = false;
 		this.path = "words.txt";
 		this.letterBag = new LetterBag();
 		this.turnControl = new TurnControl();
 		this.dictionary = new Dictionary(path);
 		this.board = new Board();
+		this.specialStore = new ArrayList<>();
 
 	}
 
@@ -43,24 +51,35 @@ public class ScrabbleSystem {
 	}
 
 	public Move getMove() {
-		return move;
+		return gameMove;
+	}
+
+	public List<Player> getPlayers() {
+		return players;
+	}
+
+	public LetterBag getLetterBag() {
+		return letterBag;
+	}
+
+	public List<SpecialTile> getSpecialStore() {
+		return specialStore;
+	}
+
+	public boolean isGameOverFlag() {
+		return gameOverFlag;
 	}
 
 	public void setNegativeFlag(boolean negativeFlag) {
 		this.negativeFlag = negativeFlag;
 	}
 
-	public void startNewGame() {
-		move = new Move();
-		firstFlag = true;
-		negativeFlag = false;
-		boomFlag = false;
-		for (int i = 0; i < playerNum; i++) {
-			List<Tile> tiles = letterBag.getRandomTiles(PLAYER_TILE_NUM);
-			players.get(i).addTile(tiles);
-		}
-		turnControl.randomTurn();
+	public void setChallengeFlag(boolean isChallengeFlag) {
+		this.isChallengeFlag = isChallengeFlag;
+	}
 
+	public boolean isChallengeFlag() {
+		return isChallengeFlag;
 	}
 
 	/**
@@ -71,19 +90,44 @@ public class ScrabbleSystem {
 	 */
 	public void addPlayer(Player player) {
 		if (playerNum == MAX_PLAYER_NUM) {
-			System.out.println("The number of players is out of range!");
+			System.out.println("The number of players is out of range! Fail to add Player! ");
 			return;
 		}
 		players.add(player);
 		playerNum++;
 		turnControl.addPlayer(player);
+		System.out.println("Add " + player.getName() + " to the game!");
+	}
+
+	/**
+	 * Initial fields when the game is start
+	 */
+	public void startNewGame() {
+		gameMove = new Move();
+		firstFlag = true;
+		negativeFlag = false;
+		boomFlag = false;
+		for (int i = 0; i < playerNum; i++) {
+			List<Tile> tiles = letterBag.getRandomTiles(PLAYER_TILE_NUM);
+			players.get(i).addTile(tiles);
+		}
+		turnControl.randomTurn();
+
+		specialStore.add(new Boom());
+		specialStore.add(new NegativePoint());
+		specialStore.add(new RetrieveOrder());
+		specialStore.add(new ReverseOrder());
+	}
+
+	public Player getCurrentPlayer() {
+		return turnControl.getCurrentPlayer();
 	}
 
 	/**
 	 * Clear move for next player
 	 */
 	public void clearMove() {
-		move = new Move();
+		gameMove = new Move();
 	}
 
 	public void resetBoomFlag() {
@@ -96,6 +140,10 @@ public class ScrabbleSystem {
 
 	public void resetFirstFlag() {
 		firstFlag = false;
+	}
+
+	public void resetIsChallengeFlag() {
+		isChallengeFlag = false;
 	}
 
 	/**
@@ -115,33 +163,50 @@ public class ScrabbleSystem {
 		// active special tile
 		board.activeSpecialTile(move, this);
 
-		Player currentPlayer = turnControl.getCurrentPlayer();
+		Player currentPlayer = getCurrentPlayer();
 		board.calMoveScore(move, currentPlayer, boomFlag, negativeFlag);
 
 		board.addTileToBoard(move);
 
 		List<Tile> tiles = new ArrayList<Tile>();
-		Iterator<Map.Entry<Square, Tile>> it = move.getTileMap().entrySet().iterator();
+		Map<Square, Tile> moveMap = move.getTileMap();
+		Iterator<Map.Entry<Square, Tile>> it = moveMap.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<Square, Tile> entry = it.next();
 			tiles.add(entry.getValue());
 		}
+		SpecialTile specialTile = move.getSpecialTile();
+		// remove the player's tiles and the special tile
 		currentPlayer.removeTile(tiles);
-		int tileNum = tiles.size();
-		List<Tile> randomTiles = new ArrayList<>();
-		randomTiles.addAll(letterBag.getRandomTiles(tileNum));
-		currentPlayer.addTile(randomTiles);
-		currentPlayer.setLastRandomTile(randomTiles);
+		currentPlayer.removeSpecialTile(specialTile);
+
+		int tileNum = moveMap.size();
+		if (letterBag.isEmpty()) {
+			gameOverFlag = true;
+		} else {
+			List<Tile> randomTiles = letterBag.getRandomTiles(tileNum);
+			currentPlayer.addTile(randomTiles);
+			currentPlayer.setLastRandomTile(randomTiles);
+		}
 		currentPlayer.setLastMove(move);
 
-		updateOrder();
 		resetBoomFlag();
 		resetNegFlag();
 		resetFirstFlag();
+
 	}
 
 	public void updateOrder() {
-		Player currentPlayer = turnControl.getCurrentPlayer();
+		if (isGameOver()) {
+			List<Player> players = getWinner();
+			System.out.println("The game is over!");
+
+			for (Player player : players) {
+				System.out.println("The winner is" + player.getName());
+			}
+			return;
+		}
+		Player currentPlayer = getCurrentPlayer();
 		if (!currentPlayer.getNextTurnFlag()) {
 			turnControl.skipTurn();
 			currentPlayer.setNextTurnFlag(true);
@@ -161,7 +226,7 @@ public class ScrabbleSystem {
 	public void exchangeTile(List<Tile> tiles) {
 		int size = tiles.size();
 		List<Tile> randomTiles = letterBag.getRandomTiles(size);
-		Player currentPlayer = turnControl.getCurrentPlayer();
+		Player currentPlayer = getCurrentPlayer();
 		currentPlayer.removeTile(tiles);
 		currentPlayer.addTile(randomTiles);
 		updateOrder();
@@ -189,7 +254,11 @@ public class ScrabbleSystem {
 	}
 
 	public void challenge(Player player) {
-		Player lastPlayer = turnControl.getLastPlayer();
+		if (!isChallengeFlag) {
+			updateOrder();
+			return;
+		}
+		Player lastPlayer = turnControl.getCurrentPlayer();
 		List<Word> lastWords = lastPlayer.getLastWords();
 		Boolean challengeFlag = false;
 		for (Word word : lastWords) {
@@ -218,7 +287,7 @@ public class ScrabbleSystem {
 			lastPlayer.addTile(moveTile);
 
 			// restore special Tile
-			Map<Square, SpecialTile> removedSpecial = move.getRemovedSpecialTile();
+			Map<Square, SpecialTile> removedSpecial = lastMove.getRemovedSpecialTile();
 			Iterator<Map.Entry<Square, SpecialTile>> it2 = removedSpecial.entrySet().iterator();
 			while (it2.hasNext()) {
 				Map.Entry<Square, SpecialTile> entry = it2.next();
@@ -228,5 +297,62 @@ public class ScrabbleSystem {
 		} else {
 			player.setNextTurnFlag(false);
 		}
+
+		resetIsChallengeFlag();
+		updateOrder();
 	}
+
+	public void buySpecialTile(String specialTileName) {
+		Player currentPlayer = getCurrentPlayer();
+
+		for (SpecialTile specialTile : specialStore) {
+			String name = specialTile.getName();
+			if (name.equals(specialTileName)) {
+				int price = specialTile.getPrice();
+				if (currentPlayer.getScore() > price) {
+					currentPlayer.addSpecialTiles(specialTile);
+					currentPlayer.minusScore(price);
+					break;
+				} else {
+					System.out.println("Your total scores is not enough to buy the special Tile! ");
+				}
+			}
+
+		}
+
+	}
+
+	public boolean storeHasSpecialTile(String specialTileName) {
+		for (SpecialTile specialTile : specialStore) {
+			String name = specialTile.getName();
+			if (name.equals(specialTileName)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void pass(Move move) {
+		Player currentplayer = getCurrentPlayer();
+		board.addSpecialTile(move);
+		if (move.hasSpecialTile()) {
+			SpecialTile specialTile = move.getSpecialTile();
+			currentplayer.removeSpecialTile(specialTile);
+		}
+		currentplayer.addPassTime();
+		updateOrder();
+	}
+
+	public boolean isGameOver() {
+		Player currentPlayer = getCurrentPlayer();
+		if (currentPlayer.getTileList().size() == 0) {
+			return true;
+		} else if (currentPlayer.getPassTime() == 3) {
+			return true;
+		} else if (gameOverFlag == true) {
+			return true;
+		}
+		return false;
+	}
+
 }

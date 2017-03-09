@@ -5,8 +5,8 @@ import edu.cmu.cs.cs214.hw4.core.ScrabbleSystem;
 import edu.cmu.cs.cs214.hw4.core.Square;
 
 public class NegativePoint implements SpecialTile {
-	private static final String NAME = "NegativePoint";
-	private static final int PRICE = 30;
+	private final String NAME = "NegativePoint";
+	private final int PRICE = 30;
 	private Player Owner;
 
 	public Player getOwner() {
@@ -17,11 +17,11 @@ public class NegativePoint implements SpecialTile {
 		Owner = owner;
 	}
 
-	public static String getName() {
+	public String getName() {
 		return NAME;
 	}
 
-	public static int getPrice() {
+	public int getPrice() {
 		return PRICE;
 	}
 
