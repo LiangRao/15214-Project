@@ -17,7 +17,7 @@ public abstract class ProblemSolver<T> {
 	 * @param array
 	 *            a array to solve specific problem
 	 */
-	abstract void solveProblem(T[] array);
+	abstract public void solveProblem(T[] array);
 
 	/**
 	 * Generate all permutations of a array
