@@ -3,6 +3,8 @@ package edu.cmu.cs.cs214.rec05.loggingsystem;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Supports writing of debug and error messages (with different prefixes) to
@@ -15,10 +17,10 @@ import java.io.PrintWriter;
 public class Logger {
 
 	// Change this to false to disable logging to the console
-	private static final boolean CONSOLE_ENABLED = true;
+	// private static final boolean CONSOLE_ENABLED = true;
 
 	// Change this to false to disable logging to the file
-	private static final boolean LOGFILE_ENABLED = true;
+	// private static final boolean LOGFILE_ENABLED = true;
 	private static final String LOGFILE_NAME = "log.txt";
 
 	// Strings
@@ -27,20 +29,26 @@ public class Logger {
 	private static final String LOGGER_STARTED_UP = "Logger started up.";
 	private static final String LOGGER_SHUTTING_DOWN = "Logger shutting down.";
 
+	private final List<Listener> listernerList = new ArrayList<>();
 	private PrintWriter fileOut = null;
 
-	public Logger() {
-		if (LOGFILE_ENABLED) {
-			try {
-				fileOut = new PrintWriter(new File(LOGFILE_NAME));
-				fileOut.println(LOGGER_STARTED_UP);
-			} catch (FileNotFoundException e) {
-				throw new RuntimeException(e);
-			}
-		}
-		if (CONSOLE_ENABLED) {
-			System.out.println(LOGGER_STARTED_UP);
-		}
+	public Logger(Listener... listener) {
+
+		// if (LOGFILE_ENABLED) {
+		// try {
+		// fileOut = new PrintWriter(new File(LOGFILE_NAME));
+		// fileOut.println(LOGGER_STARTED_UP);
+		// } catch (FileNotFoundException e) {
+		// throw new RuntimeException(e);
+		// }
+		// }
+		// if (CONSOLE_ENABLED) {
+		// System.out.println(LOGGER_STARTED_UP);
+		// }
+	}
+
+	public void addListener(Listerner... listener){
+		listernerList.add(Ara)
 	}
 
 	/**

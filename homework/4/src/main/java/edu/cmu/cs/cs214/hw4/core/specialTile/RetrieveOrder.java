@@ -1,33 +1,42 @@
 package edu.cmu.cs.cs214.hw4.core.specialTile;
 
-import edu.cmu.cs.cs214.hw4.core.Move;
 import edu.cmu.cs.cs214.hw4.core.Player;
 import edu.cmu.cs.cs214.hw4.core.ScrabbleSystem;
 import edu.cmu.cs.cs214.hw4.core.Square;
 
+/**
+ * The retrieve special tile who will ask the player to play a move again
+ * 
+ * @author raoliang
+ *
+ */
 public class RetrieveOrder implements SpecialTile {
-	private final String NAME = "RetrieveOrder";
-	private final int PRICE = 20;
-	private Player Owner;
+	private final String name = "RetrieveOrder";
+	private final int price = 20;
+	private Player owner;
 
+	@Override
 	public Player getOwner() {
-		return Owner;
-	}
-
-	public void setOwner(Player owner) {
-		Owner = owner;
-	}
-
-	public String getName() {
-		return NAME;
-	}
-
-	public int getPrice() {
-		return PRICE;
+		return owner;
 	}
 
 	@Override
-	public void makeSpecialEffect(ScrabbleSystem scrabbleSystem, Move move, Square square) {
+	public void setOwner(Player owner) {
+		this.owner = owner;
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public int getPrice() {
+		return price;
+	}
+
+	@Override
+	public void makeSpecialEffect(ScrabbleSystem scrabbleSystem, Square square) {
 		scrabbleSystem.retrieveOrder();
 
 	}

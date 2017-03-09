@@ -8,6 +8,12 @@ import java.util.Set;
 
 import edu.cmu.cs.cs214.hw4.core.specialTile.SpecialTile;
 
+/**
+ * A class to store information a move that a player submit
+ * 
+ * @author raoliang
+ *
+ */
 public class Move {
 	private Map<Square, Tile> tileMap;
 	private List<Square> boomSquareList;

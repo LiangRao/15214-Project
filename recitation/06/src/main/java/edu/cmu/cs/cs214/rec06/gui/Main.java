@@ -1,6 +1,6 @@
 package edu.cmu.cs.cs214.rec06.gui;
 
-import javax.swing.*;
+import javax.swing.SwingUtilities;
 
 import edu.cmu.cs.cs214.rec06.solver.TheBestCryptarithmSolver;
 
@@ -8,19 +8,23 @@ import edu.cmu.cs.cs214.rec06.solver.TheBestCryptarithmSolver;
  * Entry point of your program
  */
 public class Main {
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            /*
-               TODO:
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(() -> {
+			/*
+			 * TODO:
+			 * 
+			 * create an instance of your CryptarithmSolverGui backed by a new
+			 * instance of TheBestCryptarithmSolver and make it visible. This
+			 * requires a single line of code:
+			 * 
+			 * https://docs.oracle.com/javase/8/docs/api/java/awt/Component.html
+			 * #setVisible-boolean-
+			 * 
+			 */
 
-               create an instance of your CryptarithmSolverGui backed by a new instance of
-               TheBestCryptarithmSolver and make it visible. This requires a single line of code:
+			// Your code goes here
 
-               https://docs.oracle.com/javase/8/docs/api/java/awt/Component.html#setVisible-boolean-
-
-             */
-
-             // Your code goes here
-        });
-    }
+			CryptarithmSolverGui gui = new CryptarithmSolverGui(new TheBestCryptarithmSolver());
+		});
+	}
 }

@@ -11,12 +11,20 @@ import edu.cmu.cs.cs214.hw4.core.specialTile.RetrieveOrder;
 import edu.cmu.cs.cs214.hw4.core.specialTile.ReverseOrder;
 import edu.cmu.cs.cs214.hw4.core.specialTile.SpecialTile;
 
+/**
+ * The system class from the entire scrabble game, which actors as a controller
+ * between different class.
+ * 
+ * @author raoliang
+ *
+ */
 public class ScrabbleSystem {
 	private List<Player> players;
 	private final String path;
 	private int playerNum;
 	private static final int MAX_PLAYER_NUM = 4;
 	private static final int PLAYER_TILE_NUM = 7;
+	private static final int MAX_PASS_TIME = 3;
 	private LetterBag letterBag;
 	private TurnControl turnControl;
 	private Dictionary dictionary;
@@ -306,6 +314,11 @@ public class ScrabbleSystem {
 		updateOrder();
 	}
 
+	/**
+	 * 
+	 * @param specialTileName
+	 *            the name of special Tile which the player want to buy
+	 */
 	public void buySpecialTile(String specialTileName) {
 		Player currentPlayer = getCurrentPlayer();
 
@@ -326,6 +339,12 @@ public class ScrabbleSystem {
 
 	}
 
+	/**
+	 * The player submit a pass require
+	 * 
+	 * @param move
+	 *            the move that the current player submit
+	 */
 	public void pass(Move move) {
 		Player currentplayer = getCurrentPlayer();
 		board.addSpecialTile(move);
@@ -337,11 +356,16 @@ public class ScrabbleSystem {
 		updateOrder();
 	}
 
+	/**
+	 * Justify the game is over or not
+	 * 
+	 * @return return true if the game is over
+	 */
 	public boolean isGameOver() {
 		Player currentPlayer = getCurrentPlayer();
 		if (currentPlayer.getTileList().size() == 0) {
 			return true;
-		} else if (currentPlayer.getPassTime() == 3) {
+		} else if (currentPlayer.getPassTime() == MAX_PASS_TIME) {
 			return true;
 		} else if (gameOverFlag == true) {
 			return true;

@@ -1,18 +1,52 @@
 package edu.cmu.cs.cs214.hw4.core.specialTile;
 
-import edu.cmu.cs.cs214.hw4.core.Move;
 import edu.cmu.cs.cs214.hw4.core.Player;
 import edu.cmu.cs.cs214.hw4.core.ScrabbleSystem;
 import edu.cmu.cs.cs214.hw4.core.Square;
 
+/**
+ * The interface for special tiles
+ * 
+ * @author raoliang
+ *
+ */
 public interface SpecialTile {
-	void makeSpecialEffect(ScrabbleSystem scrabbleSystem, Move move, Square square);
+	/**
+	 * The special tile make effect on the game
+	 * 
+	 * @param scrabbleSystem
+	 *            the game system control
+	 * @param square
+	 *            the square which contains a certain special tile
+	 */
+	void makeSpecialEffect(ScrabbleSystem scrabbleSystem, Square square);
 
-	public Player getOwner();
+	/**
+	 * Get the special tile owner
+	 * 
+	 * @return the special tile owner
+	 */
+	Player getOwner();
 
-	public void setOwner(Player owner);
+	/**
+	 * Set the special tile owner
+	 * 
+	 * @param owner
+	 *            the owner of a certain special tile
+	 */
+	void setOwner(Player owner);
 
-	public String getName();
+	/**
+	 * Get the name of a specific special tile
+	 * 
+	 * @return the name of a specify special tile
+	 */
+	String getName();
 
-	public int getPrice();
+	/**
+	 * Get the price of a specific special tile
+	 * 
+	 * @return the price of a specific special tile
+	 */
+	int getPrice();
 }

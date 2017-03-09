@@ -6,31 +6,42 @@ import edu.cmu.cs.cs214.hw4.core.Player;
 import edu.cmu.cs.cs214.hw4.core.ScrabbleSystem;
 import edu.cmu.cs.cs214.hw4.core.Square;
 
+/**
+ * A boom special tile, which will remove all tiles in a 3-tile radius on the
+ * board from the board.
+ * 
+ * @author raoliang
+ *
+ */
 public class Boom implements SpecialTile {
-	private final String NAME = "Boom";
-	private final int PRICE = 20;
-	private Player Owner;
+	private final String name = "Boom";
+	private final int price = 20;
+	private Player owner;
 
+	@Override
 	public Player getOwner() {
-		return Owner;
-	}
-
-	public void setOwner(Player owner) {
-		Owner = owner;
-	}
-
-	public String getName() {
-		return NAME;
-	}
-
-	public int getPrice() {
-		return PRICE;
+		return owner;
 	}
 
 	@Override
-	public void makeSpecialEffect(ScrabbleSystem scrabbleSystem, Move move, Square square) {
+	public void setOwner(Player owner) {
+		this.owner = owner;
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public int getPrice() {
+		return price;
+	}
+
+	@Override
+	public void makeSpecialEffect(ScrabbleSystem scrabbleSystem, Square square) {
 		Board board = scrabbleSystem.getBoard();
-		// Move move = scrabbleSystem.getMove();
+		Move move = scrabbleSystem.getMove();
 		int x = square.getX();
 		int y = square.getY();
 		int xTmp;
@@ -47,8 +58,6 @@ public class Boom implements SpecialTile {
 				} else {
 					continue;
 				}
-				// System.out.println(xTmp);
-				// System.out.println(yTmp);
 				Square squareTmp = board.getSquare(xTmp, yTmp);
 				if (squareTmp.hasTile()) {
 					move.addBoomSquareList(squareTmp);

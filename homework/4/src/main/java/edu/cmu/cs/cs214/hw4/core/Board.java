@@ -9,8 +9,8 @@ import java.util.Map;
 import edu.cmu.cs.cs214.hw4.core.specialTile.SpecialTile;
 import edu.cmu.cs.cs214.hw4.core.timer.DoubleLetterTimer;
 import edu.cmu.cs.cs214.hw4.core.timer.DoubleWordTimer;
+import edu.cmu.cs.cs214.hw4.core.timer.TripleWordTimer;
 import edu.cmu.cs.cs214.hw4.core.timer.TrippleLetterTimer;
-import edu.cmu.cs.cs214.hw4.core.timer.TrippleWordTimer;
 
 public class Board {
 
@@ -33,14 +33,14 @@ public class Board {
 		starSquare = squareArray[7][7];
 
 		// set Tripple Word Timer
-		squareArray[0][0].setTimer(new TrippleWordTimer());
-		squareArray[0][7].setTimer(new TrippleWordTimer());
-		squareArray[0][14].setTimer(new TrippleWordTimer());
-		squareArray[7][0].setTimer(new TrippleWordTimer());
-		squareArray[14][0].setTimer(new TrippleWordTimer());
-		squareArray[7][14].setTimer(new TrippleWordTimer());
-		squareArray[14][7].setTimer(new TrippleWordTimer());
-		squareArray[14][14].setTimer(new TrippleWordTimer());
+		squareArray[0][0].setTimer(new TripleWordTimer());
+		squareArray[0][7].setTimer(new TripleWordTimer());
+		squareArray[0][14].setTimer(new TripleWordTimer());
+		squareArray[7][0].setTimer(new TripleWordTimer());
+		squareArray[14][0].setTimer(new TripleWordTimer());
+		squareArray[7][14].setTimer(new TripleWordTimer());
+		squareArray[14][7].setTimer(new TripleWordTimer());
+		squareArray[14][14].setTimer(new TripleWordTimer());
 
 		// set Double Word Timer
 		squareArray[1][1].setTimer(new DoubleWordTimer());
@@ -661,7 +661,7 @@ public class Board {
 		if (removeSpecialSquare.size() != 0) {
 			for (int i = 0; i < removeSpecialSquare.size(); i++) {
 				Square squareTmp = removeSpecialSquare.get(i);
-				squareTmp.getSpecialTile().makeSpecialEffect(scrabbleSystem, move, squareTmp);
+				squareTmp.getSpecialTile().makeSpecialEffect(scrabbleSystem, squareTmp);
 				squareTmp.removeSpecialTile();
 			}
 		}
