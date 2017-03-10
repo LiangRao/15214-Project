@@ -145,10 +145,21 @@ public class Move {
 		return specialTile != null;
 	}
 
+	/**
+	 * Get the removed special tile related to the move
+	 * 
+	 * @return the removed special tile related to the move
+	 */
 	public Map<Square, SpecialTile> getRemovedSpecialTile() {
 		return removedSpecialTile;
 	}
 
+	/**
+	 * Set the removed special tile related to the move
+	 * 
+	 * @param removedSpeicialTile
+	 *            the removed special tile
+	 */
 	public void setRemovedSpecialTile(Map<Square, SpecialTile> removedSpeicialTile) {
 		this.removedSpecialTile = removedSpeicialTile;
 	}

@@ -54,38 +54,85 @@ public class ScrabbleSystem {
 
 	}
 
+	/**
+	 * Get the game board
+	 * 
+	 * @return the game board
+	 */
 	public Board getBoard() {
 		return board;
 	}
 
+	/**
+	 * Get the current game move
+	 * 
+	 * @return the current game move
+	 */
 	public Move getMove() {
 		return gameMove;
 	}
 
+	/**
+	 * Get all players involving in the game
+	 * 
+	 * @return all players involving in the game
+	 */
 	public List<Player> getPlayers() {
 		return players;
 	}
 
+	/**
+	 * Get the letter bag
+	 * 
+	 * @return the letter bag
+	 */
 	public LetterBag getLetterBag() {
 		return letterBag;
 	}
 
+	/**
+	 * Get all kinds of the special tiles
+	 * 
+	 * @return all kinds of the special tiles
+	 */
 	public List<SpecialTile> getSpecialStore() {
 		return specialStore;
 	}
 
+	/**
+	 * Get the GameOverFlag
+	 * 
+	 * @return the GameOverFlag
+	 */
 	public boolean isGameOverFlag() {
 		return gameOverFlag;
 	}
 
+	/**
+	 * Set the negtiveFlag
+	 * 
+	 * @param negativeFlag
+	 *            the value to set the negativeFlag
+	 */
 	public void setNegativeFlag(boolean negativeFlag) {
 		this.negativeFlag = negativeFlag;
 	}
 
+	/**
+	 * Set the challengeFlag
+	 * 
+	 * @param isChallengeFlag
+	 *            the value to set the challengeFlag
+	 */
 	public void setChallengeFlag(boolean isChallengeFlag) {
 		this.isChallengeFlag = isChallengeFlag;
 	}
 
+	/**
+	 * Get the isChallengeFlag
+	 * 
+	 * @return the isChallengeFlag
+	 */
 	public boolean isChallengeFlag() {
 		return isChallengeFlag;
 	}
@@ -127,6 +174,11 @@ public class ScrabbleSystem {
 		specialStore.add(new ReverseOrder());
 	}
 
+	/**
+	 * Get the current player
+	 * 
+	 * @return the current player
+	 */
 	public Player getCurrentPlayer() {
 		return turnControl.getCurrentPlayer();
 	}
@@ -138,22 +190,40 @@ public class ScrabbleSystem {
 		gameMove = new Move();
 	}
 
+	/**
+	 * Reset the boomFlag
+	 */
 	public void resetBoomFlag() {
 		boomFlag = false;
 	}
 
+	/**
+	 * Set the boomFlag
+	 * 
+	 * @param boomFlag
+	 *            the value to set the boomFlag
+	 */
 	public void setBoomFlag(boolean boomFlag) {
 		this.boomFlag = boomFlag;
 	}
 
+	/**
+	 * Reset the negativeFlag
+	 */
 	public void resetNegFlag() {
 		negativeFlag = false;
 	}
 
+	/**
+	 * Reset the firstFlag
+	 */
 	public void resetFirstFlag() {
 		firstFlag = false;
 	}
 
+	/**
+	 * Reset the isChallengeFlag
+	 */
 	public void resetIsChallengeFlag() {
 		isChallengeFlag = false;
 	}
@@ -208,6 +278,9 @@ public class ScrabbleSystem {
 
 	}
 
+	/**
+	 * Update current order to the next player
+	 */
 	public void updateOrder() {
 		if (isGameOver()) {
 			List<Player> players = getWinner();
@@ -227,14 +300,26 @@ public class ScrabbleSystem {
 		clearMove();
 	}
 
+	/**
+	 * Reverse current order
+	 */
 	public void reverseOrder() {
 		turnControl.reverseTurn();
 	}
 
+	/**
+	 * Retrieve the current order
+	 */
 	public void retrieveOrder() {
 		turnControl.retrieveTurn();
 	}
 
+	/**
+	 * Current player exchanges some tiles
+	 * 
+	 * @param tiles
+	 *            the tiles needs to exchange
+	 */
 	public void exchangeTile(List<Tile> tiles) {
 		int size = tiles.size();
 		List<Tile> randomTiles = letterBag.getRandomTiles(size);
@@ -245,6 +330,11 @@ public class ScrabbleSystem {
 
 	}
 
+	/**
+	 * Get the winner of the game
+	 * 
+	 * @return the winner of the game
+	 */
 	public List<Player> getWinner() {
 		List<Player> winners = new ArrayList<>();
 		int maxScore = 0;
@@ -265,6 +355,12 @@ public class ScrabbleSystem {
 		return winners;
 	}
 
+	/**
+	 * Invork a challenge event
+	 * 
+	 * @param player
+	 *            the player who invorks a challenge event
+	 */
 	public void challenge(Player player) {
 		if (!isChallengeFlag) {
 			updateOrder();

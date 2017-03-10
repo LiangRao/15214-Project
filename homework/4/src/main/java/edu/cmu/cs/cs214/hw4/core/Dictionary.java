@@ -7,16 +7,31 @@ import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * A class represent a dictionary
+ * 
+ * @author raoliang
+ *
+ */
 public class Dictionary {
 	private static Set<String> wordsSet;
 	private String path;
 
+	/**
+	 * A constructor
+	 * 
+	 * @param path
+	 *            the path of a dictionary
+	 */
 	public Dictionary(String path) {
 		wordsSet = new HashSet<>();
 		this.path = path;
 		initial();
 	}
 
+	/**
+	 * Initial a dictionary
+	 */
 	public void initial() {
 		try {
 			String filePath = "src/main/resources/" + path;
@@ -42,6 +57,13 @@ public class Dictionary {
 
 	}
 
+	/**
+	 * To check whether the word is in the dictionary
+	 * 
+	 * @param word
+	 *            the word needs to check
+	 * @return return true if the word is in dictionary, or return false
+	 */
 	public boolean isIn(Word word) {
 		return wordsSet.contains(word.toString());
 	}

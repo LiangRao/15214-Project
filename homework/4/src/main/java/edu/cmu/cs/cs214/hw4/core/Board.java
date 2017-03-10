@@ -12,17 +12,29 @@ import edu.cmu.cs.cs214.hw4.core.timer.DoubleWordTimer;
 import edu.cmu.cs.cs214.hw4.core.timer.TripleWordTimer;
 import edu.cmu.cs.cs214.hw4.core.timer.TrippleLetterTimer;
 
+/**
+ * A class to represent a game board
+ * 
+ * @author raoliang
+ *
+ */
 public class Board {
 
 	private final int boardSize = 15;
 	private Square[][] squareArray;
 	private Square starSquare;
 
+	/**
+	 * A constructor
+	 */
 	public Board() {
 		squareArray = new Square[boardSize][boardSize];
 		intial();
 	}
 
+	/**
+	 * Initial the game board
+	 */
 	public void intial() {
 		for (int i = 0; i < boardSize; i++) {
 			for (int j = 0; j < boardSize; j++) {
@@ -101,6 +113,16 @@ public class Board {
 		squareArray[14][11].setTimer(new DoubleLetterTimer());
 	}
 
+	/**
+	 * To check whether a coordinate pair is on the board
+	 * 
+	 * @param x
+	 *            the x coordinate
+	 * @param y
+	 *            the y coordinate
+	 * @return return true if the coordinate pair is on the board, or return
+	 *         false
+	 */
 	public boolean onBoard(int x, int y) {
 		if ((x < boardSize) && (y < boardSize) && (y >= 0) && (x >= 0)) {
 			return true;
@@ -109,6 +131,15 @@ public class Board {
 		}
 	}
 
+	/**
+	 * Get a square on the board
+	 * 
+	 * @param x
+	 *            the x coordinate of the square
+	 * @param y
+	 *            the y coordinate of the square
+	 * @return the specific square
+	 */
 	public Square getSquare(int x, int y) {
 		if (!onBoard(x, y)) {
 			return null;
@@ -122,8 +153,10 @@ public class Board {
 	 * Check the move is valid or not
 	 * 
 	 * @param move
+	 *            the move needs to check
 	 * @param firstFlag
-	 * @return
+	 *            the first player flag
+	 * @return return true if the move is valid, or return falsw
 	 */
 	public boolean isValid(Move move, boolean firstFlag) {
 		// check the first move
@@ -239,6 +272,14 @@ public class Board {
 		return false;
 	}
 
+	/**
+	 * To check whether the move on the same row or column
+	 * 
+	 * @param move
+	 *            the move needs to be checked
+	 * @return return "row" if the move on the same row, return "col" if the
+	 *         move on the same column, or return "false"
+	 */
 	public String moveOnSameLine(Move move) {
 		Boolean rowCheck = checkRow(move);
 		Boolean colCheck = checkCol(move);
@@ -251,6 +292,13 @@ public class Board {
 		return "false";
 	}
 
+	/**
+	 * To check whether the move on the same row
+	 * 
+	 * @param move
+	 *            the move needs to be checked
+	 * @return return true if the move on the same row, or return false
+	 */
 	public boolean checkRow(Move move) {
 		Boolean rowTemp = false;
 		Iterator<Map.Entry<Square, Tile>> it = move.getTileMap().entrySet().iterator();
@@ -269,6 +317,13 @@ public class Board {
 		return rowTemp;
 	}
 
+	/**
+	 * To check whether the move on the same column
+	 * 
+	 * @param move
+	 *            the move needs to be checked
+	 * @return return true if the move on the same column, or return false
+	 */
 	public boolean checkCol(Move move) {
 		Boolean colTemp = false;
 		Iterator<Map.Entry<Square, Tile>> it = move.getTileMap().entrySet().iterator();
@@ -287,11 +342,14 @@ public class Board {
 	}
 
 	/**
-	 * Construct the first key word
+	 * Construct the first key word by the move
 	 * 
 	 * @param move
+	 *            the move needs to contruct a word
 	 * @param rowColIndentify
-	 * @return
+	 *            to identify that the all move tiles on the same row or one the
+	 *            same column
+	 * @return the key word
 	 */
 	public Word makeKeyWord(Move move, String rowColIndentify) {
 		Iterator<Map.Entry<Square, Tile>> it = move.getTileMap().entrySet().iterator();
@@ -389,11 +447,14 @@ public class Board {
 	}
 
 	/**
-	 * Check adjacent word
+	 * Check adjacent words of a move
 	 * 
 	 * @param move
+	 *            the move needs to be checked
 	 * @param rowColIndentify
-	 * @return
+	 *            to identify that the all move tiles on the same row or one the
+	 *            same column
+	 * @return the adjacent words
 	 */
 	public List<Word> makeAdjacentWord(Move move, String rowColIndentify) {
 		Iterator<Map.Entry<Square, Tile>> it = move.getTileMap().entrySet().iterator();
@@ -446,6 +507,23 @@ public class Board {
 		return words;
 	}
 
+	/**
+	 * Get all tiles in a word
+	 * 
+	 * @param startX
+	 *            the start x coordinate of a word
+	 * @param startY
+	 *            the start y coordinate of a word
+	 * @param endX
+	 *            the end x coordinate of a word
+	 * @param endY
+	 *            the end y coordinate of a word
+	 * @param move
+	 *            the move related to the word
+	 * @param direction
+	 *            the direction of the word
+	 * @return all tiles on the words
+	 */
 	public List<Tile> getTile(int startX, int startY, int endX, int endY, Move move, String direction) {
 		Map<Square, Tile> moveMap = move.getTileMap();
 		List<Tile> tileList = new ArrayList<>();
@@ -475,9 +553,10 @@ public class Board {
 	}
 
 	/**
-	 * Add special tile to board
+	 * Add special tile in a move to board
 	 * 
 	 * @param move
+	 *            the move contains a special tile
 	 */
 	public void addSpecialTile(Move move) {
 		if (!move.hasSpecialTile()) {
@@ -487,6 +566,19 @@ public class Board {
 		move.getSpecialTileSquare().setSpecialTile(specialTile);
 	}
 
+	/**
+	 * Caculate the score of a move
+	 * 
+	 * @param move
+	 *            the move needs to caculate the score
+	 * @param player
+	 *            the move's owner
+	 * @param boomFlag
+	 *            to show if the moveinvorks a boom special tile or not
+	 * @param negativeFlag
+	 *            to show if the move invorks a negative special tile or not
+	 * 
+	 */
 	public void calMoveScore(Move move, Player player, Boolean boomFlag, Boolean negativeFlag) {
 		int score = 0;
 		String rowColIndentify = moveOnSameLine(move);
@@ -522,9 +614,18 @@ public class Board {
 
 	}
 
+	/**
+	 * Construct the word if the move invorks a boom special tile
+	 * 
+	 * @param move
+	 *            a certain move
+	 * @param rowColIndentify
+	 *            to identify that the all move tiles on the same row or one the
+	 *            same column
+	 * @return the key word
+	 */
 	public Word makeBoomKeyWord(Move move, String rowColIndentify) {
 		Map<Square, Tile> moveMap = move.getTileMap();
-		List<Square> boomTileList = move.getBoomSquareList();
 		Iterator<Map.Entry<Square, Tile>> it = moveMap.entrySet().iterator();
 		List<Tile> tiles = new ArrayList<Tile>();
 		Map<Square, Tile> squareMap = new HashMap<>();
@@ -639,9 +740,12 @@ public class Board {
 	}
 
 	/**
-	 * Active special tile
+	 * Active a special tile
 	 * 
 	 * @param move
+	 *            a certain move
+	 * @param scrabbleSystem
+	 *            the game system
 	 */
 	public void activeSpecialTile(Move move, ScrabbleSystem scrabbleSystem) {
 		Map<Square, Tile> moveMap = move.getTileMap();
@@ -669,6 +773,12 @@ public class Board {
 		move.setRemovedSpecialTile(removedSpecial);
 	}
 
+	/**
+	 * Add move's tiles to the board
+	 * 
+	 * @param move
+	 *            a certain move
+	 */
 	public void addTileToBoard(Move move) {
 		Iterator<Map.Entry<Square, Tile>> it = move.getTileMap().entrySet().iterator();
 		while (it.hasNext()) {

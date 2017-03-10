@@ -23,6 +23,12 @@ public class Player {
 	private Move lastMove;
 	private int passTime;
 
+	/**
+	 * A constructor
+	 * 
+	 * @param name
+	 *            the name of player
+	 */
 	public Player(String name) {
 		this.name = name;
 		nextTurnFlag = true;
@@ -35,94 +41,216 @@ public class Player {
 		passTime = 0;
 	}
 
+	/**
+	 * Get the continue pass turn time of a player
+	 * 
+	 * @return the continue pass turn time of a player
+	 */
 	public int getPassTime() {
 		return passTime;
 	}
 
+	/**
+	 * Get the next turn flag
+	 * 
+	 * @return true if the player has next turn, or return false
+	 */
 	public Boolean getNextTurnFlag() {
 		return nextTurnFlag;
 	}
 
+	/**
+	 * Set the next turn flag
+	 * 
+	 * @param nextTurnFlag
+	 *            set true if the player has next turn, or set false
+	 */
 	public void setNextTurnFlag(Boolean nextTurnFlag) {
 		this.nextTurnFlag = nextTurnFlag;
 	}
 
+	/**
+	 * Get the name of the player
+	 * 
+	 * @return the name of the player
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * Get the score of the player
+	 * 
+	 * @return the score of the player
+	 */
 	public int getScore() {
 		return score;
 	}
 
+	/**
+	 * Get all tiles in the general tile rack
+	 * 
+	 * @return all tiles in the tile rack
+	 */
 	public List<Tile> getTileList() {
 		return tileList;
 	}
 
+	/**
+	 * Get all special tiles in the special tile rack
+	 * 
+	 * @return all special tiles in the special tile rack
+	 */
 	public List<SpecialTile> getSpecialTiles() {
 		return specialTiles;
 	}
 
-	public void addSpecialTiles(SpecialTile specialTile) {
-		specialTiles.add(specialTile);
-	}
-
-	public void removeSpecialTile(SpecialTile specialTile) {
-		specialTiles.remove(specialTile);
-	}
-
+	/**
+	 * Get the last random tiles from the letter bag
+	 * 
+	 * @return the last random tiles from the letter bag
+	 */
 	public List<Tile> getLastRandomTile() {
 		return lastRandomTile;
 	}
 
+	/**
+	 * Set the last random tile from the letter bag
+	 * 
+	 * @param lastRandomTile
+	 *            the last random tile from the letter bag
+	 */
 	public void setLastRandomTile(List<Tile> lastRandomTile) {
 		this.lastRandomTile = lastRandomTile;
 	}
 
+	/**
+	 * Get last words of the player
+	 * 
+	 * @return last words of the player
+	 */
 	public List<Word> getLastWords() {
 		return lastWords;
 	}
 
-	public int getLastScore() {
-		return lastScore;
-	}
-
-	public void setLastScore(int lastScore) {
-		this.lastScore = lastScore;
-	}
-
-	public void addTile(List<Tile> tiles) {
-		tileList.addAll(tiles);
-	}
-
-	public void removeTile(List<Tile> tiles) {
-		tileList.removeAll(tiles);
-	}
-
-	public void addScore(int scoreTmp) {
-		score += scoreTmp;
-	}
-
-	public void minusScore(int scoreTmp) {
-		score -= scoreTmp;
-	}
-
+	/**
+	 * Set the last words of a move by the player
+	 * 
+	 * @param lastWords
+	 *            last words of a move
+	 */
 	public void setLastWords(List<Word> lastWords) {
 		this.lastWords = lastWords;
 	}
 
+	/**
+	 * Get the last move score of the player
+	 * 
+	 * @return the last move score of the player
+	 */
+	public int getLastScore() {
+		return lastScore;
+	}
+
+	/**
+	 * Set the last move score of the player
+	 * 
+	 * @param lastScore
+	 *            the last move score of the player
+	 */
+	public void setLastScore(int lastScore) {
+		this.lastScore = lastScore;
+	}
+
+	/**
+	 * Get the last move of the player
+	 * 
+	 * @return the last move
+	 */
 	public Move getLastMove() {
 		return lastMove;
 	}
 
+	/**
+	 * Set the last move
+	 * 
+	 * @param lastMove
+	 *            the last move
+	 */
 	public void setLastMove(Move lastMove) {
 		this.lastMove = lastMove;
 	}
 
+	/**
+	 * Add a special tile to the special tile rack
+	 * 
+	 * @param specialTile
+	 *            a special tile needs to add
+	 */
+	public void addSpecialTiles(SpecialTile specialTile) {
+		specialTiles.add(specialTile);
+	}
+
+	/**
+	 * Remove a special tile from the special tile rack
+	 * 
+	 * @param specialTile
+	 *            a special tile needs to remove
+	 */
+	public void removeSpecialTile(SpecialTile specialTile) {
+		specialTiles.remove(specialTile);
+	}
+
+	/**
+	 * Add tiles to the general tiles rack
+	 * 
+	 * @param tiles
+	 *            the tiles needs to add
+	 */
+	public void addTile(List<Tile> tiles) {
+		tileList.addAll(tiles);
+	}
+
+	/**
+	 * Remove tiles from the general tiles rack
+	 * 
+	 * @param tiles
+	 *            the tiles needs to remove
+	 */
+	public void removeTile(List<Tile> tiles) {
+		tileList.removeAll(tiles);
+	}
+
+	/**
+	 * Add a score to the player's score
+	 * 
+	 * @param scoreTmp
+	 *            the score needs to add
+	 */
+	public void addScore(int scoreTmp) {
+		score += scoreTmp;
+	}
+
+	/**
+	 * Minus a score from the player's score
+	 * 
+	 * @param scoreTmp
+	 *            the score needs to minus
+	 */
+	public void minusScore(int scoreTmp) {
+		score -= scoreTmp;
+	}
+
+	/**
+	 * Add one to the continue pass turn time of the player
+	 */
 	public void addPassTime() {
 		passTime += 1;
 	}
 
+	/**
+	 * Clear the pass turn time to zero
+	 */
 	public void clearPassTime() {
 		passTime = 0;
 	}
