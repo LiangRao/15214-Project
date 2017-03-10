@@ -205,4 +205,24 @@ public class Word {
 
 	}
 
+	@Override
+	public String toString() {
+		StringBuffer wordString = new StringBuffer();
+		if (direction == "row") {
+			for (int i = startX; i < endX + 1; i++) {
+				Tile tile = tileList.get(i - startX);
+				wordString.append(tile.getLetter());
+			}
+		}
+
+		if (direction == "col") {
+			for (int i = startY; i > endY - 1; i--) {
+				Tile tile = tileList.get(startY - i);
+				wordString.append(tile.getLetter());
+			}
+
+		}
+		return wordString.toString();
+	}
+
 }

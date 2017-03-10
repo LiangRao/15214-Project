@@ -67,7 +67,7 @@ public class ScrabbleSystemTest {
 
 		// Test the startNewGame() method
 		/**
-		 * The first Turn
+		 * The first Turn -- place some tiles on the board
 		 */
 		scrabbleSystem.startNewGame();
 		Player currentPlayer1 = scrabbleSystem.getCurrentPlayer();
@@ -121,11 +121,13 @@ public class ScrabbleSystemTest {
 				break;
 			}
 		}
+
 		// if there is no player invoke a challenge
 		scrabbleSystem.challenge(challengePlayer1);
 
 		/**
-		 * The secord turn
+		 * The secord turn -- place some tiles on the board and challenges by
+		 * another player
 		 */
 		Player currentPlayer2 = scrabbleSystem.getCurrentPlayer();
 		assertNotEquals(currentPlayer1, currentPlayer2);
@@ -164,7 +166,6 @@ public class ScrabbleSystemTest {
 
 		int scoreSum2 = tile2.getValue() + tile4.getValue() * 2 + tile5.getValue() * 2 + tile6.getValue();
 		assertEquals(scoreSum2, currentPlayer2.getScore());
-		scrabbleSystem.setChallengeFlag(true);
 
 		// get the challenge player
 		Player challengePlayer2 = playersList.get(0);
@@ -177,16 +178,20 @@ public class ScrabbleSystemTest {
 		}
 
 		assertEquals(64, scrabbleSystem.getLetterBag().getNumber());
+
+		// invork a challenge event
+		scrabbleSystem.setChallengeFlag(true);
 		scrabbleSystem.challenge(challengePlayer2);
 		assertEquals(67, scrabbleSystem.getLetterBag().getNumber());
 		assertFalse(square4.isOccuppied());
 		assertFalse(square5.isOccuppied());
 		assertFalse(square6.isOccuppied());
+
 		// check isChallengeFlag
 		assertFalse(scrabbleSystem.isChallengeFlag());
 
 		/**
-		 * The third turn
+		 * The third turn -- buy a Boom special tile and pass this turn
 		 */
 
 		Player currentPlayer3 = scrabbleSystem.getCurrentPlayer();
@@ -218,7 +223,8 @@ public class ScrabbleSystemTest {
 		assertTrue(square11.hasSpecialTile());
 
 		/**
-		 * The fourth turn
+		 * The fourth turn -- buy a NegativePoint special tile and place it on
+		 * the board
 		 */
 		Player currentPlayer4 = scrabbleSystem.getCurrentPlayer();
 		currentPlayer4.addScore(10);
@@ -241,7 +247,8 @@ public class ScrabbleSystemTest {
 		assertEquals(0, currentPlayer4.getSpecialTiles().size());
 
 		/**
-		 * The fifth turn
+		 * The fifth turn -- invork the Boom and NegativePoint special tiles at
+		 * the same time
 		 */
 		Player currentPlayer5 = scrabbleSystem.getCurrentPlayer();
 		Move move5 = scrabbleSystem.getMove();
@@ -262,10 +269,6 @@ public class ScrabbleSystemTest {
 		move5.addTile(square15, tile15);
 		move5.addTile(square16, tile16);
 		move5.addTile(square17, tile17);
-		// System.out.println(currentPlayer1.getName());
-		// System.out.println(currentPlayer5.getName());
-		// System.out.println(scoreSum1);
-		// System.out.println(currentPlayer5.getScore());
 		scrabbleSystem.playMove(move5);
 		assertFalse(square13.isOccuppied());
 		assertFalse(square14.isOccuppied());
@@ -273,15 +276,13 @@ public class ScrabbleSystemTest {
 		assertFalse(square2.isOccuppied());
 		assertFalse(square3.isOccuppied());
 		assertTrue(square1.isOccuppied());
-		// assertEquals(2, move5.getTileMap().size());
 
 		int scoreSum5 = scoreSum1 - 3 * (tile13.getValue() + tile14.getValue() + tile1.getValue());
 		assertEquals(scoreSum1, currentPlayer5.getScore());
 
 		/**
-		 * The sixth turn
+		 * The sixth turn -- The player exchanges some tiles
 		 */
-		// The player exchanges some tiles
 		Player currentPlayer6 = scrabbleSystem.getCurrentPlayer();
 		List<Tile> tiles = new ArrayList<>();
 		Tile tile18 = currentPlayer6.getTileList().get(0);

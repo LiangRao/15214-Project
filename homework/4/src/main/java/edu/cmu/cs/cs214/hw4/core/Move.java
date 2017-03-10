@@ -15,11 +15,14 @@ import edu.cmu.cs.cs214.hw4.core.specialTile.SpecialTile;
  *
  */
 public class Move {
-	private Map<Square, Tile> tileMap;
-	private List<Square> boomSquareList;
+	private Map<Square, Tile> tileMap; // to store general tiles and squares
+	private List<Square> boomSquareList; // to store the squares which
+											// experience a boom special tile in
+											// this move
 	private SpecialTile specialTile;
 	private Square specialTileSquare;
-	private Map<Square, SpecialTile> removedSpecialTile;
+	private Map<Square, SpecialTile> removedSpecialTile; // to store the removed
+															// special tile
 
 	/**
 	 * A constructor
@@ -30,15 +33,6 @@ public class Move {
 		boomSquareList = new ArrayList<>();
 		specialTile = null;
 		specialTileSquare = null;
-	}
-
-	/**
-	 * Get the boom squares related to the move
-	 * 
-	 * @return the boom squares related to the move
-	 */
-	public List<Square> getBoomSquareList() {
-		return boomSquareList;
 	}
 
 	/**

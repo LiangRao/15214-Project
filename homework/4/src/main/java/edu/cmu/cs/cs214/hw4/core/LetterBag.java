@@ -15,6 +15,9 @@ import java.util.Set;
 public class LetterBag {
 	private List<Tile> tiles;
 	private int number;
+	private static final int LETTER_A = 65;
+	private static final int LETTER_Z = 90;
+
 	private static final int[] TILENUM = { 9, 2, 2, 4, 12, 2, 3, 2, 9, 1, 1, 4, 2, 6, 8, 2, 1, 6, 4, 6, 4, 2, 2, 1, 2,
 			1 };
 	private static final int[] TILESCORE = { 1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4,
@@ -33,10 +36,9 @@ public class LetterBag {
 	 * Initial the letter bag
 	 */
 	public void initial() {
-		// CHECKSTYPE:OFF
-		for (char i = 65; i < 91; i++) {
-			for (int j = 0; j < TILENUM[i - 65]; j++) {
-				Tile tileTmp = new Tile(i, TILESCORE[i - 65]);
+		for (char i = LETTER_A; i <= LETTER_Z; i++) {
+			for (int j = 0; j < TILENUM[i - LETTER_A]; j++) {
+				Tile tileTmp = new Tile(i, TILESCORE[i - LETTER_A]);
 				tiles.add(tileTmp);
 				number++;
 			}

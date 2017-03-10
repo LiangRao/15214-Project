@@ -20,7 +20,8 @@ import edu.cmu.cs.cs214.hw4.core.timer.TrippleLetterTimer;
  */
 public class Board {
 
-	private final int boardSize = 15;
+	private static final int BOARD_SIZE = 15;
+	private static final int START_SQUARE = 7;
 	private Square[][] squareArray;
 	private Square starSquare;
 
@@ -28,7 +29,7 @@ public class Board {
 	 * A constructor
 	 */
 	public Board() {
-		squareArray = new Square[boardSize][boardSize];
+		squareArray = new Square[BOARD_SIZE][BOARD_SIZE];
 		intial();
 	}
 
@@ -37,13 +38,13 @@ public class Board {
 	 */
 	public void intial() {
 		// CHECKSTYPE:OFF
-		for (int i = 0; i < boardSize; i++) {
-			for (int j = 0; j < boardSize; j++) {
+		for (int i = 0; i < BOARD_SIZE; i++) {
+			for (int j = 0; j < BOARD_SIZE; j++) {
 				squareArray[i][j] = new Square(i, j);
 
 			}
 		}
-		starSquare = squareArray[7][7];
+		starSquare = squareArray[START_SQUARE][START_SQUARE];
 
 		// set Tripple Word Timer
 		squareArray[0][0].setTimer(new TripleWordTimer());
@@ -125,7 +126,7 @@ public class Board {
 	 *         false
 	 */
 	public boolean onBoard(int x, int y) {
-		if ((x < boardSize) && (y < boardSize) && (y >= 0) && (x >= 0)) {
+		if ((x < BOARD_SIZE) && (y < BOARD_SIZE) && (y >= 0) && (x >= 0)) {
 			return true;
 		} else {
 			return false;
@@ -353,7 +354,6 @@ public class Board {
 	 * @return the key word
 	 */
 	public Word makeKeyWord(Move move, String rowColIndentify) {
-		// CHECKSTYPE:OFF
 		Iterator<Map.Entry<Square, Tile>> it = move.getTileMap().entrySet().iterator();
 		if (rowColIndentify == "row") {
 			Map.Entry<Square, Tile> entry = it.next();
@@ -392,7 +392,7 @@ public class Board {
 			while (startX > 0 && (getSquare(startX - 1, startY).isOccuppied() == true)) {
 				startX--;
 			}
-			while (endX > 14 && (getSquare(endX + 1, endY).isOccuppied() == true)) {
+			while (endX > BOARD_SIZE - 1 && (getSquare(endX + 1, endY).isOccuppied() == true)) {
 				endX++;
 			}
 			List<Tile> tileList = getTile(startX, startY, endX, endY, move, rowColIndentify);
@@ -433,7 +433,7 @@ public class Board {
 				}
 			}
 
-			while (startY < 14 && (getSquare(startX, startY + 1).isOccuppied() == true)) {
+			while (startY < BOARD_SIZE - 1 && (getSquare(startX, startY + 1).isOccuppied() == true)) {
 				startY++;
 			}
 			while (endX > 0 && (getSquare(endX, endY - 1).isOccuppied() == true)) {
@@ -469,7 +469,7 @@ public class Board {
 				int endX = startX;
 				int endY = startY;
 
-				while (startY < 14 && getSquare(startX, startY + 1).isOccuppied() == true) {
+				while (startY < BOARD_SIZE - 1 && getSquare(startX, startY + 1).isOccuppied() == true) {
 					startY++;
 				}
 
@@ -675,7 +675,7 @@ public class Board {
 				tiles.add(endTile);
 			}
 
-			while (endX < 14 && ((getSquare(endX + 1, endY).isOccuppied() == true)
+			while (endX < BOARD_SIZE - 1 && ((getSquare(endX + 1, endY).isOccuppied() == true)
 					|| (move.containBoomSquare(getSquare(endX + 1, endY)) == true))) {
 				Square squareTmp = getSquare(endX - 1, endY);
 				if (squareTmp.isOccuppied() == true) {
@@ -711,7 +711,7 @@ public class Board {
 			Tile startTile = moveMap.get(startSquare);
 			tiles.add(startTile);
 
-			while (startY < 14 && ((getSquare(startX, startY + 1).isOccuppied() == true)
+			while (startY < BOARD_SIZE - 1 && ((getSquare(startX, startY + 1).isOccuppied() == true)
 					|| (move.containBoomSquare(getSquare(startX, startY + 1)) == true))) {
 				Square squareTmp = getSquare(startX, startY + 1);
 				if (squareTmp.isOccuppied() == true) {

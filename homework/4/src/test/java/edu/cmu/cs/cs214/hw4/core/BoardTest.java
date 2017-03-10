@@ -144,7 +144,7 @@ public class BoardTest {
 		move.addTile(square5, tile1);
 		move.addTile(square6, tile2);
 		move.addTile(square7, tile4);
-		// test make key word
+		// test for making a key word
 		String identify = board.moveOnSameLine(move);
 		Word word = board.makeKeyWord(move, identify);
 		int startX = word.getStartX();
@@ -170,7 +170,7 @@ public class BoardTest {
 		Move move2 = new Move();
 		move2.addTile(square8, tile4);
 		move2.addTile(square9, tile3);
-
+		// test for making a key word
 		String identify2 = board.moveOnSameLine(move);
 		Word word2 = board.makeKeyWord(move2, identify2);
 		int startX2 = word2.getStartX();
@@ -184,7 +184,7 @@ public class BoardTest {
 		assertEquals(8, endY2);
 		assertEquals(2, tileList2.size());
 
-		// test make adjacent word
+		// test for making adjacent words
 		List<Word> words = board.makeAdjacentWord(move, identify);
 		assertEquals(0, words.size());
 

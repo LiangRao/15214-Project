@@ -17,6 +17,7 @@ import org.junit.Test;
  */
 public class LetterBagTest {
 	private LetterBag letterBag;
+	private static final int LETTER_NUM = 98;
 
 	/**
 	 * Called before each test case method
@@ -45,7 +46,7 @@ public class LetterBagTest {
 	@Test
 	public void test() {
 		// CHECKSTYPE:OFF
-		assertEquals(98, letterBag.getTiles().size());
+		assertEquals(LETTER_NUM, letterBag.getTiles().size());
 		List<Tile> tileList = new ArrayList<Tile>();
 		tileList = letterBag.getRandomTiles(7);
 		assertEquals(7, tileList.size());

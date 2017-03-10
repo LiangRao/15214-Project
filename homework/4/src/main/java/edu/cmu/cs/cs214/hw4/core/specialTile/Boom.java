@@ -17,6 +17,7 @@ public class Boom implements SpecialTile {
 	private final String name = "Boom";
 	private final int price = 20;
 	private Player owner;
+	private static final int BOARD_SIZE = 15;
 
 	@Override
 	public Player getOwner() {
@@ -40,6 +41,7 @@ public class Boom implements SpecialTile {
 
 	@Override
 	public void makeSpecialEffect(ScrabbleSystem scrabbleSystem, Square square) {
+		// CHECKSTYPE:OFF
 		Board board = scrabbleSystem.getBoard();
 		Move move = scrabbleSystem.getMove();
 		int x = square.getX();
@@ -47,13 +49,13 @@ public class Boom implements SpecialTile {
 		int xTmp;
 		int yTmp;
 		for (int i = 0; i < 5; i++) {
-			if ((x + i - 2) > 0 && (x + i - 2) < 14) {
+			if ((x + i - 2) > 0 && (x + i - 2) < BOARD_SIZE - 1) {
 				xTmp = x + i - 2;
 			} else {
 				continue;
 			}
 			for (int j = 0; j < 5; j++) {
-				if ((y + j - 2) > 0 && (y + j - 2) < 14) {
+				if ((y + j - 2) > 0 && (y + j - 2) < BOARD_SIZE - 1) {
 					yTmp = y + j - 2;
 				} else {
 					continue;
@@ -67,7 +69,6 @@ public class Boom implements SpecialTile {
 					move.addBoomSquareList(squareTmp);
 					move.removeTile(squareTmp);
 				}
-
 			}
 		}
 		scrabbleSystem.setBoomFlag(true);
