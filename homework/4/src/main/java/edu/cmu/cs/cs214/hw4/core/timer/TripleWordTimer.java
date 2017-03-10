@@ -10,10 +10,12 @@ import edu.cmu.cs.cs214.hw4.core.Word;
  *
  */
 public class TripleWordTimer implements Timer {
+	private static final int TRIPLE_NUM = 3;
 
 	@Override
 	public void changeWordValue(Word word, Tile tile) {
-		word.changeTimer(3);
+
+		word.changeTimer(TRIPLE_NUM);
 
 	}
 

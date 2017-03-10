@@ -14,20 +14,43 @@ import org.junit.Test;
 
 import edu.cmu.cs.cs214.hw4.core.specialTile.SpecialTile;
 
+/**
+ * Test for ScrabbleSystem class
+ * 
+ * @author raoliang
+ *
+ */
 public class ScrabbleSystemTest {
 	private ScrabbleSystem scrabbleSystem;
 
+	/**
+	 * Called before each test case method
+	 * 
+	 * @throws Exception
+	 *             the exception when method is fail
+	 */
 	@Before
 	public void setUp() throws Exception {
 		scrabbleSystem = new ScrabbleSystem();
 	}
 
+	/**
+	 * Called after each test case method.
+	 * 
+	 * @throws Exception
+	 *             throw Exception when the method fail
+	 */
 	@After
 	public void tearDown() throws Exception {
 	}
 
+	/**
+	 * Test for the all games flow
+	 */
 	@Test
 	public void test() {
+		// CHECKSTYPE:OFF
+
 		// Test the addPlayer(Player player) method
 		Player player1 = new Player("Iris");
 		Player player2 = new Player("Emily");

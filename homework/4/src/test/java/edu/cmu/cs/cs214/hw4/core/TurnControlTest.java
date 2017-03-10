@@ -6,18 +6,39 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Test for TurnControl class
+ * 
+ * @author raoliang
+ *
+ */
 public class TurnControlTest {
 	private TurnControl turnControl;
 
+	/**
+	 * Called after each test case method.
+	 * 
+	 * @throws Exception
+	 *             throw Exception when the method fail
+	 */
 	@Before
 	public void setUp() throws Exception {
 		turnControl = new TurnControl();
 	}
 
+	/**
+	 * Called after each test case method.
+	 * 
+	 * @throws Exception
+	 *             throw Exception when the method fail
+	 */
 	@After
 	public void tearDown() throws Exception {
 	}
 
+	/**
+	 * Test for the methods in the TurnControl class
+	 */
 	@Test
 	public void test() {
 		/**

@@ -33,6 +33,7 @@ public class LetterBag {
 	 * Initial the letter bag
 	 */
 	public void initial() {
+		// CHECKSTYPE:OFF
 		for (char i = 65; i < 91; i++) {
 			for (int j = 0; j < TILENUM[i - 65]; j++) {
 				Tile tileTmp = new Tile(i, TILESCORE[i - 65]);

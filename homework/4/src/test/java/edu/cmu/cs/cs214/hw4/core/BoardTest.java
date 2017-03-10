@@ -10,21 +10,43 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * The test for the board class
+ * 
+ * @author raoliang
+ *
+ */
 public class BoardTest {
 	private Board board;
 
+	/**
+	 * Called before each test case method
+	 * 
+	 * @throws Exception
+	 *             the exception when method is fail
+	 */
 	@Before
 	public void setUp() throws Exception {
 		board = new Board();
 
 	}
 
+	/**
+	 * Called after each test case method.
+	 * 
+	 * @throws Exception
+	 *             throw Exception when the method fail
+	 */
 	@After
 	public void tearDown() throws Exception {
 	}
 
+	/**
+	 * Test the isValid() method for the first move
+	 */
 	@Test
 	public void testFirstIsValid() {
+		// CHECKSTYPE:OFF
 		Tile tile1 = new Tile('A', 1);
 		Tile tile2 = new Tile('B', 1);
 		Square square1 = board.getSquare(7, 7);
@@ -48,8 +70,12 @@ public class BoardTest {
 		assertFalse(board.isValid(move3, true));
 	}
 
+	/**
+	 * Test the isvalid() method for general move
+	 */
 	@Test
 	public void testIsValid() {
+		// CHECKSTYPE:OFF
 		Tile tile1 = new Tile('A', 1);
 		Tile tile2 = new Tile('B', 1);
 		Square square1 = board.getSquare(7, 7);
@@ -92,6 +118,9 @@ public class BoardTest {
 
 	}
 
+	/**
+	 * Test the makeWord() method
+	 */
 	@Test
 	public void testMakeWord() {
 		Tile tile1 = new Tile('A', 1);

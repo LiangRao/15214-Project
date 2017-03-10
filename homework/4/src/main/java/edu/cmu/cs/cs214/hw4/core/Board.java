@@ -36,6 +36,7 @@ public class Board {
 	 * Initial the game board
 	 */
 	public void intial() {
+		// CHECKSTYPE:OFF
 		for (int i = 0; i < boardSize; i++) {
 			for (int j = 0; j < boardSize; j++) {
 				squareArray[i][j] = new Square(i, j);
@@ -352,6 +353,7 @@ public class Board {
 	 * @return the key word
 	 */
 	public Word makeKeyWord(Move move, String rowColIndentify) {
+		// CHECKSTYPE:OFF
 		Iterator<Map.Entry<Square, Tile>> it = move.getTileMap().entrySet().iterator();
 		if (rowColIndentify == "row") {
 			Map.Entry<Square, Tile> entry = it.next();
