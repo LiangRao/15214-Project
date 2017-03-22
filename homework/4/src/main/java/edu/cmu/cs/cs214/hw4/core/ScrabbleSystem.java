@@ -9,7 +9,9 @@ import edu.cmu.cs.cs214.hw4.core.specialTile.Boom;
 import edu.cmu.cs.cs214.hw4.core.specialTile.NegativePoint;
 import edu.cmu.cs.cs214.hw4.core.specialTile.RetrieveOrder;
 import edu.cmu.cs.cs214.hw4.core.specialTile.ReverseOrder;
+import edu.cmu.cs.cs214.hw4.core.specialTile.SkipaTurn;
 import edu.cmu.cs.cs214.hw4.core.specialTile.SpecialTile;
+import edu.cmu.cs.cs214.hw4.gui.GameListener;
 
 /**
  * The system class from the entire scrabble game, which actors as a controller
@@ -32,10 +34,12 @@ public class ScrabbleSystem {
 	private Move gameMove;
 	private boolean firstFlag;
 	private boolean gameOverFlag;
-	private boolean isChallengeFlag;
 	private boolean negativeFlag;
 	private boolean boomFlag;
 	private List<SpecialTile> specialStore;
+	private List<GameListener> gameListeners;
+	private Square starSquare;
+	private int order;
 
 	/**
 	 * Constructor for Scrabble System
@@ -44,13 +48,14 @@ public class ScrabbleSystem {
 		this.players = new ArrayList<>();
 		this.playerNum = 0;
 		this.gameOverFlag = false;
-		this.isChallengeFlag = false;
 		this.path = "words.txt";
 		this.letterBag = new LetterBag();
 		this.turnControl = new TurnControl();
 		this.dictionary = new Dictionary(path);
 		this.board = new Board();
 		this.specialStore = new ArrayList<>();
+		this.gameListeners = new ArrayList<>();
+		this.starSquare = board.getStarSquare();
 
 	}
 
@@ -119,22 +124,21 @@ public class ScrabbleSystem {
 	}
 
 	/**
-	 * Set the challengeFlag
+	 * Get the total number of players
 	 * 
-	 * @param isChallengeFlag
-	 *            the value to set the challengeFlag
+	 * @return the total number of players
 	 */
-	public void setChallengeFlag(boolean isChallengeFlag) {
-		this.isChallengeFlag = isChallengeFlag;
+	public int getPlayerNum() {
+		return playerNum;
 	}
 
 	/**
-	 * Get the isChallengeFlag
+	 * Add a gameListener to the game
 	 * 
-	 * @return the isChallengeFlag
+	 * @param gameListner
 	 */
-	public boolean isChallengeFlag() {
-		return isChallengeFlag;
+	public void addGameListner(GameListener gameListener) {
+		gameListeners.add(gameListener);
 	}
 
 	/**
@@ -172,6 +176,7 @@ public class ScrabbleSystem {
 		specialStore.add(new NegativePoint());
 		specialStore.add(new RetrieveOrder());
 		specialStore.add(new ReverseOrder());
+		specialStore.add(new SkipaTurn());
 	}
 
 	/**
@@ -222,32 +227,29 @@ public class ScrabbleSystem {
 	}
 
 	/**
-	 * Reset the isChallengeFlag
-	 */
-	public void resetIsChallengeFlag() {
-		isChallengeFlag = false;
-	}
-
-	/**
 	 * A player plays a set of tiles and submits
 	 * 
 	 * @param move
 	 *            a set of tiles
 	 */
-	public void playMove(Move move) {
+	public boolean playMove(Move move) {
+		order = turnControl.getOrderNum();
+		Player currentPlayer = getCurrentPlayer();
+		Player player = players.get(order);
+		if (!starSquare.isOccuppied()) {
+			firstFlag = true;
+		}
 		// check valid
 		if (!board.isValid(move, firstFlag)) {
 			System.out.println("The move is not valid! Please play again!");
-			return;
+			return false;
 		}
 		// add special tile
 		board.addSpecialTile(move);
 		// active special tile
 		board.activeSpecialTile(move, this);
 
-		Player currentPlayer = getCurrentPlayer();
 		board.calMoveScore(move, currentPlayer, boomFlag, negativeFlag);
-
 		board.addTileToBoard(move);
 
 		List<Tile> tiles = new ArrayList<Tile>();
@@ -257,10 +259,14 @@ public class ScrabbleSystem {
 			Map.Entry<Square, Tile> entry = it.next();
 			tiles.add(entry.getValue());
 		}
-		SpecialTile specialTile = move.getSpecialTile();
+
 		// remove the player's tiles and the special tile
 		currentPlayer.removeTile(tiles);
-		currentPlayer.removeSpecialTile(specialTile);
+
+		if (move.hasSpecialTile()) {
+			SpecialTile specialTile = move.getSpecialTile();
+			currentPlayer.removeSpecialTile(specialTile);
+		}
 
 		int tileNum = moveMap.size();
 		if (letterBag.isEmpty()) {
@@ -275,6 +281,8 @@ public class ScrabbleSystem {
 		resetBoomFlag();
 		resetNegFlag();
 		resetFirstFlag();
+		notifySquareChange();
+		return true;
 
 	}
 
@@ -291,13 +299,15 @@ public class ScrabbleSystem {
 			}
 			return;
 		}
+
+		turnControl.updateTurn();
 		Player currentPlayer = getCurrentPlayer();
 		if (!currentPlayer.getNextTurnFlag()) {
 			turnControl.skipTurn();
 			currentPlayer.setNextTurnFlag(true);
 		}
-		turnControl.updateTurn();
 		clearMove();
+		notifyPlayerChange();
 	}
 
 	/**
@@ -321,12 +331,14 @@ public class ScrabbleSystem {
 	 *            the tiles needs to exchange
 	 */
 	public void exchangeTile(List<Tile> tiles) {
+		order = turnControl.getOrderNum();
 		int size = tiles.size();
 		List<Tile> randomTiles = letterBag.getRandomTiles(size);
 		Player currentPlayer = getCurrentPlayer();
 		currentPlayer.removeTile(tiles);
 		currentPlayer.addTile(randomTiles);
 		updateOrder();
+		notifyTileRackChange();
 
 	}
 
@@ -362,20 +374,15 @@ public class ScrabbleSystem {
 	 *            the player who invorks a challenge event
 	 */
 	public void challenge(Player player) {
-		if (!isChallengeFlag) {
-			updateOrder();
-			return;
-		}
 		Player lastPlayer = turnControl.getCurrentPlayer();
 		List<Word> lastWords = lastPlayer.getLastWords();
-		Boolean challengeFlag = false;
+		boolean challengeFlag = false;
 		for (Word word : lastWords) {
 			if (!dictionary.isIn(word)) {
 				challengeFlag = true;
 				break;
 			}
 		}
-
 		if (challengeFlag) {
 			List<Tile> moveTile = new ArrayList<>();
 			int lastScore = lastPlayer.getLastScore();
@@ -406,8 +413,6 @@ public class ScrabbleSystem {
 			player.setNextTurnFlag(false);
 		}
 
-		resetIsChallengeFlag();
-		updateOrder();
 	}
 
 	/**
@@ -415,23 +420,28 @@ public class ScrabbleSystem {
 	 * @param specialTileName
 	 *            the name of special Tile which the player want to buy
 	 */
-	public void buySpecialTile(String specialTileName) {
+	public boolean buySpecialTile(String specialTileName) {
 		Player currentPlayer = getCurrentPlayer();
 
 		for (SpecialTile specialTile : specialStore) {
 			String name = specialTile.getName();
 			if (name.equals(specialTileName)) {
 				int price = specialTile.getPrice();
-				if (currentPlayer.getScore() > price) {
-					currentPlayer.addSpecialTiles(specialTile);
+				if (currentPlayer.getScore() >= price) {
+					SpecialTile buySpecialTile = specialTile;
+					currentPlayer.addSpecialTiles(buySpecialTile);
 					currentPlayer.minusScore(price);
-					break;
+					buySpecialTile.setOwner(currentPlayer);
+					notifyBuySpecialTile();
+					return true;
 				} else {
 					System.out.println("Your total scores is not enough to buy the special Tile! ");
 				}
 			}
 
 		}
+		notifyBuySpecialTile();
+		return false;
 
 	}
 
@@ -442,14 +452,17 @@ public class ScrabbleSystem {
 	 *            the move that the current player submit
 	 */
 	public void pass(Move move) {
+		order = turnControl.getOrderNum();
 		Player currentplayer = getCurrentPlayer();
 		board.addSpecialTile(move);
 		if (move.hasSpecialTile()) {
 			SpecialTile specialTile = move.getSpecialTile();
 			currentplayer.removeSpecialTile(specialTile);
+			board.addSpecialTile(move);
 		}
 		currentplayer.addPassTime();
 		updateOrder();
+		Player current = getCurrentPlayer();
 	}
 
 	/**
@@ -467,6 +480,42 @@ public class ScrabbleSystem {
 			return true;
 		}
 		return false;
+	}
+
+	public List<Player> getChallengePlayer() {
+		int number = (order + 1) % playerNum;
+		List<Player> challengePlayer = new ArrayList<>();
+		for (int i = 0; i < playerNum - 1; i++) {
+			challengePlayer.add(players.get(number));
+			number = (number + 1) % playerNum;
+		}
+		return challengePlayer;
+	}
+
+	private void notifySquareChange() {
+		for (GameListener listener : gameListeners) {
+			listener.squareChanged();
+		}
+	}
+
+	private void notifyPlayerChange() {
+		for (GameListener listener : gameListeners) {
+			listener.currentPlayerChange();
+		}
+	}
+
+	private void notifyBuySpecialTile() {
+		for (GameListener listener : gameListeners) {
+			listener.specialRackChange();
+			listener.scoreChanged();
+			listener.currentplayerScoreChange();
+		}
+	}
+
+	private void notifyTileRackChange() {
+		for (GameListener listener : gameListeners) {
+			listener.tileRackChange();
+		}
 	}
 
 }

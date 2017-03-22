@@ -1,5 +1,6 @@
 package edu.cmu.cs.cs214.hw4.core.specialTile;
 
+import edu.cmu.cs.cs214.hw4.core.Move;
 import edu.cmu.cs.cs214.hw4.core.Player;
 import edu.cmu.cs.cs214.hw4.core.ScrabbleSystem;
 import edu.cmu.cs.cs214.hw4.core.Square;
@@ -36,7 +37,7 @@ public class NegativePoint implements SpecialTile {
 	}
 
 	@Override
-	public void makeSpecialEffect(ScrabbleSystem scrabbleSystem, Square square) {
+	public void makeSpecialEffect(ScrabbleSystem scrabbleSystem, Square square, Move move) {
 		scrabbleSystem.setNegativeFlag(true);
 
 	}

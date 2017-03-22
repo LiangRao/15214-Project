@@ -40,4 +40,5 @@ public class Tile {
 	public int getValue() {
 		return value;
 	}
+
 }

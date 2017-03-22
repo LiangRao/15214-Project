@@ -10,6 +10,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -41,10 +42,15 @@ public class GamePanel extends JPanel implements GameListener {
 	private List<Tile> selectedTileList;
 	private Move move;
 	private List<Integer> disabledTileButton;
+	private List<Boolean> exchangeResultList;
+	private GamePanel gamePanel;
+	private SpecialTile selectedSpecialTile;
+	// private MyCheckBox myCheckBox;
 
 	private final static int BOARD_SIZE = 15;
 
 	public GamePanel(ScrabbleSystem scrabbleSystem) {
+		gamePanel = this;
 		this.scrabbleSystem = scrabbleSystem;
 		scrabbleSystem.addGameListner(this);
 		selectedTile = null;
@@ -57,6 +63,8 @@ public class GamePanel extends JPanel implements GameListener {
 		specialRackPanel = new JPanel();
 		playerInfoPanel = new JPanel();
 		controlPanel = new JPanel();
+		exchangeResultList = new ArrayList<>();
+		selectedSpecialTile = null;
 		buildBoardPanel();
 		buildRackPanel();
 		buildSpecialRackPanel();
@@ -112,16 +120,18 @@ public class GamePanel extends JPanel implements GameListener {
 	}
 
 	private void buildRackPanel() {
-		tileRackPanel.setLayout(new GridLayout(7, 1));
+		tileRackPanel.setLayout(new GridLayout(7, 2));
 		tileButton = new JButton[7];
 
 		List<Tile> tiles = scrabbleSystem.getCurrentPlayer().getTileList();
 		for (int i = 0; i < 7; i++) {
 			tileButton[i] = new JButton();
 			Tile tile = tiles.get(i);
+			int tileNum = i + 1;
 			tileButton[i]
 					.setText(String.valueOf(tile.getLetter()) + "  [value =" + String.valueOf(tile.getValue()) + " ]");
 			tileButton[i].addActionListener(new tileListener(tile, i));
+			tileRackPanel.add(new JLabel("Tile " + tileNum + ":"));
 			tileRackPanel.add(tileButton[i]);
 		}
 		tileRackPanel.setBorder(BorderFactory.createTitledBorder("Tile Rack"));
@@ -131,50 +141,31 @@ public class GamePanel extends JPanel implements GameListener {
 
 	private void buildSpecialRackPanel() {
 		specialRackPanel.setLayout(new GridLayout(5, 2));
-		List<SpecialTile> specialTiles = scrabbleSystem.getCurrentPlayer().getSpecialTiles();
-		int size = specialTiles.size();
 		int boomNum = 0;
 		int negativeNum = 0;
 		int retrieveNum = 0;
 		int reverseNum = 0;
 		int skipNum = 0;
-		for (int i = 0; i < size; i++) {
-			String name = specialTiles.get(i).getName();
-			if (name.equals("Boom")) {
-				boomNum++;
-			} else if (name.equals("NegativePoint")) {
-				negativeNum++;
-			} else if (name.equals("RetrieveOrder")) {
-				retrieveNum++;
-			} else if (name.equals("ReverseOrder")) {
-				reverseNum++;
-			} else {
-				skipNum++;
-			}
-		}
+
 		specialTileButton = new JButton[5];
-		specialTileButton[0] = new JButton("Boom X" + String.valueOf(boomNum));
-
-		specialTileButton[1] = new JButton("NegativePoint X" + String.valueOf(negativeNum));
-
-		specialTileButton[2] = new JButton("RetrieveOrder X" + String.valueOf(retrieveNum));
-
-		specialTileButton[3] = new JButton("ReverseOrder X" + String.valueOf(reverseNum));
-
-		specialTileButton[4] = new JButton("Skip-a-Turn X" + String.valueOf(skipNum));
+		specialTileButton[0] = new JButton("Boom X " + String.valueOf(boomNum));
+		specialTileButton[0].setEnabled(false);
+		specialTileButton[1] = new JButton("NegativePoint X " + String.valueOf(negativeNum));
+		specialTileButton[1].setEnabled(false);
+		specialTileButton[2] = new JButton("RetrieveOrder X " + String.valueOf(retrieveNum));
+		specialTileButton[2].setEnabled(false);
+		specialTileButton[3] = new JButton("ReverseOrder X " + String.valueOf(reverseNum));
+		specialTileButton[3].setEnabled(false);
+		specialTileButton[4] = new JButton("Skip-a-Turn X " + String.valueOf(skipNum));
+		specialTileButton[4].setEnabled(false);
 
 		specialRackPanel.add(specialTileButton[0]);
-		// panel.add(new JLabel("[price: 20]"));
 		specialRackPanel.add(specialTileButton[1]);
-		// panel.add(new JLabel("[price: 30]"));
 		specialRackPanel.add(specialTileButton[2]);
-		// panel.add(new JLabel("[price: 20]"));
 		specialRackPanel.add(specialTileButton[3]);
-		// panel.add(new JLabel("[price: 30]"));
 		specialRackPanel.add(specialTileButton[4]);
-		// panel.add(new JLabel("[price: 20]"));
-
 		specialRackPanel.setBorder(BorderFactory.createTitledBorder("Special Tile Rack"));
+		repaint();
 
 	}
 
@@ -218,15 +209,12 @@ public class GamePanel extends JPanel implements GameListener {
 				String selectedSpecialTile = (String) JOptionPane.showInputDialog(null,
 						"Select the kind of special tile you want to buy:\n", "Special Tile Store",
 						JOptionPane.PLAIN_MESSAGE, new ImageIcon("icon.png"), specialTiles, "Boom");
-				System.out.println(selectedSpecialTile);
 				if (selectedSpecialTile != null) {
 					selectedSpecialTile = selectedSpecialTile.substring(0, selectedSpecialTile.indexOf("[")).trim();
 				}
 
 				Boolean buySpecialFlag = scrabbleSystem.buySpecialTile(selectedSpecialTile);
 				if (buySpecialFlag) {
-					updateInfoPanel();
-					updateSpecialPanel(selectedSpecialTile);
 					JOptionPane.showMessageDialog(null,
 							"You successful buy a " + selectedSpecialTile + " special tile!");
 				} else {
@@ -242,6 +230,7 @@ public class GamePanel extends JPanel implements GameListener {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				new MyCheckBox(scrabbleSystem);
 
 			}
 		});
@@ -250,7 +239,7 @@ public class GamePanel extends JPanel implements GameListener {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				scrabbleSystem.updateOrder();
+				scrabbleSystem.pass(move);
 
 			}
 		});
@@ -261,10 +250,9 @@ public class GamePanel extends JPanel implements GameListener {
 			public void actionPerformed(ActionEvent e) {
 				if (move.getTileMap().size() != 0) {
 					Boolean playMoveFlag = scrabbleSystem.playMove(move);
-					System.out.println(move.getTileMap().size());
 					if (!playMoveFlag) {
 						updateBoardPanel();
-						updateTileRack();
+						updateTileRackButton();
 						move = new Move();
 						JOptionPane.showMessageDialog(null, "The move is not valid! Please try again!");
 
@@ -280,7 +268,6 @@ public class GamePanel extends JPanel implements GameListener {
 								int answer = JOptionPane.showOptionDialog(null, challenge, "Challenge or Not",
 										JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options,
 										options[0]);
-								System.out.println(answer);
 								if (answer == 0) {
 									scrabbleSystem.challenge(player);
 									updateInfoPanel();
@@ -288,6 +275,8 @@ public class GamePanel extends JPanel implements GameListener {
 									break;
 								}
 							}
+							scrabbleSystem.updateOrder();
+						} else {
 							scrabbleSystem.updateOrder();
 						}
 
@@ -324,6 +313,16 @@ public class GamePanel extends JPanel implements GameListener {
 						String text = specialTile.getName();
 						squareButton[i][j].setText(text);
 						squareButton[i][j].setEnabled(true);
+					} else if (square.hasTimer()) {
+						String name = square.getTimer().getName();
+						squareButton[i][j].setText(name);
+						squareButton[i][j].setEnabled(true);
+					} else {
+						if (i == 7 && j == 7) {
+							squareButton[7][7].setText("★");
+						} else {
+							squareButton[i][j].setText("");
+						}
 					}
 				} else if (square.hasTimer()) {
 					String name = square.getTimer().getName();
@@ -343,11 +342,10 @@ public class GamePanel extends JPanel implements GameListener {
 
 	}
 
-	private void updateTileRack() {
+	private void updateTileRackButton() {
 		int size = disabledTileButton.size();
 		for (int i = 0; i < size; i++) {
 			Integer tmp = disabledTileButton.get(i);
-
 			tileButton[tmp].setEnabled(true);
 		}
 	}
@@ -360,10 +358,13 @@ public class GamePanel extends JPanel implements GameListener {
 			singlePlayerInfo[i].removeAll();
 			JLabel nameLabel = new JLabel("player: " + player.getName());
 			JLabel scoreLabel = new JLabel("score:" + String.valueOf(player.getScore()));
+			nameLabel.setVisible(true);
+			scoreLabel.setVisible(true);
 			singlePlayerInfo[i].add(nameLabel);
 			singlePlayerInfo[i].add(scoreLabel);
+			singlePlayerInfo[i].repaint();
+			singlePlayerInfo[i].getParent().repaint();
 			singlePlayerInfo[i].setVisible(true);
-
 		}
 		repaint();
 	}
@@ -375,24 +376,78 @@ public class GamePanel extends JPanel implements GameListener {
 		updateInfoPanel();
 	}
 
-	private void updateSpecialPanel(String selectedSpecialTile) {
-		if (selectedSpecialTile.equals("Boom")) {
-			int boomNum = Integer.parseInt(specialTileButton[0].getText().replaceAll(".*[^\\d](?=(\\d+))", "")) + 1;
-			specialTileButton[0] = new JButton("Boom X" + boomNum);
-		} else if (selectedSpecialTile.equals("NegativePoint")) {
-			int negativeNum = Integer.parseInt(specialTileButton[1].getText().replaceAll(".*[^\\d](?=(\\d+))", "")) + 1;
-			specialTileButton[1] = new JButton("NegativePoint X" + String.valueOf(negativeNum));
-		} else if (selectedSpecialTile.equals("RetrieveOrder")) {
-			int retrieveNum = Integer.parseInt(specialTileButton[2].getText().replaceAll(".*[^\\d](?=(\\d+))", "")) + 1;
+	private void rebuildSpecialRack() {
+		Map<String, List<SpecialTile>> specialMap = scrabbleSystem.getCurrentPlayer().getSpecialTiles();
 
-			specialTileButton[2] = new JButton("RetrieveOrder X" + String.valueOf(retrieveNum));
-		} else if (selectedSpecialTile.equals("ReverseOrder")) {
-			int reverseNum = Integer.parseInt(specialTileButton[3].getText().replaceAll(".*[^\\d](?=(\\d+))", "")) + 1;
-			specialTileButton[3] = new JButton("ReverseOrder X" + String.valueOf(reverseNum));
+		int boomNum = specialMap.get("Boom").size();
+		int negativeNum = specialMap.get("NegativePoint").size();
+		int retrieveNum = specialMap.get("RetrieveOrder").size();
+		int reverseNum = specialMap.get("ReverseOrder").size();
+		int skipNum = specialMap.get("Skip-a-Turn").size();
+
+		specialTileButton[0].setText("Boom X" + boomNum);
+		specialTileButton[1].setText("NegativePoint X" + String.valueOf(negativeNum));
+		specialTileButton[2].setText("RetrieveOrder X" + String.valueOf(retrieveNum));
+		specialTileButton[3].setText("ReverseOrder X" + String.valueOf(reverseNum));
+		specialTileButton[4].setText("Skip-a-Turn X" + String.valueOf(skipNum));
+
+		if (selectedSpecialTile != null) {
+			disableSpecialButton();
 		} else {
-			int skipNum = Integer.parseInt(specialTileButton[4].getText().replaceAll(".*[^\\d](?=(\\d+))", "")) + 1;
-			specialTileButton[4] = new JButton("Skip-a-Turn X" + String.valueOf(skipNum));
+			if (boomNum == 0) {
+				specialTileButton[0].setEnabled(false);
+			} else if (boomNum != 0) {
+				specialTileButton[0].setEnabled(true);
+				specialTileButton[0].addActionListener(new specialTileListener(specialMap.get("Boom").get(0)));
+			}
+
+			if (negativeNum == 0) {
+				specialTileButton[1].setEnabled(false);
+			} else if (negativeNum != 0) {
+				specialTileButton[1].setEnabled(true);
+				specialTileButton[1].addActionListener(new specialTileListener(specialMap.get("NegativePoint").get(0)));
+
+			}
+
+			if (retrieveNum == 0) {
+				specialTileButton[2].setEnabled(false);
+			} else if (retrieveNum != 0) {
+				specialTileButton[2].setEnabled(true);
+				specialTileButton[2].addActionListener(new specialTileListener(specialMap.get("RetrieveOrder").get(0)));
+
+			}
+
+			if (reverseNum == 0) {
+				specialTileButton[3].setEnabled(false);
+			} else if (reverseNum != 0) {
+				specialTileButton[3].setEnabled(true);
+				specialTileButton[3].addActionListener(new specialTileListener(specialMap.get("ReverseOrder").get(0)));
+
+			}
+
+			if (skipNum == 0) {
+				specialTileButton[4].setEnabled(false);
+			} else if (skipNum != 0) {
+				specialTileButton[4].setEnabled(true);
+				specialTileButton[4].addActionListener(new specialTileListener(specialMap.get("Skip-a-Turn").get(0)));
+			}
 		}
+
+	}
+
+	private void updateTileRack() {
+		List<Tile> tiles = scrabbleSystem.getCurrentPlayer().getTileList();
+		for (int i = 0; i < 7; i++) {
+			Tile tile = tiles.get(i);
+			tileButton[i]
+					.setText(String.valueOf(tile.getLetter()) + "  [value =" + String.valueOf(tile.getValue()) + " ]");
+		}
+	}
+
+	private void updateCurrentPlayerScore() {
+		Player currentPlayer = scrabbleSystem.getCurrentPlayer();
+		currentPlayerLabel.setText("Current player: " + currentPlayer.getName() + " ( score: "
+				+ String.valueOf(currentPlayer.getScore()) + " )");
 	}
 
 	private class squareListener implements ActionListener {
@@ -417,6 +472,9 @@ public class GamePanel extends JPanel implements GameListener {
 				move.addTile(square, selectedTile);
 				selectedTileList.add(selectedTile);
 				clearSelectedTile();
+			} else if (selectedSpecialTile != null) {
+				move.addSpecialTile(selectedSpecialTile, square);
+				button.setText(selectedSpecialTile.getName());
 			}
 		}
 
@@ -451,6 +509,21 @@ public class GamePanel extends JPanel implements GameListener {
 			disabledTileButton.add(index);
 			selectedTile = tile;
 
+		}
+
+	}
+
+	private class specialTileListener implements ActionListener {
+		private SpecialTile specialTile;
+
+		public specialTileListener(SpecialTile specialTile) {
+			this.specialTile = specialTile;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			selectedSpecialTile = specialTile;
+			rebuildSpecialRack();
 		}
 
 	}
@@ -490,6 +563,7 @@ public class GamePanel extends JPanel implements GameListener {
 				}
 
 			}
+
 		}
 
 	}
@@ -523,6 +597,14 @@ public class GamePanel extends JPanel implements GameListener {
 		return text;
 	}
 
+	private void disableSpecialButton() {
+		for (int i = 0; i < 5; i++) {
+			specialTileButton[i].setEnabled(false);
+
+		}
+
+	}
+
 	@Override
 	public void squareChanged() {
 		updateBoardPanel();
@@ -535,39 +617,38 @@ public class GamePanel extends JPanel implements GameListener {
 		tileRackPanel.removeAll();
 		buildRackPanel();
 		updateBoardPanel();
+		rebuildSpecialRack();
 		move = new Move();
 		selectedTileList = new ArrayList<>();
-
-	}
-
-	@Override
-	public void gameEnded(Player winner) {
-		// TODO Auto-generated method stub
+		selectedSpecialTile = null;
 
 	}
 
 	@Override
 	public void scoreChanged() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void tileRackChange() {
-		// TODO Auto-generated method stub
+		updateInfoPanel();
 
 	}
 
 	@Override
 	public void specialRackChange() {
-		// TODO Auto-generated method stub
+		rebuildSpecialRack();
 
 	}
 
 	@Override
-	public void specialSquareChange(int row, int col, SpecialTile specialTile) {
-		// TODO Auto-generated method stub
+	public void currentplayerScoreChange() {
+		updateCurrentPlayerScore();
 
 	}
 
+	@Override
+	public void tileRackChange() {
+		updateTileRack();
+	}
+
+	@Override
+	public void gameEnded(Player winner) {
+
+	}
 }

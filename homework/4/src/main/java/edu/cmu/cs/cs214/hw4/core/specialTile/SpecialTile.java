@@ -1,5 +1,6 @@
 package edu.cmu.cs.cs214.hw4.core.specialTile;
 
+import edu.cmu.cs.cs214.hw4.core.Move;
 import edu.cmu.cs.cs214.hw4.core.Player;
 import edu.cmu.cs.cs214.hw4.core.ScrabbleSystem;
 import edu.cmu.cs.cs214.hw4.core.Square;
@@ -19,7 +20,7 @@ public interface SpecialTile {
 	 * @param square
 	 *            the square which contains a certain special tile
 	 */
-	void makeSpecialEffect(ScrabbleSystem scrabbleSystem, Square square);
+	void makeSpecialEffect(ScrabbleSystem scrabbleSystem, Square square, Move move);
 
 	/**
 	 * Get the special tile owner

@@ -1,7 +1,9 @@
 package edu.cmu.cs.cs214.hw4.core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import edu.cmu.cs.cs214.hw4.core.specialTile.SpecialTile;
 
@@ -15,7 +17,8 @@ public class Player {
 	private final String name;
 	private int score;
 	private List<Tile> tileList;
-	private List<SpecialTile> specialTiles;
+	// private List<SpecialTile> specialTiles;
+	private Map<String, List<SpecialTile>> specialTilesMap;
 	private Boolean nextTurnFlag;
 	private List<Tile> lastRandomTile;
 	private List<Word> lastWords;
@@ -32,13 +35,19 @@ public class Player {
 	public Player(String name) {
 		this.name = name;
 		nextTurnFlag = true;
-		score = 0;
+		score = 9999;
 		tileList = new ArrayList<>();
-		specialTiles = new ArrayList<>();
+		// specialTiles = new ArrayList<>();
 		lastRandomTile = new ArrayList<>();
 		lastWords = new ArrayList<>();
 		lastScore = 0;
 		passTime = 0;
+		specialTilesMap = new HashMap<>();
+		specialTilesMap.put("Boom", new ArrayList<>());
+		specialTilesMap.put("NegativePoint", new ArrayList<>());
+		specialTilesMap.put("RetrieveOrder", new ArrayList<>());
+		specialTilesMap.put("ReverseOrder", new ArrayList<>());
+		specialTilesMap.put("Skip-a-Turn", new ArrayList<>());
 	}
 
 	/**
@@ -101,8 +110,8 @@ public class Player {
 	 * 
 	 * @return all special tiles in the special tile rack
 	 */
-	public List<SpecialTile> getSpecialTiles() {
-		return specialTiles;
+	public Map<String, List<SpecialTile>> getSpecialTiles() {
+		return specialTilesMap;
 	}
 
 	/**
@@ -188,7 +197,7 @@ public class Player {
 	 *            a special tile needs to add
 	 */
 	public void addSpecialTiles(SpecialTile specialTile) {
-		specialTiles.add(specialTile);
+		specialTilesMap.get(specialTile.getName()).add(specialTile);
 	}
 
 	/**
@@ -198,7 +207,7 @@ public class Player {
 	 *            a special tile needs to remove
 	 */
 	public void removeSpecialTile(SpecialTile specialTile) {
-		specialTiles.remove(specialTile);
+		specialTilesMap.get(specialTile.getName()).remove(specialTile);
 	}
 
 	/**

@@ -65,7 +65,8 @@ public class Dictionary {
 	 * @return return true if the word is in dictionary, or return false
 	 */
 	public boolean isIn(Word word) {
-		return wordsSet.contains(word.toString());
+		System.out.println(word.toString().toLowerCase());
+		return wordsSet.contains(word.toString().toLowerCase());
 	}
 
 }

@@ -1,5 +1,7 @@
 package edu.cmu.cs.cs214.hw4.core.timer;
 
+import java.awt.Color;
+
 import edu.cmu.cs.cs214.hw4.core.Tile;
 import edu.cmu.cs.cs214.hw4.core.Word;
 
@@ -10,6 +12,7 @@ import edu.cmu.cs.cs214.hw4.core.Word;
  *
  */
 public interface Timer {
+
 	/**
 	 * Change the word value with timer
 	 * 
@@ -19,4 +22,8 @@ public interface Timer {
 	 *            a tile in the word needing to change the value
 	 */
 	void changeWordValue(Word word, Tile tile);
+
+	Color getColor();
+
+	String getName();
 }

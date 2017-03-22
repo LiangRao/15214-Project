@@ -40,14 +40,15 @@ public class Boom implements SpecialTile {
 	}
 
 	@Override
-	public void makeSpecialEffect(ScrabbleSystem scrabbleSystem, Square square) {
+	public void makeSpecialEffect(ScrabbleSystem scrabbleSystem, Square square, Move move) {
 		// CHECKSTYPE:OFF
 		Board board = scrabbleSystem.getBoard();
-		Move move = scrabbleSystem.getMove();
+		// Move move = scrabbleSystem.getMove();
 		int x = square.getX();
 		int y = square.getY();
 		int xTmp;
 		int yTmp;
+
 		for (int i = 0; i < 5; i++) {
 			if ((x + i - 2) > 0 && (x + i - 2) < BOARD_SIZE - 1) {
 				xTmp = x + i - 2;
@@ -69,6 +70,7 @@ public class Boom implements SpecialTile {
 					move.addBoomSquareList(squareTmp);
 					move.removeTile(squareTmp);
 				}
+
 			}
 		}
 		scrabbleSystem.setBoomFlag(true);

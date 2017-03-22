@@ -44,6 +44,10 @@ public class TurnControl {
 		return players.get(orderNum);
 	}
 
+	public int getOrderNum() {
+		return orderNum;
+	}
+
 	/**
 	 * Go to the next turn
 	 */
@@ -75,6 +79,10 @@ public class TurnControl {
 		}
 		players = playersTmp;
 		orderNum = (playerNum - orderNum - 1) % playerNum;
+	}
+
+	public List<Player> getPlayers() {
+		return players;
 	}
 
 	/**

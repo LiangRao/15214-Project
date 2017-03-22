@@ -5,14 +5,8 @@ import edu.cmu.cs.cs214.hw4.core.Player;
 import edu.cmu.cs.cs214.hw4.core.ScrabbleSystem;
 import edu.cmu.cs.cs214.hw4.core.Square;
 
-/**
- * The retrieve special tile who will ask the player to play a move again
- * 
- * @author raoliang
- *
- */
-public class RetrieveOrder implements SpecialTile {
-	private final String name = "RetrieveOrder";
+public class SkipaTurn implements SpecialTile {
+	private final String name = "Skip-a-Turn";
 	private final int price = 20;
 	private Player owner;
 
@@ -38,7 +32,7 @@ public class RetrieveOrder implements SpecialTile {
 
 	@Override
 	public void makeSpecialEffect(ScrabbleSystem scrabbleSystem, Square square, Move move) {
-		scrabbleSystem.retrieveOrder();
+		scrabbleSystem.getCurrentPlayer().setNextTurnFlag(false);
 
 	}
 

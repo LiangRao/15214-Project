@@ -133,6 +133,10 @@ public class Board {
 		}
 	}
 
+	public Square getStarSquare() {
+		return starSquare;
+	}
+
 	/**
 	 * Get a square on the board
 	 * 
@@ -767,7 +771,7 @@ public class Board {
 		if (removeSpecialSquare.size() != 0) {
 			for (int i = 0; i < removeSpecialSquare.size(); i++) {
 				Square squareTmp = removeSpecialSquare.get(i);
-				squareTmp.getSpecialTile().makeSpecialEffect(scrabbleSystem, squareTmp);
+				squareTmp.getSpecialTile().makeSpecialEffect(scrabbleSystem, squareTmp, move);
 				squareTmp.removeSpecialTile();
 			}
 		}
