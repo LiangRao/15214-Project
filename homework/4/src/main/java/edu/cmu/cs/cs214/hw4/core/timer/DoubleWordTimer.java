@@ -12,13 +12,15 @@ import edu.cmu.cs.cs214.hw4.core.Word;
  *
  */
 public class DoubleWordTimer implements Timer {
-	private final static Color COLOR = new Color(255, 175, 175);
-	private final static String NAME = "2WS";
+	private static final Color COLOR = new Color(255, 175, 175);
+	private static final String NAME = "2WS";
 
+	@Override
 	public Color getColor() {
 		return COLOR;
 	}
 
+	@Override
 	public String getName() {
 		return NAME;
 	}

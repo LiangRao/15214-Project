@@ -44,6 +44,11 @@ public class TurnControl {
 		return players.get(orderNum);
 	}
 
+	/**
+	 * Get the number of current order
+	 * 
+	 * @return the number of current order
+	 */
 	public int getOrderNum() {
 		return orderNum;
 	}
@@ -81,6 +86,11 @@ public class TurnControl {
 		orderNum = (playerNum - orderNum - 1) % playerNum;
 	}
 
+	/**
+	 * Get all players in the game
+	 * 
+	 * @return all players in the game
+	 */
 	public List<Player> getPlayers() {
 		return players;
 	}

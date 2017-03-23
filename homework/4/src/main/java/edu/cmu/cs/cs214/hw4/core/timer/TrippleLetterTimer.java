@@ -12,13 +12,15 @@ import edu.cmu.cs.cs214.hw4.core.Word;
  *
  */
 public class TrippleLetterTimer implements Timer {
-	private final static Color COLOR = new Color(0, 0, 255);
-	private final static String NAME = "3LS";
+	private static final Color COLOR = new Color(0, 0, 255);
+	private static final String NAME = "3LS";
 
+	@Override
 	public Color getColor() {
 		return COLOR;
 	}
 
+	@Override
 	public String getName() {
 		return NAME;
 	}

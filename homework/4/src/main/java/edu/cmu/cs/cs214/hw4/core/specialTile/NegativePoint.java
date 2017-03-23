@@ -6,7 +6,7 @@ import edu.cmu.cs.cs214.hw4.core.ScrabbleSystem;
 import edu.cmu.cs.cs214.hw4.core.Square;
 
 /**
- * The negative special tile who will minus the move score from the player
+ * The negative special tile which will minus the move score from the player
  * 
  * @author raoliang
  *

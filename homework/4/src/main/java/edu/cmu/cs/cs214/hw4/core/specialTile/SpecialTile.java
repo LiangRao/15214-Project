@@ -19,7 +19,10 @@ public interface SpecialTile {
 	 *            the game system control
 	 * @param square
 	 *            the square which contains a certain special tile
+	 * @param move
+	 *            the move of current player
 	 */
+
 	void makeSpecialEffect(ScrabbleSystem scrabbleSystem, Square square, Move move);
 
 	/**

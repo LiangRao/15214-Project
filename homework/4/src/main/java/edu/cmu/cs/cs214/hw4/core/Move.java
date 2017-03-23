@@ -107,6 +107,11 @@ public class Move {
 		return specialTileSquare;
 	}
 
+	/**
+	 * Get all boom squares related to this move
+	 * 
+	 * @return all boom squares related to this move
+	 */
 	public List<Square> getBoomSquareList() {
 		return boomSquareList;
 	}

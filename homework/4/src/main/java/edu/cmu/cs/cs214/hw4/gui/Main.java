@@ -11,11 +11,16 @@ import javax.swing.WindowConstants;
  *
  */
 public class Main {
+	/**
+	 * The main method to invork the game GUI
+	 * 
+	 * @param args
+	 *            the parament of main method
+	 */
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
 			// add frame and set its closing operation
 			JFrame frame = new JFrame("Start a Scrabble Game");
-
 			frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 			frame.add(new StartGamePanel(frame));

@@ -37,29 +37,29 @@ public class Word {
 	 *            the direction of a word, to be "col" or "row"
 	 * @param tileList
 	 *            all tiles in a word
+	 * @param squareMap
+	 *            all pairs of a square and a tile of the word
 	 */
-	public Word(int startX, int startY, int endX, int endY, String direction, List<Tile> tileList) {
+	public Word(int startX, int startY, int endX, int endY, String direction, List<Tile> tileList,
+			Map<Square, Tile> squareMap) {
 		this.startX = startX;
 		this.startY = startY;
 		this.endX = endX;
 		this.endY = endY;
 		this.direction = direction;
 		this.tileList = tileList;
+		this.squareMap = squareMap;
 		this.timer = 1;
 		this.value = 0;
 	}
 
 	/**
-	 * A constructor for a boom word
+	 * Get all pairs of a square and a tile of the word
 	 * 
-	 * @param tileList
-	 *            all tiles in a word
-	 * @param squareMap
-	 *            the square map in the move
+	 * @return All pairs of a square and a tile of the word
 	 */
-	public Word(List<Tile> tileList, Map<Square, Tile> squareMap) {
-		this.tileList = tileList;
-		this.squareMap = squareMap;
+	public Map<Square, Tile> getSquareMap() {
+		return squareMap;
 	}
 
 	/**
@@ -187,21 +187,25 @@ public class Word {
 	 *            the current board class
 	 */
 	public void calBoomVal(Board board) {
-		for (Tile tile : tileList) {
-			addValue(tile.getValue());
-		}
-
-		Iterator<Map.Entry<Square, Tile>> it = squareMap.entrySet().iterator();
-
-		while (it.hasNext()) {
-			Map.Entry<Square, Tile> entry = it.next();
-			Square square = entry.getKey();
-			if (square.hasTimer()) {
-				Tile tile = entry.getValue();
-				square.changeWordValue(this, tile);
+		if (tileList.size() != 0) {
+			for (Tile tile : tileList) {
+				addValue(tile.getValue());
 			}
+
+			Iterator<Map.Entry<Square, Tile>> it = squareMap.entrySet().iterator();
+
+			while (it.hasNext()) {
+				Map.Entry<Square, Tile> entry = it.next();
+				Square square = entry.getKey();
+				if (square.hasTimer()) {
+					Tile tile = entry.getValue();
+					square.changeWordValue(this, tile);
+				}
+			}
+			setValue(getValue() * timer);
+		} else {
+			setValue(0);
 		}
-		setValue(getValue() * timer);
 
 	}
 

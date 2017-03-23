@@ -12,13 +12,15 @@ import edu.cmu.cs.cs214.hw4.core.Word;
  *
  */
 public class DoubleLetterTimer implements Timer {
-	private final static Color COLOR = new Color(151, 255, 255);
-	private final static String NAME = "2LS";
+	private static final Color COLOR = new Color(151, 255, 255);
+	private static final String NAME = "2LS";
 
+	@Override
 	public Color getColor() {
 		return COLOR;
 	}
 
+	@Override
 	public String getName() {
 		return NAME;
 	}
@@ -26,9 +28,5 @@ public class DoubleLetterTimer implements Timer {
 	@Override
 	public void changeWordValue(Word word, Tile tile) {
 		word.addValue(tile.getValue());
-	}
-
-	public static void main(String[] args) {
-		System.out.println(1);
 	}
 }

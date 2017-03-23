@@ -5,6 +5,12 @@ import edu.cmu.cs.cs214.hw4.core.Player;
 import edu.cmu.cs.cs214.hw4.core.ScrabbleSystem;
 import edu.cmu.cs.cs214.hw4.core.Square;
 
+/**
+ * The player who triggered this tile will lose his/her next turn.
+ * 
+ * @author raoliang
+ *
+ */
 public class SkipaTurn implements SpecialTile {
 	private final String name = "Skip-a-Turn";
 	private final int price = 20;

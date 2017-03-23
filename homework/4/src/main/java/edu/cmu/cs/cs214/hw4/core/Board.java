@@ -133,6 +133,11 @@ public class Board {
 		}
 	}
 
+	/**
+	 * Get the star square on the center of the board
+	 * 
+	 * @return the star square on the center of the board
+	 */
 	public Square getStarSquare() {
 		return starSquare;
 	}
@@ -210,6 +215,7 @@ public class Board {
 					if (square1 != null) {
 						if (getSquare(x - 1, y).isOccuppied()) {
 							count++;
+							System.out.println(getSquare(x - 1, y).isOccuppied());
 						}
 					}
 					if (square2 != null) {
@@ -392,7 +398,6 @@ public class Board {
 					}
 				}
 			}
-
 			while (startX > 0 && (getSquare(startX - 1, startY).isOccuppied() == true)) {
 				startX--;
 			}
@@ -400,7 +405,8 @@ public class Board {
 				endX++;
 			}
 			List<Tile> tileList = getTile(startX, startY, endX, endY, move, rowColIndentify);
-			Word word = new Word(startX, startY, endX, endY, rowColIndentify, tileList);
+			Map<Square, Tile> tileMap = getTileMap(startX, startY, endX, endY, move, rowColIndentify);
+			Word word = new Word(startX, startY, endX, endY, rowColIndentify, tileList, tileMap);
 			return word;
 
 		}
@@ -444,7 +450,8 @@ public class Board {
 				endY--;
 			}
 			List<Tile> tileList = getTile(startX, startY, endX, endY, move, rowColIndentify);
-			Word word = new Word(startX, startY, endX, endY, rowColIndentify, tileList);
+			Map<Square, Tile> tileMap = getTileMap(startX, startY, endX, endY, move, rowColIndentify);
+			Word word = new Word(startX, startY, endX, endY, rowColIndentify, tileList, tileMap);
 			return word;
 
 		}
@@ -482,7 +489,8 @@ public class Board {
 				}
 				if (startY != endY) {
 					List<Tile> tileList = getTile(startX, startY, endX, endY, move, "col");
-					Word wordTmp = new Word(startX, startY, endX, endY, "col", tileList);
+					Map<Square, Tile> tileMap = getTileMap(startX, startY, endX, endY, move, "col");
+					Word wordTmp = new Word(startX, startY, endX, endY, "col", tileList, tileMap);
 					words.add(wordTmp);
 				}
 			}
@@ -505,12 +513,58 @@ public class Board {
 				}
 				if (startX != endX) {
 					List<Tile> tileList = getTile(startX, startY, endX, endY, move, "row");
-					Word wordTmp = new Word(startX, startY, endX, endY, "row", tileList);
+					Map<Square, Tile> tileMap = getTileMap(startX, startY, endX, endY, move, "row");
+					Word wordTmp = new Word(startX, startY, endX, endY, "row", tileList, tileMap);
 					words.add(wordTmp);
 				}
 			}
 		}
 		return words;
+	}
+
+	/**
+	 * Get all tiles and all squares in a word
+	 * 
+	 * @param startX
+	 *            the start x coordinate of a word
+	 * @param startY
+	 *            the start y coordinate of a word
+	 * @param endX
+	 *            the end x coordinate of a word
+	 * @param endY
+	 *            the end y coordinate of a word
+	 * @param move
+	 *            the move related to the word
+	 * @param direction
+	 *            the direction of the word
+	 * @return all tiles on the words
+	 */
+	public Map<Square, Tile> getTileMap(int startX, int startY, int endX, int endY, Move move, String direction) {
+		Map<Square, Tile> moveMap = move.getTileMap();
+		Map<Square, Tile> resultMap = new HashMap<>();
+		if (direction == "row") {
+			for (int i = startX; i < endX + 1; i++) {
+				Square squareTmp = getSquare(i, startY);
+				if (squareTmp.isOccuppied()) {
+					resultMap.put(squareTmp, squareTmp.getTile());
+				} else {
+					resultMap.put(squareTmp, moveMap.get(squareTmp));
+				}
+			}
+
+		}
+		if (direction == "col") {
+			for (int i = startY; i > endY - 1; i--) {
+				Square squareTmp = getSquare(startX, i);
+				if (squareTmp.isOccuppied()) {
+					resultMap.put(squareTmp, squareTmp.getTile());
+				} else {
+					resultMap.put(squareTmp, moveMap.get(squareTmp));
+				}
+			}
+
+		}
+		return resultMap;
 	}
 
 	/**
@@ -533,6 +587,7 @@ public class Board {
 	public List<Tile> getTile(int startX, int startY, int endX, int endY, Move move, String direction) {
 		Map<Square, Tile> moveMap = move.getTileMap();
 		List<Tile> tileList = new ArrayList<>();
+		// Map<Square, Tile> resultMap = new HashMap<>();
 		if (direction == "row") {
 			for (int i = startX; i < endX + 1; i++) {
 				Square squareTmp = getSquare(i, startY);
@@ -583,11 +638,13 @@ public class Board {
 	 *            to show if the moveinvorks a boom special tile or not
 	 * @param negativeFlag
 	 *            to show if the move invorks a negative special tile or not
+	 * @param rowColIndentify
+	 *            to identify that the all move tiles on the same row or one the
+	 *            same column
 	 * 
 	 */
-	public void calMoveScore(Move move, Player player, Boolean boomFlag, Boolean negativeFlag) {
+	public void calMoveScore(Move move, Player player, Boolean boomFlag, Boolean negativeFlag, String rowColIndentify) {
 		int score = 0;
-		String rowColIndentify = moveOnSameLine(move);
 		List<Word> wordsList = new ArrayList<Word>();
 		if (boomFlag) {
 			Word word = makeBoomKeyWord(move, rowColIndentify);
@@ -600,7 +657,7 @@ public class Board {
 					score += tmp.getValue();
 				}
 			}
-
+			player.addScore(score);
 		} else {
 			Word word = makeKeyWord(move, rowColIndentify);
 			List<Word> words = makeAdjacentWord(move, rowColIndentify);
@@ -624,125 +681,62 @@ public class Board {
 	 * Construct the word if the move invorks a boom special tile
 	 * 
 	 * @param move
-	 *            a certain move
+	 *            current player's move
 	 * @param rowColIndentify
 	 *            to identify that the all move tiles on the same row or one the
 	 *            same column
 	 * @return the key word
 	 */
 	public Word makeBoomKeyWord(Move move, String rowColIndentify) {
-		Map<Square, Tile> moveMap = move.getTileMap();
-		Iterator<Map.Entry<Square, Tile>> it = moveMap.entrySet().iterator();
-		List<Tile> tiles = new ArrayList<Tile>();
-		Map<Square, Tile> squareMap = new HashMap<>();
-		Iterator<Map.Entry<Square, Tile>> it2 = moveMap.entrySet().iterator();
-
-		while (it2.hasNext()) {
-			Map.Entry<Square, Tile> entry = it2.next();
-			squareMap.put(entry.getKey(), entry.getValue());
-		}
-
-		if (rowColIndentify == "row") {
-			Map.Entry<Square, Tile> entry = it.next();
-			int startX = entry.getKey().getX();
-			int startY = entry.getKey().getY();
-			int endX = startX;
-			int endY = startY;
-			int startXsave = startX;
-			while (it.hasNext()) {
-				Map.Entry<Square, Tile> entryTmp = it.next();
-				Square tmp = entryTmp.getKey();
-				int tmpX = tmp.getX();
-				if (tmpX < startX) {
-					startX = tmpX;
-				}
-				if (tmpX > endX) {
-					endX = tmpX;
-				}
+		Word word = makeKeyWord(move, rowColIndentify);
+		Map<Square, Tile> map = word.getSquareMap();
+		List<Tile> tileList = word.getTileList();
+		List<Square> squareList = move.getBoomSquareList();
+		int size = squareList.size();
+		for (int i = 0; i < size; i++) {
+			Square square = squareList.get(i);
+			if (map.containsKey(square)) {
+				Tile tile = map.get(square);
+				tileList.remove(tile);
+				map.remove(square);
 			}
-			Square startSquare = getSquare(startX, startY);
-			Tile startTile = moveMap.get(startSquare);
-			tiles.add(startTile);
-
-			while (startX > 0 && ((getSquare(startX - 1, startY).isOccuppied() == true)
-					|| (move.containBoomSquare(getSquare(startX - 1, startY)) == true))) {
-				Square squareTmp = getSquare(startX - 1, startY);
-				if (squareTmp.isOccuppied() == true) {
-					tiles.add(squareTmp.getTile());
-				}
-				startX--;
-			}
-
-			if (endX != startXsave) {
-				Square endSquare = getSquare(endX, endY);
-				Tile endTile = moveMap.get(endSquare);
-				tiles.add(endTile);
-			}
-
-			while (endX < BOARD_SIZE - 1 && ((getSquare(endX + 1, endY).isOccuppied() == true)
-					|| (move.containBoomSquare(getSquare(endX + 1, endY)) == true))) {
-				Square squareTmp = getSquare(endX - 1, endY);
-				if (squareTmp.isOccuppied() == true) {
-					tiles.add(squareTmp.getTile());
-				}
-				endX++;
-			}
-			Word word = new Word(tiles, squareMap);
-			return word;
 
 		}
+		return word;
+	}
 
-		if (rowColIndentify == "col") {
-			Map.Entry<Square, Tile> entry = it.next();
-			int startX = entry.getKey().getX();
-			int startY = entry.getKey().getY();
-			int endX = startX;
-			int endY = startY;
-			int startYsave = startY;
-			while (it.hasNext()) {
-				Map.Entry<Square, Tile> entryTmp = it.next();
-				Square tmp = entryTmp.getKey();
-				int tmpY = tmp.getY();
-				if (tmpY > startY) {
-					startY = tmpY;
+	/**
+	 * Construct adjacent words if the move invorks a boom special tile
+	 * 
+	 * @param move
+	 *            current player's move
+	 * @param rowColIndentify
+	 *            to identify that the all move tiles on the same row or one the
+	 *            same column
+	 * @return the adjacent word
+	 */
+	public List<Word> makeBoomAdjacentWord(Move move, String rowColIndentify) {
+		List<Word> resultWord = new ArrayList<>();
+		List<Word> words = makeAdjacentWord(move, rowColIndentify);
+		int size = words.size();
+		List<Square> squareList = move.getBoomSquareList();
+		int size2 = squareList.size();
+		for (int i = 0; i < size; i++) {
+			Word word = words.get(i);
+			Map<Square, Tile> map = word.getSquareMap();
+			List<Tile> tileList = word.getTileList();
+			for (int j = 0; j < size2; j++) {
+				Square square = squareList.get(i);
+				if (map.containsKey(square)) {
+					Tile tile = map.get(square);
+					tileList.remove(tile);
+					map.remove(square);
 				}
-				if (tmpY < endY) {
-					endY = tmpY;
-				}
+				resultWord.add(word);
 			}
 
-			Square startSquare = getSquare(startX, startY);
-			Tile startTile = moveMap.get(startSquare);
-			tiles.add(startTile);
-
-			while (startY < BOARD_SIZE - 1 && ((getSquare(startX, startY + 1).isOccuppied() == true)
-					|| (move.containBoomSquare(getSquare(startX, startY + 1)) == true))) {
-				Square squareTmp = getSquare(startX, startY + 1);
-				if (squareTmp.isOccuppied() == true) {
-					tiles.add(squareTmp.getTile());
-				}
-				startY++;
-			}
-
-			if (endY != startYsave) {
-				Square endSquare = getSquare(endX, endY);
-				Tile endTile = moveMap.get(endSquare);
-				tiles.add(endTile);
-			}
-
-			while (endX > 0 && ((getSquare(endX, endY - 1).isOccuppied() == true)
-					|| (move.containBoomSquare(getSquare(endX, endY - 1)) == true))) {
-				Square squareTmp = getSquare(endX, endY - 1);
-				if (squareTmp.isOccuppied() == true) {
-					tiles.add(squareTmp.getTile());
-				}
-				endX--;
-			}
-			Word word = new Word(tiles, squareMap);
-			return word;
 		}
-		return null;
-
+		return resultWord;
 	}
 
 	/**

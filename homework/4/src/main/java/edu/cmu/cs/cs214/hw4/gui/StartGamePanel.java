@@ -16,18 +16,28 @@ import javax.swing.JTextField;
 import edu.cmu.cs.cs214.hw4.core.Player;
 import edu.cmu.cs.cs214.hw4.core.ScrabbleSystem;
 
+/**
+ * The panel to enroll all players to the game
+ * 
+ * @author raoliang
+ *
+ */
 public class StartGamePanel extends JPanel {
 	private JFrame mainFrame;
 	private List<Player> playersList;
-	private final static int MAX_PLAYER = 4;
-	private final static int TEXT_LENGTH = 20;
-	private final static String CURRENT_PLAYER = "Player number:";
-	private final static String NAME_SPACE = "Input your name here:";
+	private static final int MAX_PLAYER = 4;
+	private static final int TEXT_LENGTH = 20;
+	private static final String CURRENT_PLAYER = "Player number:";
+	private static final String NAME_SPACE = "Input your name here:";
+	private static final int PANEL_SIZE = 30;
 
 	private final JLabel welcomeLabel = new JLabel("Welcome to scrabble!");
 
 	/**
 	 * A constructor
+	 * 
+	 * @param frame
+	 *            the game GUI main fram
 	 */
 	public StartGamePanel(JFrame frame) {
 		mainFrame = frame;
@@ -89,7 +99,7 @@ public class StartGamePanel extends JPanel {
 		add(welcomeLabel, BorderLayout.NORTH);
 		add(addPlayerPanel, BorderLayout.CENTER);
 		add(startGameButton, BorderLayout.SOUTH);
-		setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+		setBorder(BorderFactory.createEmptyBorder(PANEL_SIZE, PANEL_SIZE, PANEL_SIZE, PANEL_SIZE));
 		setVisible(true);
 
 	}

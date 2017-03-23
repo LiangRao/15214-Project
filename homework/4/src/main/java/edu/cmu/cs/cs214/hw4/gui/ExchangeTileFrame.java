@@ -18,7 +18,13 @@ import javax.swing.JPanel;
 import edu.cmu.cs.cs214.hw4.core.ScrabbleSystem;
 import edu.cmu.cs.cs214.hw4.core.Tile;
 
-public class MyCheckBox implements ItemListener {
+/**
+ * Invork the frame while clicks on the "exchange" button in the GameGui
+ * 
+ * @author raoliang
+ *
+ */
+public class ExchangeTileFrame implements ItemListener {
 	private JFrame frame = new JFrame("Exchange Tiles");
 	private Container cont = frame.getContentPane();
 	private JCheckBox[] tileCheckBox;
@@ -26,23 +32,28 @@ public class MyCheckBox implements ItemListener {
 	private JButton cancel = new JButton("Cancel");
 	private JPanel pan = new JPanel();
 	private JPanel controlPanel = new JPanel();
-	private ScrabbleSystem scrabbleSystem;
+	private static final int TILE_NUM = 7;
 
 	private boolean[] selected;
 
-	public MyCheckBox(ScrabbleSystem scrabbleSystem) {
-		this.scrabbleSystem = scrabbleSystem;
-		tileCheckBox = new JCheckBox[7];
+	/**
+	 * A constructor
+	 * 
+	 * @param scrabbleSystem
+	 *            the game core class
+	 */
+	public ExchangeTileFrame(ScrabbleSystem scrabbleSystem) {
+		tileCheckBox = new JCheckBox[TILE_NUM];
 		pan.setBorder(BorderFactory.createTitledBorder("select all the tiles"));
-		pan.setLayout(new GridLayout(1, 7));
-		for (int i = 0; i < 7; i++) {
+		pan.setLayout(new GridLayout(1, TILE_NUM));
+		for (int i = 0; i < TILE_NUM; i++) {
 			int j = i + 1;
 			tileCheckBox[i] = new JCheckBox("Tile " + j);
 			tileCheckBox[i].addItemListener(this);
 			pan.add(this.tileCheckBox[i]);
 		}
-		selected = new boolean[7];
-		for (int i = 0; i < 7; i++) {
+		selected = new boolean[TILE_NUM];
+		for (int i = 0; i < TILE_NUM; i++) {
 			selected[i] = false;
 		}
 
@@ -53,7 +64,7 @@ public class MyCheckBox implements ItemListener {
 
 				List<Tile> tiles = scrabbleSystem.getCurrentPlayer().getTileList();
 				List<Tile> resultList = new ArrayList<>();
-				for (int i = 0; i < 7; i++) {
+				for (int i = 0; i < TILE_NUM; i++) {
 					if (selected[i]) {
 						resultList.add(tiles.get(i));
 					}
@@ -76,11 +87,9 @@ public class MyCheckBox implements ItemListener {
 		controlPanel.add(confirm);
 		controlPanel.add(cancel);
 		cont.setLayout(new GridLayout(2, 1));
-		// cont.setPreferredSize(new Dimension(100, 100));
 		cont.add(pan);
 		cont.add(controlPanel);
 		frame.setSize(500, 100);
-		// frame.pack();
 		frame.setVisible(true);
 		frame.setResizable(true);
 
@@ -88,7 +97,7 @@ public class MyCheckBox implements ItemListener {
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		for (int i = 0; i < 7; i++) {
+		for (int i = 0; i < TILE_NUM; i++) {
 			if (tileCheckBox[i].isSelected()) {
 				selected[i] = true;
 			}

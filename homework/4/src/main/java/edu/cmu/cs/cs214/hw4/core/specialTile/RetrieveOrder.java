@@ -6,7 +6,7 @@ import edu.cmu.cs.cs214.hw4.core.ScrabbleSystem;
 import edu.cmu.cs.cs214.hw4.core.Square;
 
 /**
- * The retrieve special tile who will ask the player to play a move again
+ * The retrieve special tile which will ask the player to play a move again
  * 
  * @author raoliang
  *

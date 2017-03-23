@@ -23,7 +23,17 @@ public interface Timer {
 	 */
 	void changeWordValue(Word word, Tile tile);
 
+	/**
+	 * Get the color of a specific timer
+	 * 
+	 * @return the color of a specific timer
+	 */
 	Color getColor();
 
+	/**
+	 * Get the name of a specific timer
+	 * 
+	 * @return the name of a specific timer
+	 */
 	String getName();
 }

@@ -40,6 +40,7 @@ public class ScrabbleSystem {
 	private List<GameListener> gameListeners;
 	private Square starSquare;
 	private int order;
+	private boolean reverseFlag;
 
 	/**
 	 * Constructor for Scrabble System
@@ -48,6 +49,7 @@ public class ScrabbleSystem {
 		this.players = new ArrayList<>();
 		this.playerNum = 0;
 		this.gameOverFlag = false;
+		this.reverseFlag = false;
 		this.path = "words.txt";
 		this.letterBag = new LetterBag();
 		this.turnControl = new TurnControl();
@@ -135,7 +137,8 @@ public class ScrabbleSystem {
 	/**
 	 * Add a gameListener to the game
 	 * 
-	 * @param gameListner
+	 * @param gameListener
+	 *            a listener related to the scrabble system
 	 */
 	public void addGameListner(GameListener gameListener) {
 		gameListeners.add(gameListener);
@@ -231,11 +234,11 @@ public class ScrabbleSystem {
 	 * 
 	 * @param move
 	 *            a set of tiles
+	 * @return true if the move is valid or return false
 	 */
 	public boolean playMove(Move move) {
 		order = turnControl.getOrderNum();
 		Player currentPlayer = getCurrentPlayer();
-		Player player = players.get(order);
 		if (!starSquare.isOccuppied()) {
 			firstFlag = true;
 		}
@@ -244,12 +247,27 @@ public class ScrabbleSystem {
 			System.out.println("The move is not valid! Please play again!");
 			return false;
 		}
+		String rowColId = board.moveOnSameLine(move);
 		// add special tile
 		board.addSpecialTile(move);
 		// active special tile
 		board.activeSpecialTile(move, this);
 
-		board.calMoveScore(move, currentPlayer, boomFlag, negativeFlag);
+		board.calMoveScore(move, currentPlayer, boomFlag, negativeFlag, rowColId);
+		if (boomFlag) {
+			List<Square> squares = move.getBoomSquareList();
+			Map<Square, Tile> moveMap = move.getTileMap();
+			int size = squares.size();
+			for (int i = 0; i < size; i++) {
+				Square square = squares.get(i);
+				if (moveMap.containsKey(square)) {
+					moveMap.remove(square);
+				}
+				if (square.isOccuppied()) {
+					square.removeTile();
+				}
+			}
+		}
 		board.addTileToBoard(move);
 
 		List<Tile> tiles = new ArrayList<Tile>();
@@ -278,6 +296,7 @@ public class ScrabbleSystem {
 		}
 		currentPlayer.setLastMove(move);
 
+		currentPlayer.clearPassTime();
 		resetBoomFlag();
 		resetNegFlag();
 		resetFirstFlag();
@@ -295,16 +314,18 @@ public class ScrabbleSystem {
 			System.out.println("The game is over!");
 
 			for (Player player : players) {
-				System.out.println("The winner is" + player.getName());
+				System.out.println("The winner is " + player.getName());
 			}
+			notifyGameOver(players);
 			return;
 		}
 
 		turnControl.updateTurn();
 		Player currentPlayer = getCurrentPlayer();
 		if (!currentPlayer.getNextTurnFlag()) {
-			turnControl.skipTurn();
 			currentPlayer.setNextTurnFlag(true);
+			turnControl.skipTurn();
+
 		}
 		clearMove();
 		notifyPlayerChange();
@@ -315,6 +336,8 @@ public class ScrabbleSystem {
 	 */
 	public void reverseOrder() {
 		turnControl.reverseTurn();
+		reverseFlag = true;
+
 	}
 
 	/**
@@ -416,9 +439,11 @@ public class ScrabbleSystem {
 	}
 
 	/**
+	 * Buy a special tile
 	 * 
 	 * @param specialTileName
 	 *            the name of special Tile which the player want to buy
+	 * @return true if successful buy a special tile or return false
 	 */
 	public boolean buySpecialTile(String specialTileName) {
 		Player currentPlayer = getCurrentPlayer();
@@ -462,7 +487,6 @@ public class ScrabbleSystem {
 		}
 		currentplayer.addPassTime();
 		updateOrder();
-		Player current = getCurrentPlayer();
 	}
 
 	/**
@@ -474,7 +498,7 @@ public class ScrabbleSystem {
 		Player currentPlayer = getCurrentPlayer();
 		if (currentPlayer.getTileList().size() == 0) {
 			return true;
-		} else if (currentPlayer.getPassTime() == MAX_PASS_TIME) {
+		} else if (currentPlayer.getPassTime() >= MAX_PASS_TIME) {
 			return true;
 		} else if (gameOverFlag == true) {
 			return true;
@@ -482,12 +506,21 @@ public class ScrabbleSystem {
 		return false;
 	}
 
+	/**
+	 * Get all the players who is likely to invork a challenge in this turn
+	 * 
+	 * @return all the players who is likely to invork a challenge in this turn
+	 */
 	public List<Player> getChallengePlayer() {
 		int number = (order + 1) % playerNum;
 		List<Player> challengePlayer = new ArrayList<>();
 		for (int i = 0; i < playerNum - 1; i++) {
 			challengePlayer.add(players.get(number));
 			number = (number + 1) % playerNum;
+		}
+		if (reverseFlag) {
+			players = turnControl.getPlayers();
+			reverseFlag = false;
 		}
 		return challengePlayer;
 	}
@@ -515,6 +548,12 @@ public class ScrabbleSystem {
 	private void notifyTileRackChange() {
 		for (GameListener listener : gameListeners) {
 			listener.tileRackChange();
+		}
+	}
+
+	private void notifyGameOver(List<Player> winner) {
+		for (GameListener listener : gameListeners) {
+			listener.gameEnded(winner);
 		}
 	}
 

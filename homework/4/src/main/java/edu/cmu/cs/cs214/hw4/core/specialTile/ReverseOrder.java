@@ -6,7 +6,7 @@ import edu.cmu.cs.cs214.hw4.core.ScrabbleSystem;
 import edu.cmu.cs.cs214.hw4.core.Square;
 
 /**
- * The reverse order special tile who will reverse the current turn order
+ * The reverse order special tile which will reverse the current turn order
  * 
  * @author raoliang
  *

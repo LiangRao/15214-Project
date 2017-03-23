@@ -17,7 +17,6 @@ public class Player {
 	private final String name;
 	private int score;
 	private List<Tile> tileList;
-	// private List<SpecialTile> specialTiles;
 	private Map<String, List<SpecialTile>> specialTilesMap;
 	private Boolean nextTurnFlag;
 	private List<Tile> lastRandomTile;
@@ -35,7 +34,7 @@ public class Player {
 	public Player(String name) {
 		this.name = name;
 		nextTurnFlag = true;
-		score = 9999;
+		score = 0;
 		tileList = new ArrayList<>();
 		// specialTiles = new ArrayList<>();
 		lastRandomTile = new ArrayList<>();
