@@ -41,4 +41,7 @@ public class Bank implements AccountOwner {
         return accounts.values();
     }
 
+    public void closeAccount(AccountOwner owner) {
+        accounts.remove(owner);
+    }
 }

@@ -45,7 +45,10 @@ public class SimLifeAndDeath implements Runnable {
         Person deceased = economy.getRandomCustomer();
         long balance = economy.getBank().getAccount(deceased).getBalance();
         economy.removePerson(deceased);
+        if (deceased.getEmployer() != null)
+            deceased.getEmployer().removeEmployee(deceased);
         Person benefactor = economy.getRandomCustomer();
         economy.getBank().transferFunds(deceased, benefactor, balance);
+        economy.getBank().closeAccount(deceased);
     }
 }

@@ -9,6 +9,8 @@ public class Person implements AccountOwner {
 
     private static int personCounter = 0;
 
+    private Shop employer = null;
+
     public Person(String name) {
         this.name = name;
     }
@@ -23,5 +25,13 @@ public class Person implements AccountOwner {
 
     public void setName(String n) {
         name = n;
+    }
+
+    public Shop getEmployer() {
+        return employer;
+    }
+
+    public void setEmployer(Shop employer) {
+        this.employer = employer;
     }
 }

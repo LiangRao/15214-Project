@@ -11,7 +11,14 @@ public class Shop implements AccountOwner {
     private boolean isClosed = false;
 
     public void addEmployee(Person p) {
+        assert p.getEmployer() == null;
         employees.add(p);
+        p.setEmployer(this);
+    }
+
+    public void removeEmployee(Person p) {
+        employees.remove(p);
+        p.setEmployer(null);
     }
 
     public Set<Person> getEmployees() {
@@ -21,6 +28,8 @@ public class Shop implements AccountOwner {
     public void close() {
         isClosed = true;
         //fire all employees
+        for (Person p : employees)
+            p.setEmployer(null);
         employees.clear();
     }
 

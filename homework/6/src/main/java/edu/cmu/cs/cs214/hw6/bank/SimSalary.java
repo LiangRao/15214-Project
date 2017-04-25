@@ -33,9 +33,9 @@ public class SimSalary implements Runnable {
         for (Shop s : new ArrayList<>(economy.getShops())) {
             for (Person employee : s.getEmployees())
                 economy.getBank().transferFunds(s, employee, SALARY);
-            //close shops without funds
+            //close shops without funds (except for the very last one)
             Account shopAccount = economy.getBank().getAccount(s);
-            if (shopAccount.getBalance() < 0) {
+            if (shopAccount.getBalance() < 0 && economy.getShops().size() > 1) {
                 economy.closeShop(s);
             }
         }
