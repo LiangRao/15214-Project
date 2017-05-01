@@ -23,13 +23,18 @@ public class SimInterest implements Runnable {
     }
 
     private void paySalaries() {
-        for (Account account : economy.getBank().getAccounts())
-            if (account.getOwner() != economy.getBank()) {
-                //earn interest
-                long interest = Math.round(INTEREST_RATE * account.getBalance());
-                economy.getBank().transferFunds(economy.getBank(), account.getOwner(), interest);
-                //pay fees
-                economy.getBank().transferFunds(account.getOwner(), economy.getBank(), account.getFee());
+
+       // synchronized (economy.getBank().getAccountsMap()) {
+            for (Account account : economy.getBank().getAccounts()) {
+                if (account.getOwner() != economy.getBank()) {
+                    //earn interest
+                    long interest = Math.round(INTEREST_RATE * account.getBalance());
+                    economy.getBank().transferFunds(economy.getBank(), account.getOwner(), interest);
+                    //pay fees
+                    economy.getBank().transferFunds(account.getOwner(), economy.getBank(), account.getFee());
+                }
             }
+        //}
     }
+
 }

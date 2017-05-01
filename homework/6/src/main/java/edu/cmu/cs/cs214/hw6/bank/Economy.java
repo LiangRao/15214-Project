@@ -1,8 +1,11 @@
 package edu.cmu.cs.cs214.hw6.bank;
 
+import net.jcip.annotations.GuardedBy;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Main class of the simulation. Contains the bank, and a list of
@@ -11,48 +14,61 @@ import java.util.Random;
 public class Economy {
 
     private final Bank bank = new Bank();
+    @GuardedBy("people")
     private final List<Person> people = new ArrayList<>();
+    @GuardedBy("shops")
     private final List<Shop> shops = new ArrayList<>();
     private final List<Shop> closedShops = new ArrayList<>();
     private final Random random = new Random();
 
-    public Person getRandomCustomer() {
-        return people.get(random.nextInt(people.size()));
+    public  Person getRandomCustomer() {
+       synchronized (people) {
+            return people.get(random.nextInt(people.size()));
+        }
     }
 
     public Shop getRandomShop() {
-        return shops.get(random.nextInt(shops.size()));
+        synchronized (shops) {
+            return shops.get(random.nextInt(shops.size()));
+        }
     }
 
-    public Bank getBank() {
+    public  Bank getBank() {
         return bank;
     }
 
-    public List<Shop> getShops() {
+    public  List<Shop> getShops() {
         return shops;
     }
 
-    public void addShop(Shop s) {
-        shops.add(s);
+    public  void addShop(Shop s) {
+       // synchronized (shops) {
+            shops.add(s);
+        //}
     }
 
     public void closeShop(Shop s) {
-        s.close();
-        shops.remove(s);
-        closedShops.add(s);
+        //synchronized (shops) {
+            s.close();
+            shops.remove(s);
+            closedShops.add(s);
+        //}
     }
 
     public void addPerson(Person p) {
-        people.add(p);
+       //synchronized (people) {
+            people.add(p);
+      // }
     }
 
     public void removePerson(Person p) {
-        people.remove(p);
+     //  synchronized (people) {
+            people.remove(p);
+        //}
     }
 
 
     public void printReport() {
-
         long privateFunds = 0;
         long shopFunds = 0;
         for (Shop s : shops)
@@ -61,6 +77,7 @@ public class Economy {
             shopFunds += bank.getAccount(s).getBalance();
         for (Person p : people)
             privateFunds += bank.getAccount(p).getBalance();
+
         long totalFunds = bank.getOwnFunds().getBalance() + privateFunds + shopFunds;
 
         System.out.println("Money in the economy: " + totalFunds);
@@ -68,6 +85,7 @@ public class Economy {
         System.out.println("Money in corporations: " + shopFunds);
         System.out.println("Bank capital: " + bank.getOwnFunds().getBalance());
         System.out.println("Shops: " + shops.size());
+        System.out.println("ClosedShops: " + closedShops.size());
     }
 
 

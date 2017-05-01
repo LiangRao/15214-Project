@@ -2,6 +2,7 @@ package edu.cmu.cs.cs214.hw6.bank;
 
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * A simulation thread that regularly pays salary to employees
@@ -30,14 +31,19 @@ public class SimSalary implements Runnable {
     }
 
     private void paySalaries() {
-        for (Shop s : new ArrayList<>(economy.getShops())) {
-            for (Person employee : s.getEmployees())
-                economy.getBank().transferFunds(s, employee, SALARY);
-            //close shops without funds (except for the very last one)
-            Account shopAccount = economy.getBank().getAccount(s);
-            if (shopAccount.getBalance() < 0 && economy.getShops().size() > 1) {
-                economy.closeShop(s);
-            }
+
+
+            for (Shop s : new ArrayList<>(economy.getShops())) {
+                //synchronized (s.getEmployees()) {
+                    for (Person employee : s.getEmployees())
+                        economy.getBank().transferFunds(s, employee, SALARY);
+               // }
+                //close shops without funds (except for the very last one)
+                Account shopAccount = economy.getBank().getAccount(s);
+                if (shopAccount.getBalance() < 0 && economy.getShops().size() > 1) {
+                    economy.closeShop(s);
+                }
+
         }
     }
 }

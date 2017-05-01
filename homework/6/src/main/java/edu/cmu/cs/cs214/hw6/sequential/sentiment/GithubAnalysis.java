@@ -1,5 +1,6 @@
 package edu.cmu.cs.cs214.hw6.sequential.sentiment;
 
+import edu.cmu.cs.cs214.hw6.taskservice.util.Task;
 import org.eclipse.egit.github.core.CommitUser;
 import org.eclipse.egit.github.core.RepositoryCommit;
 import org.eclipse.egit.github.core.client.GitHubClient;
@@ -7,16 +8,23 @@ import org.eclipse.egit.github.core.client.PageIterator;
 import org.eclipse.egit.github.core.service.CommitService;
 import org.eclipse.egit.github.core.service.RepositoryService;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.*;
 
 
-public class GithubAnalysis {
-
-
-    public static void main(String[] args) throws Exception {
-        new GithubAnalysis().build();
-    }
+public class GithubAnalysis implements Task, Serializable{
+    private String taskName;
+    /**
+     * data structures to store messages and sentiment results
+     */
+    private final Map<Author, List<Message>> messages_author = new HashMap<>();
+    private final Map<String, List<Message>> messages_lang = new HashMap<>();
+    private final Map<String, List<Message>> messages_org = new HashMap<>();
+    private final Map<Author, SentimentResult> sentiments_author = new HashMap<>();
+    private final Map<String, SentimentResult> sentiments_lang = new HashMap<>();
+    private final Map<String, SentimentResult> sentiments_org = new HashMap<>();
 
     private static final int MAX_COMMIT_PAGES = 2;
 
@@ -49,19 +57,8 @@ public class GithubAnalysis {
 //        repositories.add(new Repository("Microsoft", "ChakraCore"));
         return repositories;
     }
-
-    /**
-     * data structures to store messages and sentiment results
-     */
-    private final Map<Author, List<Message>> messages_author = new HashMap<>();
-    private final Map<String, List<Message>> messages_lang = new HashMap<>();
-    private final Map<String, List<Message>> messages_org = new HashMap<>();
-    private final Map<Author, SentimentResult> sentiments_author = new HashMap<>();
-    private final Map<String, SentimentResult> sentiments_lang = new HashMap<>();
-    private final Map<String, SentimentResult> sentiments_org = new HashMap<>();
-
-
-    private void build() throws InterruptedException, IOException {
+    public String download() throws IOException {
+        StringBuilder sb = new StringBuilder();
         GitHubClient github = new GitHubClient();
         //set up with oauth token for higher rate limit
 //        github.setOAuth2Token("<yourtoken>");
@@ -71,7 +68,7 @@ public class GithubAnalysis {
 
         for (Repository repo : repositories) {
             System.out.printf("Downloading data for %s%n", repo.getIdentifier());
-
+            sb.append("Downloading data for" + repo.getIdentifier() +"\n");
             //looking up most popular language in repository
             String language = getTopLanguage(github, repo);
 
@@ -81,6 +78,7 @@ public class GithubAnalysis {
             int pageCounter = 1;
             for (Collection<RepositoryCommit> commitsOnPage : commitPages) {
                 System.out.printf(" - downloading page %d%n", pageCounter);
+                sb.append(" - downloading page " + pageCounter +"\n");
                 for (RepositoryCommit commit : commitsOnPage) {
                     //skip merge commits (with more than 1 parents)
                     if (commit.getParents().size() > 1)
@@ -99,30 +97,63 @@ public class GithubAnalysis {
                 if (++pageCounter > MAX_COMMIT_PAGES) break;
             }
         }
+        return sb.toString();
+    }
 
+    public String compileFirst() throws IOException {
         System.out.println("Running sentiment analysis");
         computeSentiments(messages_author, sentiments_author);
-        computeSentiments(messages_lang, sentiments_lang);
-        computeSentiments(messages_org, sentiments_org);
-
-        System.out.println("Results by author");
-        printSentimentsSorted(sentiments_author);
-        System.out.println("Results by language");
-        printSentimentsSorted(sentiments_lang);
-        System.out.println("Results by organization");
-        printSentimentsSorted(sentiments_org);
+        return "Running sentiment analysis /n";
     }
+
+    public String compileSecond() throws IOException {
+        computeSentiments(messages_lang, sentiments_lang);
+        return "";
+    }
+
+    public String compileThird() throws IOException {
+        computeSentiments(messages_org, sentiments_org);
+        return "";
+    }
+
+    public String printResult(){
+        StringBuilder sb = new StringBuilder();
+        System.out.println("Results by author");
+        sb.append("Results by author\n");
+        String author = printSentimentsSorted(sentiments_author);
+        sb.append(author);
+
+        System.out.println("Results by language");
+        String lang = printSentimentsSorted(sentiments_lang);
+        sb.append("Results by language");
+        sb.append(lang);
+
+        System.out.println("Results by organization");
+        String org = printSentimentsSorted(sentiments_org);
+        sb.append("Results by organization\n");
+        sb.append(org);
+        return sb.toString();
+    }
+
 
 
     /**
      * will print all the entries in the map, sorted from the most negative sentiment to
      * the most positive
      */
-    private <K> void printSentimentsSorted(Map<K, SentimentResult> sentiments) {
+    private <K> String printSentimentsSorted(Map<K, SentimentResult> sentiments) {
+        StringBuilder sb = new StringBuilder();
         ArrayList<Map.Entry<K, SentimentResult>> results = new ArrayList<>(sentiments.entrySet());
         Collections.sort(results, (a, b) -> a.getValue().average() - b.getValue().average() > 0 ? 1 : -1);
-        for (Map.Entry<K, SentimentResult> result : results)
+        for (Map.Entry<K, SentimentResult> result : results) {
             System.out.printf(" - %s: %s%n", result.getKey().toString(), result.getValue().summary());
+            sb.append(" - ");
+            sb.append(result.getKey().toString());
+            sb.append(": ");
+            sb.append(result.getValue().summary());
+            sb.append("\n");
+        }
+        return sb.toString();
     }
 
     /**
@@ -179,4 +210,35 @@ public class GithubAnalysis {
         map.put(key, values);
     }
 
+    @Override
+    public List<Set<String>> getFunctionName() {
+        List<Set<String>> resultList = new ArrayList<>();
+        Set<String> download = new HashSet<>();
+        download.add("download");
+        Set<String> compile = new HashSet<>();
+        compile.add("compileFirst");
+        compile.add("compileSecond");
+        compile.add("compileThird");
+        Set <String> result = new HashSet<>();
+        result.add("printResult");
+        resultList.add(download);
+        resultList.add(compile);
+        resultList.add(result);
+        return resultList;
+    }
+
+    @Override
+    public File getWorkingDirectory() {
+        return null;
+    }
+
+    @Override
+    public String getTaskName() {
+        return taskName;
+    }
+
+    @Override
+    public void setTaskName(String name) {
+        taskName =name;
+    }
 }

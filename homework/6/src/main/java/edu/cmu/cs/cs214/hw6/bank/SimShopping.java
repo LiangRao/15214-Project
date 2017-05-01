@@ -22,10 +22,20 @@ public class SimShopping implements Runnable {
     }
 
     private void performRandomTransaction() {
-        Person customer = economy.getRandomCustomer();
-        Shop shop = economy.getRandomShop();
-        Bank bank = economy.getBank();
-        if (bank.getAccount(customer).getBalance() >= 100)
-            bank.transferFunds(customer, shop, 100);
+
+
+            Bank bank = economy.getBank();
+
+            //synchronized (economy.getBank().getAccountsMap()) {
+                Person customer = economy.getRandomCustomer();
+                Shop shop = economy.getRandomShop();
+                //System.out.println(bank.getAccount(customer));
+                if (bank.getAccount(customer).getBalance() >= 100) {
+                    //System.out.println(bank.getAccount(customer).getBalance());
+                    bank.transferFunds(customer, shop, 100);
+                }
+           // }
+
+        //}
     }
 }

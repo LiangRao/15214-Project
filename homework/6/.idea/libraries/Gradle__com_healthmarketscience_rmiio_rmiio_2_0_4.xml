@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.healthmarketscience.rmiio:rmiio:2.0.4">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.healthmarketscience.rmiio/rmiio/2.0.4/61501e9668154db600c20403913f0553d4165d4f/rmiio-2.0.4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.healthmarketscience.rmiio/rmiio/2.0.4/c61d65a656d1bfb1584f21087aa7bc4e950532ee/rmiio-2.0.4-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

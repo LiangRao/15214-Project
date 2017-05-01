@@ -13,10 +13,7 @@ public class Simulation {
     }
 
     private void run() throws InterruptedException {
-
         Economy e = initializeEconomy();
-
-
         e.printReport();
 
         List<Thread> shoppers = new ArrayList<>();
@@ -24,11 +21,11 @@ public class Simulation {
             Thread t = new Thread(new SimShopping(e));
             shoppers.add(t);
         }
+
         List<Thread> supportingThreads = new ArrayList<>();
         supportingThreads.add(new Thread(new SimSalary(e)));
         supportingThreads.add(new Thread(new SimLifeAndDeath(e)));
         supportingThreads.add(new Thread(new SimInterest(e)));
-
 
         for (Thread t : shoppers)
             t.start();
@@ -36,7 +33,6 @@ public class Simulation {
             t.start();
 
         long start = System.currentTimeMillis();
-
 
         for (Thread t : shoppers)
             t.join();
@@ -80,7 +76,6 @@ public class Simulation {
             e.addPerson(p);
             e.getBank().addAccount(new Account(p, INITIALPERSONCAPITAL, INITIALPRIVATEACCOUNTFEE));
         }
-
         return e;
     }
 

@@ -12,13 +12,17 @@ public class Shop implements AccountOwner {
 
     public void addEmployee(Person p) {
         assert p.getEmployer() == null;
-        employees.add(p);
+        //synchronized (employees) {
+            employees.add(p);
+        //}
         p.setEmployer(this);
     }
 
     public void removeEmployee(Person p) {
-        employees.remove(p);
-        p.setEmployer(null);
+        //synchronized (employees) {
+            employees.remove(p);
+            p.setEmployer(null);
+        //}
     }
 
     public Set<Person> getEmployees() {

@@ -1,13 +1,11 @@
 package edu.cmu.cs.cs214.hw6.sequential.buildsystem;
 
+import edu.cmu.cs.cs214.hw6.taskservice.util.Task;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -20,32 +18,34 @@ import java.util.zip.ZipInputStream;
 /**
  * Created by ckaestne on 3/27/17.
  */
-public class BuildFindbugs {
-
+public class BuildFindbugs implements Task,Serializable{
+    private String taskName;
     private static final File WORKINGDIRECTORY = new File("wd");
+    private Map<File, URL> dependencies = new HashMap<>();
+    private Map<File, URL> testDependencies = new HashMap<>();
+    private File outDir = new File(WORKINGDIRECTORY, "class/");
+        //outDir.mkdir();
+    private File testOutDir = new File(WORKINGDIRECTORY, "testClass/");
+        //testOutDir.mkdir();
+    private File srcDir = new File(WORKINGDIRECTORY, "findbugs-master/findbugs/src/java");
+    private File src5Dir = new File(WORKINGDIRECTORY, "findbugs-master/findbugs/src/gui");
+    private File testDir = new File(WORKINGDIRECTORY, "findbugs-master/findbugs/src/junit");
+    private List<String> testClasses = new ArrayList<>();
 
-    public static void main(String[] args) throws Exception {
-        if (WORKINGDIRECTORY.exists())
-            WORKINGDIRECTORY.delete();
-        if (!WORKINGDIRECTORY.exists())
-            WORKINGDIRECTORY.mkdir();
-        WORKINGDIRECTORY.deleteOnExit();
-        new BuildFindbugs().build(WORKINGDIRECTORY);
-    }
-
-    void build(File workingDirector) throws IOException, ClassNotFoundException, InterruptedException {
-
-        //download sources from Github mirror and unzip
-        System.out.println("downloading sources");
+    public String downloadFirst() throws IOException {
+        StringBuilder sb = new StringBuilder();
+        System.out.println("downloading sources\n");
+        sb.append("downloading sources");
         URL website = new URL("https://github.com/findbugsproject/findbugs/archive/master.zip");
         ZipInputStream zipIn = new ZipInputStream(website.openStream());
         ZipEntry entry = zipIn.getNextEntry();
         // iterates over entries in the zip file
         while (entry != null) {
-            File filePath = new File(workingDirector, entry.getName());
+            File filePath = new File(WORKINGDIRECTORY, entry.getName());
             if (!entry.isDirectory()) {
                 // if the entry is a file, extracts it
                 System.out.println("> extracting " + filePath);
+                sb.append("> extracting " + filePath+"\n");
                 extractFile(zipIn, filePath);
             } else {
                 // if the entry is a directory, make the directory
@@ -55,12 +55,17 @@ public class BuildFindbugs {
             entry = zipIn.getNextEntry();
         }
         zipIn.close();
+        return sb.toString();
+    }
 
+    public String downloadSecond() throws IOException {
         //download dependencies
+        StringBuilder sb = new StringBuilder();
         System.out.println("downloading dependencies");
-        File jarDir = new File(workingDirector, "jars");
+        sb.append("downloading dependencies\n");
+        File jarDir = new File(WORKINGDIRECTORY, "jars");
         jarDir.mkdir();
-        Map<File, URL> dependencies = new HashMap<>();
+
         addMavenDependency(dependencies, jarDir, "dom4j", "dom4j", "1.6.1");
         addMavenDependency(dependencies, jarDir, "net.jcip", "jcip-annotations", "1.0");
         addMavenDependency(dependencies, jarDir, "com.google.code.findbugs", "jsr305", "2.0.1");
@@ -69,7 +74,8 @@ public class BuildFindbugs {
         addMavenDependency(dependencies, jarDir, "org.ow2.asm", "asm-debug-all", "6.0_ALPHA");
         addMavenDependency(dependencies, jarDir, "org.ow2.asm", "asm-commons", "6.0_ALPHA");
         addMavenDependency(dependencies, jarDir, "commons-lang", "commons-lang", "2.6");
-        Map<File, URL> testDependencies = new HashMap<>();
+
+
         testDependencies.putAll(dependencies);
         addMavenDependency(testDependencies, jarDir, "junit", "junit", "4.11");
         addMavenDependency(testDependencies, jarDir, "org.hamcrest", "hamcrest-core", "1.3");
@@ -78,33 +84,43 @@ public class BuildFindbugs {
 
         for (Map.Entry<File, URL> dependency : testDependencies.entrySet()) {
             System.out.println("> downloading " + dependency.getKey());
+            sb.append("> downloading " + dependency.getKey()+"\n");
             download(dependency.getValue(), dependency.getKey());
         }
-
-
-        File outDir = new File(workingDirector, "class/");
+        //File outDir = new File(WORKINGDIRECTORY, "class/");
         outDir.mkdir();
-        File testOutDir = new File(workingDirector, "testClass/");
+        //File testOutDir = new File(WORKINGDIRECTORY, "testClass/");
         testOutDir.mkdir();
-        File srcDir = new File(workingDirector, "findbugs-master/findbugs/src/java");
-        File src5Dir = new File(workingDirector, "findbugs-master/findbugs/src/gui");
-        File testDir = new File(workingDirector, "findbugs-master/findbugs/src/junit");
+//        File srcDir = new File(WORKINGDIRECTORY, "findbugs-master/findbugs/src/java");
+//        File src5Dir = new File(WORKINGDIRECTORY, "findbugs-master/findbugs/src/gui");
+//        File testDir = new File(WORKINGDIRECTORY, "findbugs-master/findbugs/src/junit");
+        return sb.toString();
+    }
 
+    public String compileFirst() throws IOException, InterruptedException {
+        StringBuilder sb = new StringBuilder();
         System.out.println("compiling findbugs");
+        sb.append("compiling findbugs\n");
         {
             List<String> compilerCommand = createCompilerCommand(testDependencies, outDir, srcDir, src5Dir);
             List<String> command = new ArrayList<>(compilerCommand);
-            for (File javaFile : findJavaFiles(new File(workingDirector, "findbugs-master/findbugs/src/java")))
+            for (File javaFile : findJavaFiles(new File(WORKINGDIRECTORY, "findbugs-master/findbugs/src/java")))
                 command.add(javaFile.getPath());
             int exitVal = new ProcessBuilder(command).redirectOutput(new File("out.txt")).redirectError(new File("err.txt")).start().waitFor();
             assert exitVal == 0 : "compilation failed with " + exitVal;
         }
+        return sb.toString();
+    }
 
+    public String compileSecond() throws IOException, InterruptedException {
+        StringBuilder sb = new StringBuilder();
         List<String> testCompilerCommand = createTestCompilerCommand(testDependencies, testOutDir, testDir, outDir);
         System.out.println("compiling tests");
-        List<String> testClasses = new ArrayList<>();
+        sb.append("compiling tests\n");
+
         for (File javaFile : findJavaFiles(testDir)) {
             System.out.println("> compiling " + javaFile);
+            sb.append("> compiling " + javaFile+"\n");
             List<String> command = new ArrayList<>(testCompilerCommand);
             command.add(javaFile.getPath());
 
@@ -114,12 +130,17 @@ public class BuildFindbugs {
             String testClass = extractClassName(testDir, javaFile);
             testClasses.add(testClass);
         }
+        return sb.toString();
+    }
 
+    public String run() throws IOException, ClassNotFoundException, InterruptedException {
+        StringBuilder sb = new StringBuilder();
         System.out.println("running tests");
+        sb.append("running tests\n");
         ClassLoader testClassLoader = getTestClassLoader(dependencies, outDir, testOutDir);
         for (String testClass : testClasses) {
             System.out.println("> running tests in " + testClass);
-
+            sb.append("> running tests in " + testClass+"\n");
             Result result = JUnitCore.runClasses(testClassLoader.loadClass(testClass));
             totalTestsRun += result.getRunCount();
             totalTestsFailed += result.getFailureCount();
@@ -130,16 +151,20 @@ public class BuildFindbugs {
 
         System.out.printf("test results:\n%d tests executed\n%d tests failed\n%d tests ignored\n%d ms execution time\n", totalTestsRun, totalTestsFailed, totalTestsIgnored, totalTestTime);
         System.out.println("failed tests: ");
-        for (Failure f : testFailures)
+        sb.append("test results:\n"+totalTestsRun+" tests executed\n"+totalTestsFailed+" tests failed\n"+totalTestsIgnored+" tests ignored\n"+totalTestTime+" ms execution time\n");
+        sb.append("failed tests: ");
+        for (Failure f : testFailures) {
             System.out.printf(" - %s\n", f.toString());
+            sb.append("-" + f.toString()+"\n");
+        }
+
 
 
         System.out.println("creating jar file");
-        String[] jarCommand = {"jar", "cf", new File(workingDirector, "findbugs.jar").getPath(), outDir.getPath()};
+        String[] jarCommand = {"jar", "cf", new File(WORKINGDIRECTORY, "findbugs.jar").getPath(), outDir.getPath()};
         int exitVal = new ProcessBuilder(jarCommand)/*.redirectError(new File("err.txt"))*/.start().waitFor();
         assert exitVal == 0 : "creation of jar file failed with " + exitVal;
-
-
+        return sb.toString();
     }
 
     private int totalTestsRun = 0;
@@ -268,5 +293,38 @@ public class BuildFindbugs {
         return new URL("http://repo.maven.apache.org/maven2/" + group.replace('.', '/') + "/" + name + "/" + version + "/" + name + "-" + version + ".jar");
 
     }
+
+    @Override
+    public List<Set<String>> getFunctionName() {
+        List<Set<String>> functionList = new ArrayList<>();
+        Set<String> download = new HashSet<>();
+        download.add("downloadFirst");
+        download.add("downloadSecond");
+        Set<String> compile = new HashSet<>();
+        compile.add("compileFirst");
+        compile.add("compileSecond");
+        Set<String> run = new HashSet<>();
+        run.add("run");
+        functionList.add(download);
+        functionList.add(compile);
+        functionList.add(run);
+        return functionList;
+    }
+
+    @Override
+    public File getWorkingDirectory() {
+        return WORKINGDIRECTORY;
+    }
+
+    @Override
+    public String getTaskName() {
+        return taskName;
+    }
+
+    @Override
+    public void setTaskName(String name) {
+        taskName = name;
+    }
+
 
 }
