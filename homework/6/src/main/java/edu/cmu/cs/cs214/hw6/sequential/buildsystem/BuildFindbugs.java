@@ -32,6 +32,15 @@ public class BuildFindbugs implements Task,Serializable{
     private File testDir = new File(WORKINGDIRECTORY, "findbugs-master/findbugs/src/junit");
     private List<String> testClasses = new ArrayList<>();
 
+    public String setUp(){
+        System.out.println("Setting up working directory");
+        if (WORKINGDIRECTORY.exists())
+            WORKINGDIRECTORY.delete();
+        if (!WORKINGDIRECTORY.exists())
+            WORKINGDIRECTORY.mkdir();
+        WORKINGDIRECTORY.deleteOnExit();
+        return "";
+    }
     public String downloadFirst() throws IOException {
         StringBuilder sb = new StringBuilder();
         System.out.println("downloading sources\n");
@@ -297,6 +306,8 @@ public class BuildFindbugs implements Task,Serializable{
     @Override
     public List<Set<String>> getFunctionName() {
         List<Set<String>> functionList = new ArrayList<>();
+        Set<String> setUp = new HashSet<>();
+        setUp.add("setUp");
         Set<String> download = new HashSet<>();
         download.add("downloadFirst");
         download.add("downloadSecond");
@@ -305,6 +316,7 @@ public class BuildFindbugs implements Task,Serializable{
         compile.add("compileSecond");
         Set<String> run = new HashSet<>();
         run.add("run");
+        functionList.add(setUp);
         functionList.add(download);
         functionList.add(compile);
         functionList.add(run);

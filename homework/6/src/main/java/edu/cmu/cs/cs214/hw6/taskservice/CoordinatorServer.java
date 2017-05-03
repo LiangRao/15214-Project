@@ -2,6 +2,7 @@ package edu.cmu.cs.cs214.hw6.taskservice;
 
 
 import edu.cmu.cs.cs214.hw6.taskservice.util.Task;
+import jdk.nashorn.internal.ir.annotations.Immutable;
 
 import java.io.IOException;
 import java.rmi.AlreadyBoundException;
@@ -18,14 +19,22 @@ import java.util.concurrent.*;
 
 
 /**
- * Created by raoliang on 4/29/17.
+ * The coordinator server which receives tasks from the client and dispatches
+ * all these tasks to different workers
+ *
+ * @author liang rao
  */
 public class CoordinatorServer implements Coordinator{
     private ExecutorService executor = Executors.newCachedThreadPool();
-    // Immutable
-    //private final Map<ServerInfo, RemoteWorker> services;
+    @Immutable
     private final List<Worker> services;
 
+    /**
+     * A constructor
+     * @param servers the workers related to coordinator
+     * @throws RemoteException
+     * @throws NotBoundException
+     */
     public CoordinatorServer(ServerInfo... servers) throws RemoteException, NotBoundException {
         services = new ArrayList<>();
         for (ServerInfo serverInfo : servers) {
@@ -46,11 +55,12 @@ public class CoordinatorServer implements Coordinator{
         for (Task task : taskList) {
             taskName.add(task.getTaskName());
         }
-        //int taskSize = taskList.size();
         int i =0;
         for (Future<String> future : results) {
             try {
-                resultMap.put(taskName.get(i), future.get());
+                String tmp = future.get();
+                resultMap.put(taskName.get(i), tmp);
+                System.out.println(tmp);
             } catch (ExecutionException e) {
                 e.printStackTrace();
             }
@@ -61,13 +71,19 @@ public class CoordinatorServer implements Coordinator{
         return resultMap;
     }
 
+    /**
+     * Delete working directory after exiting
+     * @param taskList
+     * @return
+     */
     private List<Callable<String>> buildTaskList(List<Task> taskList){
+        System.out.println("tasksize"+taskList.size());
         List<Callable<String>> result = new ArrayList<>();
         int size = services.size();
         int taskSize = taskList.size();
         for (int i = 0; i < taskSize; i++) {
             Task task = taskList.get(i);
-            int serverNum = i%taskSize;
+            int serverNum = i%size;
             result.add(() -> {
                     return services.get(serverNum).exec(task);
             });
@@ -75,6 +91,13 @@ public class CoordinatorServer implements Coordinator{
         return result;
     }
 
+    /**
+     * The main function to launch CoordinatorServer
+     * @param args the parameters of main
+     * @throws IOException
+     * @throws NotBoundException
+     * @throws AlreadyBoundException
+     */
     public static void main(String[] args) throws IOException, NotBoundException, AlreadyBoundException {
         System.setProperty("java.rmi.server.hostname", "127.0.0.1");
         int port = Integer.parseInt(args[0]);
@@ -87,6 +110,4 @@ public class CoordinatorServer implements Coordinator{
                         ), port));
         System.out.println("aggregate service running");
     }
-
-
 }

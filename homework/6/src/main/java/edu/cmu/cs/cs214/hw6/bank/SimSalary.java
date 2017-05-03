@@ -1,6 +1,8 @@
 package edu.cmu.cs.cs214.hw6.bank;
 
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
+
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -9,7 +11,9 @@ import java.util.Map;
  * every 200ms.
  * If a shop is no longer solvent, it closes.
  */
+
 public class SimSalary implements Runnable {
+    @Immutable
     private static final int SALARY = 1000;
     private final Economy economy;
 
@@ -31,8 +35,6 @@ public class SimSalary implements Runnable {
     }
 
     private void paySalaries() {
-
-
             for (Shop s : new ArrayList<>(economy.getShops())) {
                 //synchronized (s.getEmployees()) {
                     for (Person employee : s.getEmployees())

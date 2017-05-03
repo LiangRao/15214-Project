@@ -1,7 +1,11 @@
 package edu.cmu.cs.cs214.hw6.bank;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
+import net.jcip.annotations.NotThreadSafe;
 
+@NotThreadSafe
 public class SimInterest implements Runnable {
+    @Immutable
     private static final double INTEREST_RATE = 0.01;
     private final Economy economy;
 

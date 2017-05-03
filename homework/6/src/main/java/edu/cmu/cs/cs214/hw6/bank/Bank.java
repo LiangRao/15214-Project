@@ -21,10 +21,10 @@ public class Bank implements AccountOwner {
         Account t = getAccount(to);
         if (f != null && t != null/* && f.getBalance() >= funds && (Long.MAX_VALUE - funds > t.getBalance())*/) {
 
-            synchronized (f) {
+            synchronized (this) {
                 f.setBalance(f.getBalance() - funds);
-            }
-            synchronized (t) {
+//            }
+//            synchronized (t) {
                 t.setBalance(t.getBalance() + funds);
             }
                 //}

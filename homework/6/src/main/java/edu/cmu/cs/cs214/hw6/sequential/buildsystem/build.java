@@ -25,12 +25,17 @@ public class build {
     private static final File WORKINGDIRECTORY = new File("wd");
 
     public static void main(String[] args) throws Exception {
-        if (WORKINGDIRECTORY.exists())
-            WORKINGDIRECTORY.delete();
-        if (!WORKINGDIRECTORY.exists())
-            WORKINGDIRECTORY.mkdir();
-        WORKINGDIRECTORY.deleteOnExit();
-        new build().build(WORKINGDIRECTORY);
+        try {
+            if (WORKINGDIRECTORY.exists())
+                WORKINGDIRECTORY.delete();
+            if (!WORKINGDIRECTORY.exists())
+                WORKINGDIRECTORY.mkdir();
+            WORKINGDIRECTORY.deleteOnExit();
+            new build().build(WORKINGDIRECTORY);
+        }finally {
+            WORKINGDIRECTORY.deleteOnExit();
+        }
+
     }
 
     void build(File workingDirector) throws IOException, ClassNotFoundException, InterruptedException {

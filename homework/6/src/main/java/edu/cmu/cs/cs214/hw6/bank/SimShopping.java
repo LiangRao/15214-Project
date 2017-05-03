@@ -6,8 +6,15 @@ package edu.cmu.cs.cs214.hw6.bank;
  * number of random transactions, where solvent people
  * buy from a random shop for 100$.
  */
+
+import jdk.nashorn.internal.ir.annotations.Immutable;
+import net.jcip.annotations.NotThreadSafe;
+
+@NotThreadSafe
 public class SimShopping implements Runnable {
-    private static final int STEPS = 10000000;
+    //private static final int STEPS = 10000000;
+    @Immutable
+    private static final int STEPS = 10000;
     private final Economy economy;
 
     public SimShopping(Economy e) {
@@ -22,7 +29,6 @@ public class SimShopping implements Runnable {
     }
 
     private void performRandomTransaction() {
-
 
             Bank bank = economy.getBank();
 

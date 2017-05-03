@@ -12,7 +12,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * people and shops.
  */
 public class Economy {
-
+    @GuardedBy("bank")
     private final Bank bank = new Bank();
     @GuardedBy("people")
     private final List<Person> people = new ArrayList<>();
@@ -42,50 +42,54 @@ public class Economy {
     }
 
     public  void addShop(Shop s) {
-       // synchronized (shops) {
+        synchronized (shops) {
             shops.add(s);
-        //}
+        }
     }
 
     public void closeShop(Shop s) {
-        //synchronized (shops) {
+        synchronized (shops) {
             s.close();
             shops.remove(s);
+        }
+        synchronized (closedShops) {
             closedShops.add(s);
-        //}
+        }
+
     }
 
     public void addPerson(Person p) {
-       //synchronized (people) {
+       synchronized (people) {
             people.add(p);
-      // }
+       }
     }
 
     public void removePerson(Person p) {
-     //  synchronized (people) {
+       synchronized (people) {
             people.remove(p);
-        //}
+        }
     }
 
 
     public void printReport() {
-        long privateFunds = 0;
-        long shopFunds = 0;
-        for (Shop s : shops)
-            shopFunds += bank.getAccount(s).getBalance();
-        for (Shop s : closedShops)
-            shopFunds += bank.getAccount(s).getBalance();
-        for (Person p : people)
-            privateFunds += bank.getAccount(p).getBalance();
 
-        long totalFunds = bank.getOwnFunds().getBalance() + privateFunds + shopFunds;
-
-        System.out.println("Money in the economy: " + totalFunds);
-        System.out.println("Money in private households: " + privateFunds);
-        System.out.println("Money in corporations: " + shopFunds);
-        System.out.println("Bank capital: " + bank.getOwnFunds().getBalance());
-        System.out.println("Shops: " + shops.size());
-        System.out.println("ClosedShops: " + closedShops.size());
+        synchronized (bank) {
+            long privateFunds = 0;
+            long shopFunds = 0;
+            for (Shop s : shops)
+                shopFunds += bank.getAccount(s).getBalance();
+            for (Shop s : closedShops)
+                shopFunds += bank.getAccount(s).getBalance();
+            for (Person p : people)
+                privateFunds += bank.getAccount(p).getBalance();
+            long totalFunds = bank.getOwnFunds().getBalance() + privateFunds + shopFunds;
+            System.out.println("Money in the economy: " + totalFunds);
+            System.out.println("Money in private households: " + privateFunds);
+            System.out.println("Money in corporations: " + shopFunds);
+            System.out.println("Bank capital: " + bank.getOwnFunds().getBalance());
+            System.out.println("Shops: " + shops.size());
+            System.out.println("ClosedShops: " + closedShops.size());
+        }
     }
 
 

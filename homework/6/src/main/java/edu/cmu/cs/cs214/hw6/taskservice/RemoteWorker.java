@@ -19,6 +19,7 @@ import java.util.concurrent.*;
  * Created by raoliang on 4/29/17.
  */
 public class RemoteWorker implements Worker{
+
     private ExecutorService executor = Executors.newCachedThreadPool();
     @Override
     public String exec(Task task) throws IOException, IllegalAccessException, InstantiationException, NoSuchMethodException, InterruptedException  {
@@ -27,7 +28,6 @@ public class RemoteWorker implements Worker{
         Class<?> taskClass = task.getClass();
         Object invokeTester = taskClass.newInstance();
         StringBuilder sb = new StringBuilder();
-       // Method addMethod = taskClass.getMethod("add", new Class[]{});
 
         for (int i = 0; i < step; i++) {
             Set<String> funName = stepNum.get(i);
@@ -47,17 +47,44 @@ public class RemoteWorker implements Worker{
                 try {
                     String log =future.get();
                     sb.append(log);
+                    //future.cancel()
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 }
             }
+
         }
         File workDirec = task.getWorkingDirectory();
-        if (workDirec!=null)
-            workDirec.delete();
+        if (workDirec!=null) {
+            if (workDirec.isFile()){
+                workDirec.delete();
+            }else if (workDirec.isDirectory()){
+                deleteDir(workDirec);
+            }
+        }
         return sb.toString();
     }
 
+    private boolean deleteDir(File dir) {
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+
+            for (int i=0; i<children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+        return dir.delete();
+    }
+
+    /**
+     * The main function to launch a single worker
+     * @param args the arguments of main
+     * @throws IOException
+     * @throws AlreadyBoundException
+     */
     public static void main(String[] args) throws IOException, AlreadyBoundException {
         System.setProperty("java.rmi.server.hostname", "127.0.0.1");
         int port = Integer.parseInt(args[1]);

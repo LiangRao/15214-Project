@@ -5,15 +5,31 @@ import java.util.Set;
 import java.io.File;
 
 /**
- * Created by raoliang on 4/30/17.
+ * A Task interface for all the tasks needing to send to Coordinator
  */
 public interface Task {
+    /**
+     * Get the names of funtions which need to excute in worker
+     * @return
+     */
     public List<Set<String>> getFunctionName();
 
+    /**
+     * Get the working directory of the task
+     * @return the working directory of the task
+     */
     public File getWorkingDirectory();
 
+    /**
+     * Get the name of the Task
+     * @return the name of the task
+     */
     public String getTaskName();
 
+    /**
+     * Set the name to the task
+     * @param name the name of the task
+     */
     public void setTaskName(String name);
 
 }

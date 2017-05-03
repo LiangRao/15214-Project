@@ -1,19 +1,26 @@
 package edu.cmu.cs.cs214.hw6.taskservice;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.rmi.Remote;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
 
-import edu.cmu.cs.cs214.hw6.taskservice.util.SystemStep;
 import edu.cmu.cs.cs214.hw6.taskservice.util.Task;
 
 /**
- * Created by raoliang on 4/28/17.
+ * The coordinator server which receives tasks from the client and dispatches
+ * all these tasks to different workers
+ *
+ * @author liang rao
  */
 public interface Coordinator extends Remote{
+
+    /**
+     * Dispatch all the tasks from client to the separated worker
+     * @param taskList all tasks received from client
+     * @return The log of all tasks
+     * @throws IOException
+     * @throws InterruptedException
+     */
     Map<String, String> aggregate(List<Task> taskList) throws IOException, InterruptedException;
 }
