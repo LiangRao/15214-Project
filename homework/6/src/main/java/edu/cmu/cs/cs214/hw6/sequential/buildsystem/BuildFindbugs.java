@@ -24,14 +24,16 @@ public class BuildFindbugs implements Task,Serializable{
     private Map<File, URL> dependencies = new HashMap<>();
     private Map<File, URL> testDependencies = new HashMap<>();
     private File outDir = new File(WORKINGDIRECTORY, "class/");
-        //outDir.mkdir();
     private File testOutDir = new File(WORKINGDIRECTORY, "testClass/");
-        //testOutDir.mkdir();
     private File srcDir = new File(WORKINGDIRECTORY, "findbugs-master/findbugs/src/java");
     private File src5Dir = new File(WORKINGDIRECTORY, "findbugs-master/findbugs/src/gui");
     private File testDir = new File(WORKINGDIRECTORY, "findbugs-master/findbugs/src/junit");
     private List<String> testClasses = new ArrayList<>();
 
+    /**
+     * Set up the working directory
+     * @return the log of sub-task
+     */
     public String setUp(){
         System.out.println("Setting up working directory");
         if (WORKINGDIRECTORY.exists())
@@ -41,6 +43,12 @@ public class BuildFindbugs implements Task,Serializable{
         WORKINGDIRECTORY.deleteOnExit();
         return "";
     }
+
+    /**
+     * Download sources from Github mirror and unzip
+     * @return the log of the sub-task
+     * @throws IOException the IO Exception
+     */
     public String downloadFirst() throws IOException {
         StringBuilder sb = new StringBuilder();
         System.out.println("downloading sources\n");
@@ -66,9 +74,12 @@ public class BuildFindbugs implements Task,Serializable{
         zipIn.close();
         return sb.toString();
     }
-
+    /**
+     * Download dependencies
+     * @return the log of the sub-task
+     * @throws IOException the IO Exception
+     */
     public String downloadSecond() throws IOException {
-        //download dependencies
         StringBuilder sb = new StringBuilder();
         System.out.println("downloading dependencies");
         sb.append("downloading dependencies\n");
@@ -84,7 +95,6 @@ public class BuildFindbugs implements Task,Serializable{
         addMavenDependency(dependencies, jarDir, "org.ow2.asm", "asm-commons", "6.0_ALPHA");
         addMavenDependency(dependencies, jarDir, "commons-lang", "commons-lang", "2.6");
 
-
         testDependencies.putAll(dependencies);
         addMavenDependency(testDependencies, jarDir, "junit", "junit", "4.11");
         addMavenDependency(testDependencies, jarDir, "org.hamcrest", "hamcrest-core", "1.3");
@@ -96,16 +106,17 @@ public class BuildFindbugs implements Task,Serializable{
             sb.append("> downloading " + dependency.getKey()+"\n");
             download(dependency.getValue(), dependency.getKey());
         }
-        //File outDir = new File(WORKINGDIRECTORY, "class/");
         outDir.mkdir();
-        //File testOutDir = new File(WORKINGDIRECTORY, "testClass/");
         testOutDir.mkdir();
-//        File srcDir = new File(WORKINGDIRECTORY, "findbugs-master/findbugs/src/java");
-//        File src5Dir = new File(WORKINGDIRECTORY, "findbugs-master/findbugs/src/gui");
-//        File testDir = new File(WORKINGDIRECTORY, "findbugs-master/findbugs/src/junit");
         return sb.toString();
     }
 
+    /**
+     * Compiling findbugs
+     * @return the log of the sub-task
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public String compileFirst() throws IOException, InterruptedException {
         StringBuilder sb = new StringBuilder();
         System.out.println("compiling findbugs");
@@ -121,6 +132,12 @@ public class BuildFindbugs implements Task,Serializable{
         return sb.toString();
     }
 
+    /**
+     * Compiling tests
+     * @return the log of the sub-task
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public String compileSecond() throws IOException, InterruptedException {
         StringBuilder sb = new StringBuilder();
         List<String> testCompilerCommand = createTestCompilerCommand(testDependencies, testOutDir, testDir, outDir);
@@ -142,6 +159,13 @@ public class BuildFindbugs implements Task,Serializable{
         return sb.toString();
     }
 
+    /**
+     * Running test and create a .jar file
+     * @return the log of the sub-task
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws InterruptedException
+     */
     public String run() throws IOException, ClassNotFoundException, InterruptedException {
         StringBuilder sb = new StringBuilder();
         System.out.println("running tests");
@@ -166,8 +190,6 @@ public class BuildFindbugs implements Task,Serializable{
             System.out.printf(" - %s\n", f.toString());
             sb.append("-" + f.toString()+"\n");
         }
-
-
 
         System.out.println("creating jar file");
         String[] jarCommand = {"jar", "cf", new File(WORKINGDIRECTORY, "findbugs.jar").getPath(), outDir.getPath()};

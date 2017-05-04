@@ -1,11 +1,17 @@
 package edu.cmu.cs.cs214.hw6.bank;
 
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
+import net.jcip.annotations.NotThreadSafe;
+import net.jcip.annotations.ThreadSafe;
+
 /**
  * simulate that new people are born and die regularly
  */
+@ThreadSafe
 public class SimLifeAndDeath implements Runnable {
     private static final double INHERITANCERATE = 0.1;
+    @Immutable
     private final Economy economy;
 
     public SimLifeAndDeath(Economy e) {
@@ -22,7 +28,6 @@ public class SimLifeAndDeath implements Runnable {
                 Thread.currentThread().interrupt();
             }
         }
-
     }
 
     private void simulate() {
@@ -31,11 +36,8 @@ public class SimLifeAndDeath implements Runnable {
             Person dad = economy.getRandomCustomer();
             Person mom = economy.getRandomCustomer();
             Person child = new Person();
-           // synchronized (economy.getBank().getAccountsMap()) {
             economy.getBank().addAccount(new Account(child, 0, 1));
             economy.addPerson(child);
-
-            //}
             //get's 10% of their parents funds
             long dadsMoney = economy.getBank().getAccount(dad).getBalance();
             long momsMoney = economy.getBank().getAccount(mom).getBalance();

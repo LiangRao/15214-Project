@@ -5,14 +5,15 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
 
+/**
+ * The class to load a specific file from given url, and then
+ * generate a Scanner for that file
+ */
 public class TextReader {
     /**
-     * Produce a Scanner instance connected to the given file.
-     * If the file cannot be opened, this method will report
-     * it on standard error, and then terminate the program
-     * with a status of 1.
+     * Generate a Scanner for the given file
      * @param fileName the name of the file to be scanned
-     * @return a Scanner instance on the file. (Please close it when done!)
+     * @return a Scanner for the given file
      */
     public static Scanner openFile( String fileName ) {
         Scanner result = null;
@@ -28,6 +29,11 @@ public class TextReader {
         return result;
     }
 
+    /**
+     * Down load file from website to local
+     * @param remoteFilePath the url of remote file
+     * @param localFilePath the local path to store the file
+     */
     public void downloadFile(String remoteFilePath, String localFilePath)
     {
         URL urlfile = null;

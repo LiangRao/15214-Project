@@ -2,11 +2,12 @@ package edu.cmu.cs.cs214.hw6.bank;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import net.jcip.annotations.NotThreadSafe;
+import net.jcip.annotations.ThreadSafe;
 
-@NotThreadSafe
+@ThreadSafe
 public class SimInterest implements Runnable {
-    @Immutable
     private static final double INTEREST_RATE = 0.01;
+    @Immutable
     private final Economy economy;
 
     public SimInterest(Economy e) {
@@ -28,7 +29,6 @@ public class SimInterest implements Runnable {
 
     private void paySalaries() {
 
-       // synchronized (economy.getBank().getAccountsMap()) {
             for (Account account : economy.getBank().getAccounts()) {
                 if (account.getOwner() != economy.getBank()) {
                     //earn interest
@@ -38,7 +38,6 @@ public class SimInterest implements Runnable {
                     economy.getBank().transferFunds(account.getOwner(), economy.getBank(), account.getFee());
                 }
             }
-        //}
     }
 
 }

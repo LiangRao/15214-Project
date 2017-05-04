@@ -1,11 +1,15 @@
 package edu.cmu.cs.cs214.hw6.bank;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
+import net.jcip.annotations.NotThreadSafe;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Main class that drives the simulation and creates the relevant threads.
  */
+@NotThreadSafe
 public class Simulation {
 
     public static void main(String[] args) throws InterruptedException {
@@ -15,7 +19,6 @@ public class Simulation {
     private void run() throws InterruptedException {
         Economy e = initializeEconomy();
         e.printReport();
-
         List<Thread> shoppers = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             Thread t = new Thread(new SimShopping(e));

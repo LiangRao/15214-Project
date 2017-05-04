@@ -30,7 +30,7 @@ public class CoordinatorServer implements Coordinator{
     private final List<Worker> services;
 
     /**
-     * A constructor
+     * A constructor to register RemoteWorker in Coordinator
      * @param servers the workers related to coordinator
      * @throws RemoteException
      * @throws NotBoundException
@@ -46,9 +46,8 @@ public class CoordinatorServer implements Coordinator{
 
 
     @Override
-    public Map<String, String> aggregate(List<Task> taskList) throws IOException, InterruptedException,RemoteException {
+    public Map<String, String> aggregate(List<Task> taskList) throws InterruptedException,RemoteException {
         List<Callable<String>> tasks = buildTaskList(taskList);
-        System.out.println(tasks.size());
         List<Future<String>> results = executor.invokeAll(tasks);
         List<String> taskName = new ArrayList<>();
         Map<String, String> resultMap = new HashMap<>();
@@ -60,7 +59,6 @@ public class CoordinatorServer implements Coordinator{
             try {
                 String tmp = future.get();
                 resultMap.put(taskName.get(i), tmp);
-                System.out.println(tmp);
             } catch (ExecutionException e) {
                 e.printStackTrace();
             }
@@ -72,12 +70,11 @@ public class CoordinatorServer implements Coordinator{
     }
 
     /**
-     * Delete working directory after exiting
-     * @param taskList
-     * @return
+     * Dispatch Tasks to workers in the Coordinator
+     * @param taskList all of tasks received by the Coordinator
+     * @return List of Callable tasks
      */
     private List<Callable<String>> buildTaskList(List<Task> taskList){
-        System.out.println("tasksize"+taskList.size());
         List<Callable<String>> result = new ArrayList<>();
         int size = services.size();
         int taskSize = taskList.size();
@@ -94,11 +91,11 @@ public class CoordinatorServer implements Coordinator{
     /**
      * The main function to launch CoordinatorServer
      * @param args the parameters of main
-     * @throws IOException
-     * @throws NotBoundException
-     * @throws AlreadyBoundException
+     * @throws RemoteException RMI exception
+     * @throws NotBoundException RMI exception
+     * @throws AlreadyBoundException RMI exception
      */
-    public static void main(String[] args) throws IOException, NotBoundException, AlreadyBoundException {
+    public static void main(String[] args) throws NotBoundException, AlreadyBoundException,RemoteException {
         System.setProperty("java.rmi.server.hostname", "127.0.0.1");
         int port = Integer.parseInt(args[0]);
         Registry registry = LocateRegistry.createRegistry(port);
@@ -106,8 +103,8 @@ public class CoordinatorServer implements Coordinator{
                 UnicastRemoteObject.exportObject(
                         new CoordinatorServer(
                                 new ServerInfo("127.0.0.1", "Peer1", 15215),
-                                new ServerInfo("127.0.0.1", "Peer2", 15216)
+                                new ServerInfo("127.0.0.1", "Peer2", 15217)
                         ), port));
-        System.out.println("aggregate service running");
+        System.out.println("Coordinator service running");
     }
 }

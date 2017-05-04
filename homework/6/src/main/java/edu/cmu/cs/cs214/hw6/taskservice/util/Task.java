@@ -9,8 +9,8 @@ import java.io.File;
  */
 public interface Task {
     /**
-     * Get the names of funtions which need to excute in worker
-     * @return
+     * Get the names of functions which need to execute in the worker
+     * @return the names of functions which need to execute in the worker
      */
     public List<Set<String>> getFunctionName();
 

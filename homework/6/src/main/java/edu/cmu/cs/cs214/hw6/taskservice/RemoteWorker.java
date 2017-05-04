@@ -22,7 +22,7 @@ public class RemoteWorker implements Worker{
 
     private ExecutorService executor = Executors.newCachedThreadPool();
     @Override
-    public String exec(Task task) throws IOException, IllegalAccessException, InstantiationException, NoSuchMethodException, InterruptedException  {
+    public String exec(Task task) throws IllegalAccessException, InstantiationException, NoSuchMethodException, InterruptedException, RemoteException  {
         List<Set<String>> stepNum = task.getFunctionName();
         int step = stepNum.size();
         Class<?> taskClass = task.getClass();
@@ -47,7 +47,6 @@ public class RemoteWorker implements Worker{
                 try {
                     String log =future.get();
                     sb.append(log);
-                    //future.cancel()
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 }
@@ -65,6 +64,11 @@ public class RemoteWorker implements Worker{
         return sb.toString();
     }
 
+    /**
+     * Delete working directory
+     * @param dir the working directory
+     * @return true if delete successful or return false
+     */
     private boolean deleteDir(File dir) {
         if (dir.isDirectory()) {
             String[] children = dir.list();
@@ -82,15 +86,15 @@ public class RemoteWorker implements Worker{
     /**
      * The main function to launch a single worker
      * @param args the arguments of main
-     * @throws IOException
-     * @throws AlreadyBoundException
+     * @throws RemoteException RMI exception
+     * @throws AlreadyBoundException RMI exception
      */
-    public static void main(String[] args) throws IOException, AlreadyBoundException {
+    public static void main(String[] args) throws AlreadyBoundException, RemoteException {
         System.setProperty("java.rmi.server.hostname", "127.0.0.1");
         int port = Integer.parseInt(args[1]);
         Registry registry = LocateRegistry.createRegistry(port);
         registry.bind(args[0],
                 UnicastRemoteObject.exportObject(new RemoteWorker(), port));
-        System.out.println("File Service running");
+        System.out.println("Remote worker running");
     }
 }

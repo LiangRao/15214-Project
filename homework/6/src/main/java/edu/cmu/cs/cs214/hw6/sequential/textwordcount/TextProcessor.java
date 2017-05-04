@@ -2,19 +2,43 @@ package edu.cmu.cs.cs214.hw6.sequential.textwordcount;
 
 import java.util.*;
 
+/**
+ * A TextProcessor class to deal with given file
+ */
 public class TextProcessor{
-    /*
-    Reads in a literary work and analyze's the word use.
-     */
     Scanner sc;
     HashMap<String, Integer> lengthMap = new HashMap<String, Integer> ();
     HashMap<String, Integer> frequency = new HashMap<String, Integer>();
+    /**
+     * A constructor which initializes a TextProcessor with a given fileName
+     * @param fileName the name of the file needing to be opened
+     */
+    public TextProcessor(String fileName) {
+        sc = TextReader.openFile(fileName);
+        while (true){
+            if (sc.hasNext()){
+                String word = sc.next();
+                word = word.replaceAll( "[\\p{P}]", "" );
+                if(word.matches(".*\\d+.*")==false) {
+                    if (frequency.containsKey(word)) {
+                        int value = frequency.get(word);
+                        lengthMap.put(word, word.length());
+                        frequency.replace(word, value, value + 1);
+                    } else {
+                        lengthMap.put(word, word.length());
+                        frequency.put(word, 1);
+                    }
+                }
+            }
+            else{
+                break;
+            }
+        }
+    }
 
     /**
-     * Return the shortest word or words from the literary work.
-     * Since most languages contain many 1-letter words,
-     * a collection is returned.
-     * @return the shortest word(s)
+     * Return the shortest words from the given file
+     * @return the shortest words
      */
     public Collection<String> getShortestWords() {
         Collection<String> shortest = new HashSet<String>();
@@ -35,10 +59,8 @@ public class TextProcessor{
     }
 
     /**
-     * Return the longest word or words from the literary work.
-     * There will often only be one word, but in case of a tie,
-     * a collection is returned.
-     * @return the longest word(s)
+     * Return the longest words in the file
+     * @return the longest words
      */
     public Collection<String> getLongestWords() {
         Collection<String> longest = new HashSet<String>();
@@ -58,12 +80,11 @@ public class TextProcessor{
     }
 
     /**
-     * Return the letters that are most likely to appear at
-     * the start of a word from the literary work. Frequency
-     * of the words involved is not taken into account. There
-     * will often only be one letter, but in case of a tie,
-     * a collection is returned.
-     * @return the most common first letter(s) in the words
+     * Return the letters which are most likely arise at the
+     * start of a word from the given file. Ignore the frequency
+     * of these words
+     * @return the letters which are most likely arise at the
+     *         start of a word from the given file.
      */
     public Collection<Character> mostCommonFirstUnweighted() {
         Collection<Character> firstUnweighted = new HashSet<Character>();
@@ -94,12 +115,11 @@ public class TextProcessor{
     }
 
     /**
-     * Return the letters that are most likely to appear at
-     * the start of a word from the literary work. Frequency
-     * of the words involved is taken into account. There
-     * will often only be one letter, but in case of a tie,
-     * a collection is returned.
-     * @return the most common first letter(s) in the words
+     * Return the letters which are most likely arise at the
+     * start of a word from the given file. Consider the frequency
+     * of these words
+     * @return Return the letters which are most likely arise at the
+     *         start of a word from the given file.
      */
     public Collection<Character> mostCommonFirstWeighted() {
 
@@ -129,13 +149,11 @@ public class TextProcessor{
         }
         return firstWeighted;
     }
+
     /**
-     * Return the most common word or words of a given
-     * length in the literary work. There will often
-     * only be one such word, but in case of a tie,
-     * a collection is returned.
-     * @param length the length of words to consider
-     * @return the list of most common words
+     * Return the most common words with given length in the file
+     * @param length the given length
+     * @return the most common words with given length
      */
     public Collection<String> mostCommon(int length) {
         Collection<String> mostCommon = new HashSet<String>();
@@ -158,40 +176,5 @@ public class TextProcessor{
         return mostCommon;
     }
 
-    /**
-     *
-     * @param fileName
-     */
-    public TextProcessor(String fileName) {
-        /*
-        Initialize an instance of TextProcessor with the file that it should read.
-        Words containing the digits 0-9 are ignored, and any punctuation in a word is stripped before storage.
-        (This does have the unfortunate consequence of storing "don't" as the four-letter word "dont".
-        It does not mess up accented letters as in "fÃ¼nf" or "tÃº".)
-        After the constructor returns, the new instance will have all the information it needs to do analysis;
-        the file will not be needed again.
-        Parameters:
-            fileName - the name of the file to be opened (Program will fail if file can't be opened.)
-         */
-        sc = TextReader.openFile(fileName);
-        while (true){
-            if (sc.hasNext()){
-                String word = sc.next();
-                word = word.replaceAll( "[\\p{P}]", "" );
-                if(word.matches(".*\\d+.*")==false) {
-                    if (frequency.containsKey(word)) {
-                        int value = frequency.get(word);
-                        lengthMap.put(word, word.length());
-                        frequency.replace(word, value, value + 1);
-                    } else {
-                        lengthMap.put(word, word.length());
-                        frequency.put(word, 1);
-                    }
-                }
-            }
-            else{
-                break;
-            }
-        }
-    }
+
 }

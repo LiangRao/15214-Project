@@ -9,12 +9,13 @@ package edu.cmu.cs.cs214.hw6.bank;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import net.jcip.annotations.NotThreadSafe;
+import net.jcip.annotations.ThreadSafe;
 
-@NotThreadSafe
+@ThreadSafe
 public class SimShopping implements Runnable {
-    //private static final int STEPS = 10000000;
+    private static final int STEPS = 10000000;
+
     @Immutable
-    private static final int STEPS = 10000;
     private final Economy economy;
 
     public SimShopping(Economy e) {
@@ -25,23 +26,14 @@ public class SimShopping implements Runnable {
     public void run() {
         for (int i = 0; i < STEPS; i++)
             performRandomTransaction();
-
     }
 
     private void performRandomTransaction() {
-
             Bank bank = economy.getBank();
-
-            //synchronized (economy.getBank().getAccountsMap()) {
-                Person customer = economy.getRandomCustomer();
-                Shop shop = economy.getRandomShop();
-                //System.out.println(bank.getAccount(customer));
-                if (bank.getAccount(customer).getBalance() >= 100) {
-                    //System.out.println(bank.getAccount(customer).getBalance());
-                    bank.transferFunds(customer, shop, 100);
-                }
-           // }
-
-        //}
+            Person customer = economy.getRandomCustomer();
+            Shop shop = economy.getRandomShop();
+            if (bank.getAccount(customer).getBalance() >= 100) {
+                bank.transferFunds(customer, shop, 100);
+            }
     }
 }

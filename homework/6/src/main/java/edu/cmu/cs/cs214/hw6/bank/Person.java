@@ -1,9 +1,12 @@
 package edu.cmu.cs.cs214.hw6.bank;
 
 
+import net.jcip.annotations.NotThreadSafe;
+
 /**
  * a private bank account owner with a name
  */
+@NotThreadSafe
 public class Person implements AccountOwner {
     private String name;
 

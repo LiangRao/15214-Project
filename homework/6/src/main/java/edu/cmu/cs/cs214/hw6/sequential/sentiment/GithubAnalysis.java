@@ -28,21 +28,16 @@ public class GithubAnalysis implements Task, Serializable{
 
     private static final int MAX_COMMIT_PAGES = 2;
 
-    private List<Repository> getRepositories() {
+    /**
+     * Return the first part of repositories
+     * @return the first part of repositories
+     */
+    private List<Repository> getRepositoriesFirst() {
         List<Repository> repositories = new ArrayList<>();
         repositories.add(new Repository("google", "material-design-icons"));
         repositories.add(new Repository("google", "guava"));
         repositories.add(new Repository("google", "web-starter-kit"));
-//        repositories.add(new Repository("google", "protobuf"));
-//        repositories.add(new Repository("google", "material-design-lite"));
-        repositories.add(new Repository("mozilla", "pdf.js"));
-        repositories.add(new Repository("mozilla", "BrowserQuest"));
-        repositories.add(new Repository("mozilla", "metrics-graphics"));
-//        repositories.add(new Repository("mozilla", "firefox-ios"));
-//        repositories.add(new Repository("mozilla", "localForage"));
-        repositories.add(new Repository("facebook", "react"));
-        repositories.add(new Repository("facebook", "react-native"));
-        repositories.add(new Repository("facebook", "immutable-js"));
+
 //        repositories.add(new Repository("facebook", "hhvm"));
 //        repositories.add(new Repository("facebook", "pop"));
 //        repositories.add(new Repository("travis-ci", "travis-ci"));
@@ -57,14 +52,95 @@ public class GithubAnalysis implements Task, Serializable{
 //        repositories.add(new Repository("Microsoft", "ChakraCore"));
         return repositories;
     }
-    public String download() throws IOException {
+
+    /**
+     * Return the second part of repositories
+     * @return the second part of repositories
+     */
+    private List<Repository> getRepositoriesSecond() {
+        List<Repository> repositories = new ArrayList<>();
+        repositories.add(new Repository("mozilla", "pdf.js"));
+        repositories.add(new Repository("mozilla", "BrowserQuest"));
+        repositories.add(new Repository("mozilla", "metrics-graphics"));
+        return repositories;
+    }
+    /**
+     * Return the third part of repositories
+     * @return the third part of repositories
+     */
+    private List<Repository> getRepositoriesThird() {
+        List<Repository> repositories = new ArrayList<>();
+        repositories.add(new Repository("facebook", "react"));
+        repositories.add(new Repository("facebook", "react-native"));
+        repositories.add(new Repository("facebook", "immutable-js"));
+        return repositories;
+    }
+
+    /**
+     * Download the first repositories's data and page
+     * @return the log
+     * @throws IOException
+     */
+    public String downloadFirst() throws IOException {
         StringBuilder sb = new StringBuilder();
         GitHubClient github = new GitHubClient();
         //set up with oauth token for higher rate limit
 //        github.setOAuth2Token("<yourtoken>");
 
         //repositories to analyze
-        List<Repository> repositories = getRepositories();
+        List<Repository> repositories = getRepositoriesFirst();
+
+        for (Repository repo : repositories) {
+            System.out.printf("Downloading data for %s%n", repo.getIdentifier());
+            sb.append("Downloading data for" + repo.getIdentifier() +"\n");
+            //looking up most popular language in repository
+            String language = getTopLanguage(github, repo);
+
+            //looking up commits (paged), up to 5 pages
+            CommitService commitService = new CommitService(github);
+            PageIterator<RepositoryCommit> commitPages = commitService.pageCommits(repo);
+            int pageCounter = 1;
+            for (Collection<RepositoryCommit> commitsOnPage : commitPages) {
+                System.out.printf(" - downloading page %d%n", pageCounter);
+                sb.append(" - downloading page " + pageCounter +"\n");
+                for (RepositoryCommit commit : commitsOnPage) {
+                    //skip merge commits (with more than 1 parents)
+                    if (commit.getParents().size() > 1)
+                        continue;
+
+                    //for each nonmerge commit, collect messages_author by author, language, and organization
+                    CommitUser gitAuthor = commit.getCommit().getAuthor();
+                    Author author = new Author(gitAuthor.getName(), gitAuthor.getEmail());
+                    Message message = new Message(commit.getCommit().getMessage());
+                    synchronized (messages_author) {
+                        addToData(messages_author, author, message);
+                    }
+                    synchronized (messages_lang) {
+                        addToData(messages_lang, language, message);
+                    }
+                    synchronized (messages_org) {
+                        addToData(messages_org, repo.getOrg(), message);
+                    }
+                }
+
+                if (++pageCounter > MAX_COMMIT_PAGES) break;
+            }
+        }
+        return sb.toString();
+    }
+    /**
+     * Download the second repositories's data and page
+     * @return the log
+     * @throws IOException
+     */
+    public String downloadSecond() throws IOException {
+        StringBuilder sb = new StringBuilder();
+        GitHubClient github = new GitHubClient();
+        //set up with oauth token for higher rate limit
+//        github.setOAuth2Token("<yourtoken>");
+
+        //repositories to analyze
+        List<Repository> repositories = getRepositoriesSecond();
 
         for (Repository repo : repositories) {
             System.out.printf("Downloading data for %s%n", repo.getIdentifier());
@@ -89,9 +165,68 @@ public class GithubAnalysis implements Task, Serializable{
                     Author author = new Author(gitAuthor.getName(), gitAuthor.getEmail());
                     Message message = new Message(commit.getCommit().getMessage());
 
-                    addToData(messages_author, author, message);
-                    addToData(messages_lang, language, message);
-                    addToData(messages_org, repo.getOrg(), message);
+                    synchronized (messages_author) {
+                        addToData(messages_author, author, message);
+                    }
+                    synchronized (messages_lang) {
+                        addToData(messages_lang, language, message);
+                    }
+                    synchronized (messages_org) {
+                        addToData(messages_org, repo.getOrg(), message);
+                    }
+                }
+
+                if (++pageCounter > MAX_COMMIT_PAGES) break;
+            }
+        }
+        return sb.toString();
+    }
+    /**
+     * Download the Third repositories's data and page
+     * @return the log
+     * @throws IOException
+     */
+    public String downloadThird() throws IOException {
+        StringBuilder sb = new StringBuilder();
+        GitHubClient github = new GitHubClient();
+        //set up with oauth token for higher rate limit
+//        github.setOAuth2Token("<yourtoken>");
+
+        //repositories to analyze
+        List<Repository> repositories = getRepositoriesThird();
+
+        for (Repository repo : repositories) {
+            System.out.printf("Downloading data for %s%n", repo.getIdentifier());
+            sb.append("Downloading data for" + repo.getIdentifier() +"\n");
+            //looking up most popular language in repository
+            String language = getTopLanguage(github, repo);
+
+            //looking up commits (paged), up to 5 pages
+            CommitService commitService = new CommitService(github);
+            PageIterator<RepositoryCommit> commitPages = commitService.pageCommits(repo);
+            int pageCounter = 1;
+            for (Collection<RepositoryCommit> commitsOnPage : commitPages) {
+                System.out.printf(" - downloading page %d%n", pageCounter);
+                sb.append(" - downloading page " + pageCounter +"\n");
+                for (RepositoryCommit commit : commitsOnPage) {
+                    //skip merge commits (with more than 1 parents)
+                    if (commit.getParents().size() > 1)
+                        continue;
+
+                    //for each nonmerge commit, collect messages_author by author, language, and organization
+                    CommitUser gitAuthor = commit.getCommit().getAuthor();
+                    Author author = new Author(gitAuthor.getName(), gitAuthor.getEmail());
+                    Message message = new Message(commit.getCommit().getMessage());
+
+                    synchronized (messages_author) {
+                        addToData(messages_author, author, message);
+                    }
+                    synchronized (messages_lang) {
+                        addToData(messages_lang, language, message);
+                    }
+                    synchronized (messages_org) {
+                        addToData(messages_org, repo.getOrg(), message);
+                    }
                 }
 
                 if (++pageCounter > MAX_COMMIT_PAGES) break;
@@ -100,22 +235,41 @@ public class GithubAnalysis implements Task, Serializable{
         return sb.toString();
     }
 
+    /**
+     * Compile author's sentiments
+     * @return the log
+     * @throws IOException
+     */
     public String compileFirst() throws IOException {
         System.out.println("Running sentiment analysis");
         computeSentiments(messages_author, sentiments_author);
         return "Running sentiment analysis /n";
     }
 
+    /**
+     * Compile lang's sentiments
+     * @return the log
+     * @throws IOException
+     */
     public String compileSecond() throws IOException {
         computeSentiments(messages_lang, sentiments_lang);
         return "";
     }
 
+    /**
+     * Compile org's sentiments
+     * @return the log
+     * @throws IOException
+     */
     public String compileThird() throws IOException {
         computeSentiments(messages_org, sentiments_org);
         return "";
     }
 
+    /**
+     * Print the result of the analysis
+     * @return log of result
+     */
     public String printResult(){
         StringBuilder sb = new StringBuilder();
         System.out.println("Results by author");
@@ -214,7 +368,9 @@ public class GithubAnalysis implements Task, Serializable{
     public List<Set<String>> getFunctionName() {
         List<Set<String>> resultList = new ArrayList<>();
         Set<String> download = new HashSet<>();
-        download.add("download");
+        download.add("downloadFirst");
+        download.add("downloadSecond");
+        download.add("downloadThird");
         Set<String> compile = new HashSet<>();
         compile.add("compileFirst");
         compile.add("compileSecond");
